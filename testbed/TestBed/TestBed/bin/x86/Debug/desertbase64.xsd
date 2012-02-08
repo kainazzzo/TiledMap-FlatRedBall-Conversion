@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="map">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="tileset" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="image" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="source" type="xs:string" />
+                  <xs:attribute name="width" type="xs:string" />
+                  <xs:attribute name="height" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="firstgid" type="xs:string" />
+            <xs:attribute name="name" type="xs:string" />
+            <xs:attribute name="tilewidth" type="xs:string" />
+            <xs:attribute name="tileheight" type="xs:string" />
+            <xs:attribute name="spacing" type="xs:string" />
+            <xs:attribute name="margin" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="layer" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="data" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:simpleContent msdata:ColumnName="data_Text" msdata:Ordinal="1">
+                    <xs:extension base="xs:string">
+                      <xs:attribute name="encoding" type="xs:string" />
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" />
+            <xs:attribute name="width" type="xs:string" />
+            <xs:attribute name="height" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="version" type="xs:string" />
+      <xs:attribute name="orientation" type="xs:string" />
+      <xs:attribute name="width" type="xs:string" />
+      <xs:attribute name="height" type="xs:string" />
+      <xs:attribute name="tilewidth" type="xs:string" />
+      <xs:attribute name="tileheight" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="map" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
