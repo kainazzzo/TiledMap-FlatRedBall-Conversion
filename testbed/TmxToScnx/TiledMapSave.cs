@@ -48,59 +48,62 @@ namespace TiledMap
             SpriteEditorScene toReturn = new SpriteEditorScene();
 
             // TODO: Somehow add all layers separately
-            int count = 0;
 
-
-
-            foreach (int gid in this.layer[0].data[0].tiles)
+            int layercount = 0;
+            foreach (mapLayer layer in this.layer)
             {
-                SpriteSave sprite = new SpriteSave();
-                mapTileset tileSet = getTilesetForGid(gid);
-                if (tileSet == null)
+                int count = 0;
+                foreach (int gid in layer.data[0].tiles)
                 {
+                    SpriteSave sprite = new SpriteSave();
+                    mapTileset tileSet = getTilesetForGid(gid);
+                    if (tileSet == null)
+                    {
+                        ++count;
+                        continue;
+                    }
+
+                    int imageWidth = tileSet.image[0].width;
+                    int imageHeight = tileSet.image[0].height;
+                    int tileWidth = tileSet.tilewidth;
+                    int spacing = tileSet.spacing;
+                    int tileHeight = tileSet.tileheight;
+                    int margin = tileSet.margin;
+
+                    // TODO: only calculate these once per tileset. Perhaps it can be done in the deserialize method
+                    int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
+                    int tilesHigh = (imageHeight - margin) / (tileHeight + spacing);
+
+
+                    sprite.Texture = tileSet.image[0].source;
+
+                    // Calculate pixel coordinates in the texture sheet
+                    int leftPixelCoord = TiledMapSave.calculateXCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, spacing, margin);
+                    int topPixelCoord = TiledMapSave.calculateYCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, tileHeight, spacing, margin);
+                    int rightPixelCoord = leftPixelCoord + tileWidth;
+                    int bottomPixelCoord = topPixelCoord + tileHeight;
+
+                    // Calculate relative texture coordinates based on pixel coordinates
+                    sprite.TopTextureCoordinate = GetTextureCoordinate(topPixelCoord, imageHeight, LessOrGreaterDesired.Greater);
+                    sprite.LeftTextureCoordinate = GetTextureCoordinate(leftPixelCoord, imageWidth, LessOrGreaterDesired.Greater);
+
+                    sprite.RightTextureCoordinate = GetTextureCoordinate(rightPixelCoord, imageWidth, LessOrGreaterDesired.Less);
+                    sprite.BottomTextureCoordinate = GetTextureCoordinate(bottomPixelCoord, imageHeight, LessOrGreaterDesired.Less);
+
+                    // Now calculate the world coordinates
+                    int normalizedX = count % this.width;
+                    int normalizedY = count / this.width;
+                    sprite.X = (normalizedX * tileWidth);
+                    sprite.Y = -(normalizedY * tileHeight);
                     ++count;
-                    continue;
+
+                    sprite.ScaleX = tileWidth / 2;
+                    sprite.ScaleY = tileHeight / 2;
+                    sprite.Z = layercount;
+
+                    toReturn.SpriteList.Add(sprite);
                 }
-
-
-                int imageWidth = tileSet.image[0].width;
-                int imageHeight = tileSet.image[0].height;
-                int tileWidth = tileSet.tilewidth;
-                int spacing = tileSet.spacing;
-                int tileHeight = tileSet.tileheight;
-                int margin = tileSet.margin;
-
-                // TODO: only calculate these once per tileset. Perhaps it can be done in the deserialize method
-                int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
-                int tilesHigh = (imageHeight - margin) / (tileHeight + spacing);
-
-
-                sprite.Texture = tileSet.image[0].source;
-
-                // Calculate pixel coordinates in the texture sheet
-                int leftPixelCoord = TiledMapSave.calculateXCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, spacing, margin);
-                int topPixelCoord = TiledMapSave.calculateYCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, tileHeight, spacing, margin);
-                int rightPixelCoord = leftPixelCoord + tileWidth;
-                int bottomPixelCoord = topPixelCoord + tileHeight;
-
-                // Calculate relative texture coordinates based on pixel coordinates
-                sprite.TopTextureCoordinate = GetTextureCoordinate(topPixelCoord, imageHeight, LessOrGreaterDesired.Greater);
-                sprite.LeftTextureCoordinate = GetTextureCoordinate(leftPixelCoord, imageWidth, LessOrGreaterDesired.Greater);
-
-                sprite.RightTextureCoordinate = GetTextureCoordinate(rightPixelCoord, imageWidth, LessOrGreaterDesired.Less);
-                sprite.BottomTextureCoordinate = GetTextureCoordinate(bottomPixelCoord, imageHeight, LessOrGreaterDesired.Less);
-
-                // Now calculate the world coordinates
-                int normalizedX = count % this.width;
-                int normalizedY = count / this.width;
-                sprite.X = (normalizedX * tileWidth);
-                sprite.Y = -(normalizedY * tileHeight);
-                ++count;
-
-                sprite.ScaleX = tileWidth / 2;
-                sprite.ScaleY = tileHeight / 2;
-
-                toReturn.SpriteList.Add(sprite);
+                ++layercount;
             }
 
             return toReturn;
