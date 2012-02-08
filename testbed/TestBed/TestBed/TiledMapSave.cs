@@ -42,23 +42,35 @@ public partial class TiledMapSave
         // TODO: Somehow add all layers separately
         int count = 0;
 
-        int imageWidth = this.tileset[0].image[0].width;
-        int imageHeight = this.tileset[0].image[0].height;
-        int tileWidth = this.tileset[0].tilewidth;
-        int spacing = this.tileset[0].spacing;
-        int tileHeight = this.tileset[0].tileheight;
-        int margin = this.tileset[0].margin;
-        int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
-        int tilesHigh = (imageHeight - margin) / (tileHeight + spacing);
+       
 
         foreach (int gid in this.layer[0].data[0].tiles)
         {
             Sprite sprite = new Sprite();
-            sprite.Texture = FlatRedBallServices.Load<Texture2D>(this.tileset[0].image[0].source, contentManagerName);
+            mapTileset tileSet = getTilesetForGid(gid);
+            if (tileSet == null)
+            {
+                ++count;
+                continue;
+            }
+
+            
+            int imageWidth = tileSet.image[0].width;
+            int imageHeight = tileSet.image[0].height;
+            int tileWidth = tileSet.tilewidth;
+            int spacing = tileSet.spacing;
+            int tileHeight = tileSet.tileheight;
+            int margin = tileSet.margin;
+
+            // TODO: only calculate these once per tileset. Perhaps it can be done in the deserialize method
+            int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
+            int tilesHigh = (imageHeight - margin) / (tileHeight + spacing);
+
+            sprite.Texture = FlatRedBallServices.Load<Texture2D>(tileSet.image[0].source, contentManagerName);
 
             // Calculate pixel coordinates in the texture sheet
-            int leftPixelCoord = TiledMapSave.calculateXCoordinate(gid - this.tileset[0].firstgid, imageWidth, tileWidth, spacing, margin);
-            int topPixelCoord = TiledMapSave.calculateYCoordinate(gid - this.tileset[0].firstgid, imageWidth, tileWidth, tileHeight, spacing, margin);
+            int leftPixelCoord = TiledMapSave.calculateXCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, spacing, margin);
+            int topPixelCoord = TiledMapSave.calculateYCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, tileHeight, spacing, margin);
             int rightPixelCoord = leftPixelCoord + tileWidth;
             int bottomPixelCoord = topPixelCoord + tileHeight;
 
@@ -85,6 +97,21 @@ public partial class TiledMapSave
         return toReturn;
     }
 
+    private mapTileset getTilesetForGid(int gid)
+    {
+        // Assuming tilesets are sorted by the firstgid value...
+        // Resort with LINQ if not
+        for (int i = tileset.Length - 1; i >= 0; --i)
+        {
+            mapTileset tileSet = tileset[i];
+            if (gid >= tileSet.firstgid)
+            {
+                return tileSet;
+            }
+        }
+        return null;
+    }
+
     private float GetTextureCoordinate(int pixelCoord, int dimension, LessOrGreaterDesired lessOrGreaterDesired)
     {
         float asFloat = pixelCoord / (float)dimension;
@@ -100,49 +127,6 @@ public partial class TiledMapSave
         {
             return asFloat - modValue;
         }
-    }
-
-    private static void fixTextureCoordinatePrecision(int imageWidth, int imageHeight, Sprite sprite, int leftPixelCoord, int topPixelCoord, int rightPixelCoord, int bottomPixelCoord)
-    {
-        decimal top = (decimal)sprite.TopTextureCoordinate * (decimal)imageHeight;
-        IncrementableFloat topCoord = new IncrementableFloat();
-        topCoord.Value = sprite.TopTextureCoordinate;
-        while (top < topPixelCoord)
-        {
-            topCoord.IncreaseByMinimum();
-            top = (decimal)topCoord.Value * (decimal)imageHeight;
-        }
-        sprite.TopTextureCoordinate = topCoord.Value;
-
-        decimal left = (decimal)sprite.LeftTextureCoordinate * (decimal)imageWidth;
-        IncrementableFloat leftCoord = new IncrementableFloat();
-        leftCoord.Value = sprite.LeftTextureCoordinate;
-        while (left < leftPixelCoord)
-        {
-            leftCoord.IncreaseByMinimum();
-            left = (decimal)leftCoord.Value * (decimal)imageWidth;
-        }
-        sprite.LeftTextureCoordinate = leftCoord.Value;
-
-        decimal right = (decimal)sprite.RightTextureCoordinate * (decimal)imageWidth;
-        IncrementableFloat rightCoord = new IncrementableFloat();
-        rightCoord.Value = sprite.RightTextureCoordinate;
-        while (right > rightPixelCoord)
-        {
-            rightCoord.DecreaseByMinimum();
-            right = (decimal)rightCoord.Value * (decimal)imageWidth;
-        }
-        sprite.RightTextureCoordinate = rightCoord.Value;
-
-        decimal bottom = (decimal)sprite.BottomTextureCoordinate * (decimal)imageHeight;
-        IncrementableFloat bottomCoord = new IncrementableFloat();
-        bottomCoord.Value = sprite.BottomTextureCoordinate;
-        while (bottom > bottomPixelCoord)
-        {
-            bottomCoord.DecreaseByMinimum();
-            bottom = (decimal)bottomCoord.Value * (decimal)imageHeight;
-        }
-        sprite.BottomTextureCoordinate = bottomCoord.Value;
     }
 
     private static int calculateYCoordinate(int gid, int imageWidth, int tileWidth, int tileHeight, int spacing, int margin)

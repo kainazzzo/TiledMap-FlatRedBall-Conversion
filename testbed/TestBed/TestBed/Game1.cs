@@ -41,7 +41,7 @@ namespace TestBed
 			Screens.ScreenManager.Start(typeof(TestBed.Screens.TestScreen).FullName);
 
             SpriteManager.Camera.BackgroundColor = Color.White;
-            TiledMapSave tms = TiledMapSave.FromFile("desertgzip.tmx");
+            TiledMapSave tms = TiledMapSave.FromFile("test2.tmx");
             Scene s = tms.ToScene(typeof(TestBed.Screens.TestScreen).FullName);
             s.AddToManagers();
 
