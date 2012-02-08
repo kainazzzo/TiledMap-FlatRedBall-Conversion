@@ -412,7 +412,7 @@ namespace TiledMap
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class mapTilesetImage
     {
-
+        
         private string sourceField;
 
         private int widthField;
@@ -432,6 +432,39 @@ namespace TiledMap
                 this.sourceField = value;
             }
         }
+
+        [XmlIgnore]
+        public string sourceFileName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(source) && source.Contains("\\"))
+                {
+                    return source.Substring(source.LastIndexOf('\\'));
+                }
+                else
+                {
+                    return source;
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public string sourceDirectory
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(source) && source.Contains("\\"))
+                {
+                    return source.Substring(0, source.LastIndexOf('\\'));
+                }
+                else
+                {
+                    return source;
+                }
+            }
+        }
+
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
