@@ -14,6 +14,7 @@ using FlatRedBall.Utilities;
 
 using TestBed.Screens;
 using FlatRedBall.IO;
+using TiledMap;
 
 namespace TestBed
 {

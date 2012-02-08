@@ -121,7 +121,6 @@
     <Compile Include="Screens\TestScreen.Generated.cs">
       <DependentUpon>TestScreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="TiledMapSave.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
@@ -162,6 +161,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
+    <ProjectReference Include="..\..\TmxToScnx\TmxToScnx.csproj">
+      <Project>{EAA9B407-D6C9-46AC-82D4-F1861D235883}</Project>
+      <Name>TmxToScnx</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TestBedContent\TestBedContent.contentproj">
       <Project>{64B23BEF-DD26-4B81-AAA6-D9F46B0140B4}</Project>
       <Name>TestBedContent %28Content%29</Name>
