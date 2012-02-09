@@ -129,7 +129,7 @@ namespace TiledMap
             float asFloat = pixelCoord / (float)dimension;
 
             //const float modValue = .000001f;
-            const float modValue = .000002f;
+            const float modValue = .0000002f;
             //const float modValue = .00001f;
             if (lessOrGreaterDesired == LessOrGreaterDesired.Greater)
             {
@@ -311,6 +311,37 @@ namespace TiledMap
         private int spacingField;
 
         private int marginField;
+
+        private string sourceField;
+
+        [System.Xml.Serialization.XmlElementAttribute("source", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string source
+        {
+            get
+            {
+                return sourceField;
+            }
+            set
+            {
+                this.sourceField = value;
+                ExternalTileset xts = FileManager.XmlDeserialize<ExternalTileset>(sourceField);
+                image = new mapTilesetImage[xts.image.Length];
+                int count = 0;
+                foreach (tilesetImage ximage in xts.image)
+                {
+                    this.image[count] = new mapTilesetImage();
+                    this.image[count].source = xts.image[count].source;
+                    this.image[count].height = xts.image[count].height;
+                    this.image[count].width = xts.image[count].width;
+
+                    count++;
+                }
+
+                this.name = xts.name;
+                
+            }
+        }
+
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("image", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
@@ -648,6 +679,11 @@ namespace TiledMap
         {
             get
             {
+                if (encodingField != "base64")
+                {
+                    throw new NotImplementedException("Tiled Map must be saved with base64 encoding");
+                }
+
                 if (_ids == null)
                 {
                     _ids = new List<uint>(length);
@@ -660,6 +696,9 @@ namespace TiledMap
                             break;
                         case "zlib":
                             //data = new Ionic.Zlib.ZlibStream(data, Ionic.Zlib.CompressionMode.Decompress, false)
+                            break;
+                        case null:
+                            // Not compressed. Data is already decoded.
                             break;
                         default:
                             throw new InvalidOperationException("Unknown compression: " + compression);
