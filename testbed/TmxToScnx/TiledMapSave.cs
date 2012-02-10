@@ -478,6 +478,10 @@ namespace TiledMap
             set
             {
                 this.sourceField = value;
+                if (this.sourceField != null)
+                {
+                    this.sourceField = this.sourceField.Replace("/", "\\");
+                }
             }
         }
 
@@ -488,7 +492,7 @@ namespace TiledMap
             {
                 if (!string.IsNullOrEmpty(source) && source.Contains("\\"))
                 {
-                    return source.Substring(source.LastIndexOf('\\'));
+                    return source.Substring(source.LastIndexOf('\\') + 1);
                 }
                 else
                 {
