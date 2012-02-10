@@ -709,7 +709,7 @@ namespace TiledMap
                             data = new GZipStream(data, CompressionMode.Decompress, false);
                             break;
                         case "zlib":
-                            //data = new Ionic.Zlib.ZlibStream(data, Ionic.Zlib.CompressionMode.Decompress, false)
+                            data = new Ionic.Zlib.ZlibStream(data, Ionic.Zlib.CompressionMode.Decompress, false);
                             break;
                         case null:
                             // Not compressed. Data is already decoded.
