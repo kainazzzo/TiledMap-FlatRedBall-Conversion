@@ -93,15 +93,26 @@ namespace TiledMap
                     // Now calculate the world coordinates
                     int normalizedX = count % this.width;
                     int normalizedY = count / this.width;
-                    sprite.X = (normalizedX * tileWidth);
-                    sprite.Y = -(normalizedY * tileHeight);
-                    ++count;
 
+                    if (this.orientation == null || this.orientation.Equals("orthogonal"))
+                    {
+                        sprite.X = (normalizedX * tileWidth);
+                        sprite.Y = -(normalizedY * tileHeight);
+                    }
+                    else if (this.orientation != null && this.orientation.Equals("isometric"))
+                    {
+           
+                        sprite.Y = -(float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2;
+                        sprite.X = -(float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2));
+                    }
+                    ++count;
                     sprite.ScaleX = tileWidth / 2;
                     sprite.ScaleY = tileHeight / 2;
+
                     sprite.Z = layercount;
 
                     toReturn.SpriteList.Add(sprite);
+                   
                 }
                 ++layercount;
             }
