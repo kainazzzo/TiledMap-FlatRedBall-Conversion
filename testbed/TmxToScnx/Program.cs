@@ -36,7 +36,7 @@ namespace TmxToScnx
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
+                Console.Error.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
             }
         }
 
