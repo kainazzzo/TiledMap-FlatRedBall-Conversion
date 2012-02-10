@@ -16,162 +16,147 @@ using System.Xml.Serialization;
 
 
 /// <remarks/>
-[System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
-[System.SerializableAttribute()]
-[System.Diagnostics.DebuggerStepThroughAttribute()]
-[System.ComponentModel.DesignerCategoryAttribute("code")]
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-[System.Xml.Serialization.XmlRootAttribute(ElementName="tileset", Namespace = "", IsNullable = false)]
-public partial class ExternalTileset
-{
-
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+[System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
+public partial class tileset {
+    
     private tilesetImage[] imageField;
-
+    
     private string nameField;
-
+    
     private int tilewidthField;
-
+    
     private int tileheightField;
-
+    
+    private int spacingField;
+    
     private int marginField;
-
+    
     /// <remarks/>
-    [System.Xml.Serialization.XmlElementAttribute("image", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-    public tilesetImage[] image
-    {
-        get
-        {
+    [System.Xml.Serialization.XmlElementAttribute("image", Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+    public tilesetImage[] image {
+        get {
             return this.imageField;
         }
-        set
-        {
+        set {
             this.imageField = value;
         }
     }
-
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public string name
-    {
-        get
-        {
+    public string name {
+        get {
             return this.nameField;
         }
-        set
-        {
+        set {
             this.nameField = value;
         }
     }
-
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int tilewidth
-    {
-        get
-        {
+    public int tilewidth {
+        get {
             return this.tilewidthField;
         }
-        set
-        {
+        set {
             this.tilewidthField = value;
         }
     }
-
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int tileheight
-    {
-        get
-        {
+    public int tileheight {
+        get {
             return this.tileheightField;
         }
-        set
-        {
+        set {
             this.tileheightField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public int spacing {
+        get {
+            return this.spacingField;
+        }
+        set {
+            this.spacingField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public int margin {
+        get {
+            return this.marginField;
+        }
+        set {
+            this.marginField = value;
         }
     }
 }
 
 /// <remarks/>
-[System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
-[System.SerializableAttribute()]
-[System.Diagnostics.DebuggerStepThroughAttribute()]
-[System.ComponentModel.DesignerCategoryAttribute("code")]
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-public partial class tilesetImage
-{
-
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+public partial class tilesetImage {
+    
     private string sourceField;
-
+    
     private int widthField;
-
+    
     private int heightField;
-
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public string source
-    {
-        get
-        {
+    public string source {
+        get {
             return this.sourceField;
         }
-        set
-        {
+        set {
             this.sourceField = value;
         }
     }
-
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int width
-    {
-        get
-        {
+    public int width {
+        get {
             return this.widthField;
         }
-        set
-        {
+        set {
             this.widthField = value;
         }
     }
-
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int height
-    {
-        get
-        {
+    public int height {
+        get {
             return this.heightField;
         }
-        set
-        {
+        set {
             this.heightField = value;
         }
     }
 }
 
 /// <remarks/>
-[System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.3038")]
-[System.SerializableAttribute()]
-[System.Diagnostics.DebuggerStepThroughAttribute()]
-[System.ComponentModel.DesignerCategoryAttribute("code")]
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-[System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-public partial class NewDataSet
-{
-
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+[System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
+public partial class NewDataSet {
+    
     private tileset[] itemsField;
-
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlElementAttribute("tileset")]
-    public tileset[] Items
-    {
-        get
-        {
+    public tileset[] Items {
+        get {
             return this.itemsField;
         }
-        set
-        {
+        set {
             this.itemsField = value;
         }
     }

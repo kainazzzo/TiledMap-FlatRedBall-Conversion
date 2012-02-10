@@ -69,7 +69,11 @@ namespace TmxToScnx
                 foreach (TiledMap.mapTilesetImage image in tileset.image)
                 {
                     string sourcepath = tmxPath + "\\" + image.source;
-                    File.Copy(sourcepath, destinationPath + "\\" + image.sourceFileName, true);
+                    string destinationFullPath = destinationPath + "\\" + image.sourceFileName;
+                    if (!sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        File.Copy(sourcepath, destinationFullPath, true);
+                    }
                 }
             }
         }

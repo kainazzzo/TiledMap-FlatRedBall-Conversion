@@ -161,7 +161,11 @@ namespace TiledMap
 
         public static TiledMapSave FromFile(string fileName)
         {
-            return FileManager.XmlDeserialize<TiledMapSave>(fileName);
+            string oldRelativeDirectory = FileManager.RelativeDirectory;
+            FileManager.RelativeDirectory = FileManager.GetDirectory(fileName);
+            TiledMapSave tms = FileManager.XmlDeserialize<TiledMapSave>(fileName);
+            FileManager.RelativeDirectory = oldRelativeDirectory;
+            return tms;
         }
 
         private mapTileset[] tilesetField;
@@ -314,7 +318,7 @@ namespace TiledMap
 
         private string sourceField;
 
-        [System.Xml.Serialization.XmlElementAttribute("source", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [System.Xml.Serialization.XmlAttributeAttribute("source", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string source
         {
             get
@@ -324,7 +328,7 @@ namespace TiledMap
             set
             {
                 this.sourceField = value;
-                ExternalTileset xts = FileManager.XmlDeserialize<ExternalTileset>(sourceField);
+                tileset xts = FileManager.XmlDeserialize<tileset>(sourceField);
                 image = new mapTilesetImage[xts.image.Length];
                 int count = 0;
                 foreach (tilesetImage ximage in xts.image)
@@ -338,7 +342,10 @@ namespace TiledMap
                 }
 
                 this.name = xts.name;
-                
+                this.margin = xts.margin;
+                this.spacing = xts.spacing;
+                this.tileheight = xts.tileheight;
+                this.tilewidth = xts.tilewidth;
             }
         }
 
@@ -353,7 +360,14 @@ namespace TiledMap
             }
             set
             {
-                this.imageField = value;
+                if (this.imageField != null && this.imageField.Length > 0)
+                {
+                    return;
+                }
+                else
+                {
+                    this.imageField = value;
+                }
             }
         }
 
