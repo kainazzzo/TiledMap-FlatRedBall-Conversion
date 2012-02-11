@@ -329,6 +329,22 @@ namespace TiledMap
 
         private string sourceField;
 
+        [XmlIgnore]
+        public string SourceDirectory
+        {
+            get
+            {
+                if (sourceField != null && sourceField.Contains("\\"))
+                {
+                    return sourceField.Substring(0, sourceField.LastIndexOf('\\'));
+                }
+                else
+                {
+                    return ".";
+                }
+            }
+        }
+
         [System.Xml.Serialization.XmlAttributeAttribute("source", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string source
         {
@@ -339,24 +355,43 @@ namespace TiledMap
             set
             {
                 this.sourceField = value;
-                tileset xts = FileManager.XmlDeserialize<tileset>(sourceField);
-                image = new mapTilesetImage[xts.image.Length];
-                int count = 0;
-                foreach (tilesetImage ximage in xts.image)
+                if (this.sourceField != null)
                 {
-                    this.image[count] = new mapTilesetImage();
-                    this.image[count].source = xts.image[count].source;
-                    this.image[count].height = xts.image[count].height;
-                    this.image[count].width = xts.image[count].width;
+                    sourceField = sourceField.Replace("/", "\\");
+                    tileset xts = FileManager.XmlDeserialize<tileset>(sourceField);
+                    image = new mapTilesetImage[xts.image.Length];
+                    int count = 0;
+                    foreach (tilesetImage ximage in xts.image)
+                    {
+                        this.image[count] = new mapTilesetImage();
+                        this.image[count].source = xts.image[count].source;
+                        if (xts.image[count].height != 0)
+                        {
+                            this.image[count].height = xts.image[count].height;
+                        }
+                        else
+                        {
+                            this.image[count].height = xts.tileheight;
+                        }
 
-                    count++;
+                        if (xts.image[count].width != 0)
+                        {
+                            this.image[count].width = xts.image[count].width;
+                        }
+                        else
+                        {
+                            this.image[count].width = xts.tilewidth;
+                        }
+
+                        count++;
+                    }
+
+                    this.name = xts.name;
+                    this.margin = xts.margin;
+                    this.spacing = xts.spacing;
+                    this.tileheight = xts.tileheight;
+                    this.tilewidth = xts.tilewidth;
                 }
-
-                this.name = xts.name;
-                this.margin = xts.margin;
-                this.spacing = xts.spacing;
-                this.tileheight = xts.tileheight;
-                this.tilewidth = xts.tilewidth;
             }
         }
 
