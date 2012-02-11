@@ -32,7 +32,7 @@ namespace TmxToScnx
 
                 // Fix up the image sources to be relative to the newly copied ones.
                 fixupImageSources(tms);
-                tms.ToSpriteEditorScene().Save(destinationScnx);
+                tms.ToSpriteEditorScene().Save(destinationScnx.Trim());
             }
             catch (Exception ex)
             {
