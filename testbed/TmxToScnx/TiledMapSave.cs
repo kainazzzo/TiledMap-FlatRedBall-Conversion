@@ -34,7 +34,8 @@ namespace TiledMap
         enum LessOrGreaterDesired
         {
             Less,
-            Greater
+            Greater,
+            NoChange
         }
 
         public Scene ToScene(string contentManagerName)
@@ -77,39 +78,13 @@ namespace TiledMap
 
                     sprite.Texture = tileSet.image[0].source;
 
-                    // Calculate pixel coordinates in the texture sheet
-                    int leftPixelCoord = TiledMapSave.calculateXCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, spacing, margin);
-                    int topPixelCoord = TiledMapSave.calculateYCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, tileHeight, spacing, margin);
-                    int rightPixelCoord = leftPixelCoord + tileWidth;
-                    int bottomPixelCoord = topPixelCoord + tileHeight;
+                    setSpriteTextureCoordinates(gid, sprite, tileSet, imageWidth, imageHeight, tileWidth, spacing, tileHeight, margin);
+                    calculateSpriteWorldCoordinates(layercount, count, sprite, tileWidth, tileHeight);
 
-                    // Calculate relative texture coordinates based on pixel coordinates
-                    sprite.TopTextureCoordinate = GetTextureCoordinate(topPixelCoord, imageHeight, LessOrGreaterDesired.Greater);
-                    sprite.LeftTextureCoordinate = GetTextureCoordinate(leftPixelCoord, imageWidth, LessOrGreaterDesired.Greater);
-
-                    sprite.RightTextureCoordinate = GetTextureCoordinate(rightPixelCoord, imageWidth, LessOrGreaterDesired.Less);
-                    sprite.BottomTextureCoordinate = GetTextureCoordinate(bottomPixelCoord, imageHeight, LessOrGreaterDesired.Less);
-
-                    // Now calculate the world coordinates
-                    int normalizedX = count % this.width;
-                    int normalizedY = count / this.width;
-
-                    if (this.orientation == null || this.orientation.Equals("orthogonal"))
-                    {
-                        sprite.X = (normalizedX * tileWidth);
-                        sprite.Y = -(normalizedY * tileHeight);
-                    }
-                    else if (this.orientation != null && this.orientation.Equals("isometric"))
-                    {
-           
-                        sprite.Y = -(float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2;
-                        sprite.X = -(float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2));
-                    }
                     ++count;
                     sprite.ScaleX = tileWidth / 2;
                     sprite.ScaleY = tileHeight / 2;
 
-                    sprite.Z = layercount;
 
                     toReturn.SpriteList.Add(sprite);
                    
@@ -118,6 +93,55 @@ namespace TiledMap
             }
 
             return toReturn;
+        }
+
+        private void calculateSpriteWorldCoordinates(int layercount, int count, SpriteSave sprite, int tileWidth, int tileHeight)
+        {
+            int normalizedX = count % this.width;
+            int normalizedY = count / this.width;
+
+            if (this.orientation == null || this.orientation.Equals("orthogonal"))
+            {
+                sprite.X = (normalizedX * tileWidth);
+                sprite.Y = -(normalizedY * tileHeight);
+                sprite.Z = layercount;
+
+            }
+            else if (this.orientation != null && this.orientation.Equals("isometric"))
+            {
+                sprite.Y = -(float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2;
+                sprite.X = -(float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2));
+                sprite.Z = -((normalizedY + normalizedX) * .0001f) - layercount;
+            }
+        }
+
+        private void setSpriteTextureCoordinates(int gid, SpriteSave sprite, mapTileset tileSet, int imageWidth, int imageHeight, int tileWidth, int spacing, int tileHeight, int margin)
+        {
+            // Calculate pixel coordinates in the texture sheet
+            int leftPixelCoord = TiledMapSave.calculateXCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, spacing, margin);
+            int topPixelCoord = TiledMapSave.calculateYCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, tileHeight, spacing, margin);
+            int rightPixelCoord = leftPixelCoord + tileWidth;
+            int bottomPixelCoord = topPixelCoord + tileHeight;
+
+            // Calculate relative texture coordinates based on pixel coordinates
+            LessOrGreaterDesired changeVal = LessOrGreaterDesired.Greater;
+
+            if (this.orientation != null && this.orientation.Equals("isometric"))
+            {
+                changeVal = LessOrGreaterDesired.NoChange;
+            }
+
+            sprite.TopTextureCoordinate = GetTextureCoordinate(topPixelCoord, imageHeight, changeVal);
+            sprite.LeftTextureCoordinate = GetTextureCoordinate(leftPixelCoord, imageWidth, changeVal);
+
+            changeVal = LessOrGreaterDesired.Less;
+            if (this.orientation != null && this.orientation.Equals("isometric"))
+            {
+                changeVal = LessOrGreaterDesired.NoChange;
+            }
+
+            sprite.RightTextureCoordinate = GetTextureCoordinate(rightPixelCoord, imageWidth, changeVal);
+            sprite.BottomTextureCoordinate = GetTextureCoordinate(bottomPixelCoord, imageHeight, changeVal);
         }
 
         private mapTileset getTilesetForGid(int gid)
@@ -140,15 +164,19 @@ namespace TiledMap
             float asFloat = pixelCoord / (float)dimension;
 
             //const float modValue = .000001f;
-            const float modValue = .0000002f;
+            const float modValue = .000002f;
             //const float modValue = .00001f;
             if (lessOrGreaterDesired == LessOrGreaterDesired.Greater)
             {
                 return asFloat + modValue;
             }
-            else
+            else if (lessOrGreaterDesired == LessOrGreaterDesired.Less)
             {
                 return asFloat - modValue;
+            }
+            else
+            {
+                return asFloat;
             }
         }
 
@@ -173,7 +201,13 @@ namespace TiledMap
         public static TiledMapSave FromFile(string fileName)
         {
             string oldRelativeDirectory = FileManager.RelativeDirectory;
-            FileManager.RelativeDirectory = FileManager.GetDirectory(fileName);
+            try
+            {
+                FileManager.RelativeDirectory = FileManager.GetDirectory(fileName);
+            }
+            catch (Exception)
+            {
+            }
             TiledMapSave tms = FileManager.XmlDeserialize<TiledMapSave>(fileName);
             FileManager.RelativeDirectory = oldRelativeDirectory;
             return tms;

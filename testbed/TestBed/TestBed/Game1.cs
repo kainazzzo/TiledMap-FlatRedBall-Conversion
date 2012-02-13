@@ -42,11 +42,12 @@ namespace TestBed
 			Screens.ScreenManager.Start(typeof(TestBed.Screens.TestScreen).FullName);
 
             SpriteManager.Camera.BackgroundColor = Color.White;
-            TiledMapSave tms = TiledMapSave.FromFile("layertest.tmx");
+            TiledMapSave tms = TiledMapSave.FromFile("isometrictest.tmx");
             Scene s = tms.ToScene(typeof(TestBed.Screens.TestScreen).FullName);
             s.AddToManagers();
 
-            SpriteManager.Camera.Position.Z += 50;
+            SpriteManager.Camera.Position.Z += 250;
+            SpriteManager.Camera.Position.Y -= 75;
             SpriteManager.Camera.CameraCullMode = CameraCullMode.None;
             FlatRedBallServices.GraphicsOptions.TextureFilter = TextureFilter.Point;
 
