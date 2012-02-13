@@ -6,6 +6,7 @@ using TiledMap;
 using FlatRedBall;
 using FlatRedBall.Content;
 using System.IO;
+using FlatRedBall.IO;
 
 namespace TmxToScnx
 {
@@ -32,7 +33,7 @@ namespace TmxToScnx
 
                 // Fix up the image sources to be relative to the newly copied ones.
                 fixupImageSources(tms);
-                tms.ToSpriteEditorScene().Save(destinationScnx);
+                tms.ToSpriteEditorScene().Save(destinationScnx.Trim());
             }
             catch (Exception ex)
             {
@@ -69,8 +70,13 @@ namespace TmxToScnx
                 foreach (TiledMap.mapTilesetImage image in tileset.image)
                 {
                     string sourcepath = tmxPath + "\\" + image.source;
+                    if (tileset.source != null)
+                    {
+                        sourcepath = tmxPath + "\\" + tileset.SourceDirectory + "\\" + image.source;
+                    }
                     string destinationFullPath = destinationPath + "\\" + image.sourceFileName;
-                    if (!sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase))
+                    if (!sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase) && 
+                        !FileManager.GetDirectory(destinationFullPath).Equals(FileManager.GetDirectory(sourcepath)))
                     {
                         File.Copy(sourcepath, destinationFullPath, true);
                     }
