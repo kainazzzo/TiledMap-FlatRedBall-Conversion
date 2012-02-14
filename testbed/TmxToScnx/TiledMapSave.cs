@@ -48,11 +48,22 @@ namespace TiledMap
 
         public NodeNetwork ToNodeNetwork()
         {
-            NodeNetworkSave nodeNetwork = ToNodeNetworkSave();
+            return ToNodeNetwork(true, true, true);
+        }
+
+        public NodeNetwork ToNodeNetwork(bool linkHorizontally, bool linkVertically, bool linkDiagonally)
+        {
+            NodeNetworkSave nodeNetwork = ToNodeNetworkSave(linkHorizontally, linkVertically, linkDiagonally);
             return nodeNetwork.ToNodeNetwork();
         }
 
+    
         public NodeNetworkSave ToNodeNetworkSave()
+        {
+            return ToNodeNetworkSave(true, true, true);
+        }
+    
+        public NodeNetworkSave ToNodeNetworkSave(bool linkHorizontally, bool linkVertically, bool linkDiagonally)
         {
             NodeNetworkSave toReturn = new NodeNetworkSave();
 
@@ -100,7 +111,8 @@ namespace TiledMap
                 foreach(KeyValuePair<int, PositionedNodeSave> ypair in xpair.Value)
                 {
                     int y = ypair.Key;
-                    if (allNodes.ContainsKey(x - 1))
+
+                    if (linkVertically && allNodes.ContainsKey(x - 1))
                     {
                         LinkSave link = new LinkSave();
                         link.NodeLinkingTo = allNodes[x - 1][y].Name;
@@ -110,7 +122,7 @@ namespace TiledMap
                         link.NodeLinkingTo = ypair.Value.Name;
                         allNodes[x - 1][y].Links.Add(link);
                     }
-                    if (allNodes[x].ContainsKey(y - 1))
+                    if (linkHorizontally && allNodes[x].ContainsKey(y - 1))
                     {
                         LinkSave link = new LinkSave();
                         link.NodeLinkingTo = allNodes[x][y - 1].Name;
@@ -120,7 +132,7 @@ namespace TiledMap
                         link.NodeLinkingTo = ypair.Value.Name;
                         allNodes[x][y - 1].Links.Add(link);
                     }
-                    if (allNodes.ContainsKey(x - 1) && allNodes[x - 1].ContainsKey(y - 1))
+                    if (linkDiagonally && allNodes.ContainsKey(x - 1) && allNodes[x - 1].ContainsKey(y - 1))
                     {
                         LinkSave link = new LinkSave();
                         link.NodeLinkingTo = allNodes[x - 1][y - 1].Name;
@@ -130,7 +142,7 @@ namespace TiledMap
                         link.NodeLinkingTo = ypair.Value.Name;
                         allNodes[x - 1][y - 1].Links.Add(link);
                     }
-                    if (allNodes.ContainsKey(x + 1) && allNodes[x + 1].ContainsKey(y - 1))
+                    if (linkDiagonally && allNodes.ContainsKey(x + 1) && allNodes[x + 1].ContainsKey(y - 1))
                     {
                         LinkSave link = new LinkSave();
                         link.NodeLinkingTo = allNodes[x + 1][y - 1].Name;
