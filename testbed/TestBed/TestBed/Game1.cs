@@ -15,6 +15,7 @@ using FlatRedBall.Utilities;
 using TestBed.Screens;
 using FlatRedBall.IO;
 using TiledMap;
+using FlatRedBall.AI.Pathfinding;
 
 namespace TestBed
 {
@@ -45,6 +46,9 @@ namespace TestBed
             TiledMapSave tms = TiledMapSave.FromFile("isometrictest.tmx");
             Scene s = tms.ToScene(typeof(TestBed.Screens.TestScreen).FullName);
             s.AddToManagers();
+
+            NodeNetwork nodeNetwork = tms.ToNodeNetwork();
+            nodeNetwork.Visible = true;
 
             SpriteManager.Camera.Position.Z += 250;
             SpriteManager.Camera.Position.Y -= 75;
