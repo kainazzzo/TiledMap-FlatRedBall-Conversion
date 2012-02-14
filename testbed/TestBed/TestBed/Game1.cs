@@ -43,12 +43,7 @@ namespace TestBed
 			Screens.ScreenManager.Start(typeof(TestBed.Screens.TestScreen).FullName);
 
             SpriteManager.Camera.BackgroundColor = Color.White;
-            TiledMapSave tms = TiledMapSave.FromFile("isometrictest.tmx");
-            Scene s = tms.ToScene(typeof(TestBed.Screens.TestScreen).FullName);
-            s.AddToManagers();
-
-            NodeNetwork nodeNetwork = tms.ToNodeNetwork();
-            nodeNetwork.Visible = true;
+            
 
             SpriteManager.Camera.Position.Z += 250;
             SpriteManager.Camera.Position.Y -= 75;
@@ -60,7 +55,13 @@ namespace TestBed
 
         protected override void LoadContent()
         {
-            
+            TiledMapSave tms = TiledMapSave.FromFile("isometrictest.tmx");
+            Scene s = tms.ToScene(typeof(TestBed.Screens.TestScreen).FullName);
+            s.AddToManagers();
+
+            NodeNetwork nodeNetwork = tms.ToNodeNetwork();
+            nodeNetwork.Visible = true;
+
             base.LoadContent();
         }
         protected override void Update(GameTime gameTime)
