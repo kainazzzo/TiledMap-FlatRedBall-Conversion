@@ -17,6 +17,7 @@ using FlatRedBall.IO;
 using TiledMap;
 using FlatRedBall.AI.Pathfinding;
 using FlatRedBall.Math.Geometry;
+using FlatRedBall.Content;
 
 namespace TestBed
 {
@@ -60,11 +61,14 @@ namespace TestBed
             Scene s = tms.ToScene(typeof(TestBed.Screens.TestScreen).FullName);
             s.AddToManagers();
 
-            tms.ToSpriteEditorScene().Save("isometrictest.scnx");
+            //SpriteEditorScene sec = SpriteEditorScene.FromScene(s);
+            //sec.Save("isometrictest.scnx");
 
-            ShapeCollection sc = tms.ToShapeCollection("test");
-            sc.AddToManagers();
+            SpriteEditorScene sec = tms.ToSpriteEditorScene();
 
+            sec.Save("isometrictest.scnx");
+
+          
             base.LoadContent();
         }
         protected override void Update(GameTime gameTime)

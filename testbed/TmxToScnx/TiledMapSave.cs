@@ -202,6 +202,7 @@ namespace TiledMap
         public SpriteEditorScene ToSpriteEditorScene()
         {
             SpriteEditorScene toReturn = new SpriteEditorScene();
+            toReturn.CoordinateSystem = FlatRedBall.Math.CoordinateSystem.RightHanded;
 
             // TODO: Somehow add all layers separately
 
@@ -266,7 +267,7 @@ namespace TiledMap
             {
                 y = -(float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2;
                 x = -(float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2));
-                z = -((normalizedY * layerWidth + normalizedX) * .000001f) + layercount;
+                z = ((normalizedY * layerWidth + normalizedX) * .000001f) + layercount;
             }
             else
             {

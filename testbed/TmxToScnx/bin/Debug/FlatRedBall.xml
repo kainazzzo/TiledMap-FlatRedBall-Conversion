@@ -2489,6 +2489,12 @@
             This is *NOT* secure, keys in code can easily be obtained by disassembling the game.
             </remarks>
         </member>
+        <member name="M:FlatRedBall.FlatRedBallServices.InitializeCommandLine(Microsoft.Xna.Framework.Game)">
+            <summary>
+            Used to initialize FlatRedBall without rendering anything to the screen
+            </summary>
+            <param name="game">The game</param>
+        </member>
         <member name="M:FlatRedBall.FlatRedBallServices.InitializeFlatRedBall(Microsoft.Xna.Framework.Game,Microsoft.Xna.Framework.GraphicsDeviceManager)">
             <summary>
             Used to initialize FlatRedBall with a game
@@ -2531,6 +2537,12 @@
             <param name="oldTexture">Reference to the old texture</param>
             <param name="newTexture">Reference to the new texture</param>
             <param name="contentManagerName">The name of the content manager containing the texture</param>
+        </member>
+        <member name="M:FlatRedBall.FlatRedBallServices.UpdateCommandLine(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            The update method for command line games.  Does not render anything to the screen
+            </summary>
+            <param name="game">The GameTime</param>
         </member>
         <member name="P:FlatRedBall.FlatRedBallServices.EncryptionSaltValue">
             <summary>
@@ -8881,6 +8893,15 @@
             <seealso cref="T:FlatRedBall.Gui.IInputReceiver"/>
             </remarks>
         </member>
+        <member name="M:FlatRedBall.Input.Keyboard.KeyTyped(Microsoft.Xna.Framework.Input.Keys)">
+            <summary>
+            Returns whether a key was "typed".  A type happens either when the user initially pushes a key down, or when
+            it gets typed again from holding the key down.  This works similar to how the keyboard types in text editors
+            when holding down a key.
+            </summary>
+            <param name="key">The key to check for.</param>
+            <returns>Whether the key was typed.</returns>
+        </member>
         <member name="F:FlatRedBall.Input.Mouse.mXAt100Units">
             <summary>
             The camera-relative X coordinate position of the Mouse at 100 units away.
@@ -8973,7 +8994,7 @@
             The time associated with the object.
             </summary>
         </member>
-        <member name="P:FlatRedBall.Input.Recording.KeyboardRecord.TimePlaybackStarted">
+        <member name="P:FlatRedBall.Input.Recording.InputRecordBase`2.TimePlaybackStarted">
             <summary>
             Gets and sets the time that playback started.  Setting this value simulates changing
             when the playback started.
@@ -11143,6 +11164,29 @@
             <remarks>
             This class is used when loading GIF files to an AnimationChain.
             </remarks>
+        </member>
+        <member name="T:FlatRedBall.IO.HttpManager">
+            <summary>This class let's you easily make HTTP requests and, if required,
+            deserialize the results into local strongly typed objects. Callbacks called
+            on separate thread.</summary>
+        </member>
+        <member name="M:FlatRedBall.IO.HttpManager.PerformHttpGet(System.String,System.Action{System.String,System.Int32},System.Action{System.Exception,System.Int32})">
+            <summary>Simple HTTP Get, gives you the string result</summary>
+        </member>
+        <member name="M:FlatRedBall.IO.HttpManager.PerformHttpGet(System.Uri,System.Action{System.String,System.Int32},System.Action{System.Exception,System.Int32})">
+            <summary>Simple HTTP Get, gives you the string result</summary>
+        </member>
+        <member name="M:FlatRedBall.IO.HttpManager.PerformHttpGetAsXml``1(System.String,System.Action{``0,System.Int32},System.Action{System.Exception,System.Int32})">
+            <summary>Does an HTTP Get, and deserializes the XML result (assumes UTF8) with the File Manager Deserializer.</summary>
+        </member>
+        <member name="M:FlatRedBall.IO.HttpManager.PerformHttpGetAsXml``1(System.Uri,System.Action{``0,System.Int32},System.Action{System.Exception,System.Int32})">
+            <summary>Does an HTTP Get, and deserializes the XML result (assumes UTF8) with the File Manager Deserializer.</summary>
+        </member>
+        <member name="M:FlatRedBall.IO.HttpManager.PerformHttpGetAsJson``1(System.String,System.Action{``0,System.Int32},System.Action{System.Exception,System.Int32})">
+            <summary>Does an HTTP Get, and deserializes the JSON result (assumes UTF8) with the .</summary>
+        </member>
+        <member name="M:FlatRedBall.IO.HttpManager.PerformHttpGetAsJson``1(System.Uri,System.Action{``0,System.Int32},System.Action{System.Exception,System.Int32})">
+            <summary>Does an HTTP Get, and deserializes the JSON result (assumes UTF8) with the .</summary>
         </member>
         <member name="T:ICSharpCode.SharpZipLib.Checksums.Adler32">
             <summary>
@@ -15516,9 +15560,9 @@
         </member>
         <member name="M:FlatRedBall.TimeManager.Update(Microsoft.Xna.Framework.GameTime)">
             <summary>
-            Allows the game component to update itself.
+            Performs every-frame logic to update timing values such as CurrentTime and SecondDifference.  If this method is not called, CurrentTime will not advance.
             </summary>
-            <param name="time">Provides a snapshot of timing values.</param>
+            <param name="time">The GameTime value provided by the XNA Game class.</param>
         </member>
         <member name="F:FlatRedBall.Utilities.BackStackBehavior.Move">
             <summary>Places the current screen onto the back stack, and moves to the next one.</summary>
