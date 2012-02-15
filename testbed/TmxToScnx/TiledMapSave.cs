@@ -267,7 +267,7 @@ namespace TiledMap
             {
                 y = -(float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2;
                 x = -(float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2));
-                z = ((normalizedY * layerWidth + normalizedX) * .000001f) + layercount;
+                z = -((normalizedY * layerWidth + normalizedX) * .000001f) + layercount;
             }
             else
             {
@@ -389,6 +389,8 @@ namespace TiledMap
 
         private int tileheightField;
 
+        private mapObjectgroup[] objectgroupField;
+
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("tileset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public mapTileset[] tileset
@@ -414,6 +416,20 @@ namespace TiledMap
             set
             {
                 this.layerField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("objectgroup", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public mapObjectgroup[] objectgroup
+        {
+            get
+            {
+                return this.objectgroupField;
+            }
+            set
+            {
+                this.objectgroupField = value;
             }
         }
 
@@ -982,6 +998,190 @@ namespace TiledMap
         }
 
         public int length { get; set; }
+    }
+
+    /// <remarks/>
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class mapObjectgroup
+    {
+
+        private mapObjectgroupObject[] objectField;
+
+        private string nameField;
+
+        private int widthField;
+
+        private int heightField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("object", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public mapObjectgroupObject[] @object
+        {
+            get
+            {
+                return this.objectField;
+            }
+            set
+            {
+                this.objectField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string name
+        {
+            get
+            {
+                return this.nameField;
+            }
+            set
+            {
+                this.nameField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int width
+        {
+            get
+            {
+                return this.widthField;
+            }
+            set
+            {
+                this.widthField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int height
+        {
+            get
+            {
+                return this.heightField;
+            }
+            set
+            {
+                this.heightField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class mapObjectgroupObject
+    {
+
+        private mapObjectgroupObjectPolygon[] polygonField;
+
+        private mapObjectgroupObjectPolyline[] polylineField;
+
+        private int xField;
+
+        private int yField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("polygon", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public mapObjectgroupObjectPolygon[] polygon
+        {
+            get
+            {
+                return this.polygonField;
+            }
+            set
+            {
+                this.polygonField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("polyline", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public mapObjectgroupObjectPolyline[] polyline
+        {
+            get
+            {
+                return this.polylineField;
+            }
+            set
+            {
+                this.polylineField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int x
+        {
+            get
+            {
+                return this.xField;
+            }
+            set
+            {
+                this.xField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int y
+        {
+            get
+            {
+                return this.yField;
+            }
+            set
+            {
+                this.yField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class mapObjectgroupObjectPolygon
+    {
+
+        private string pointsField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string points
+        {
+            get
+            {
+                return this.pointsField;
+            }
+            set
+            {
+                this.pointsField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class mapObjectgroupObjectPolyline
+    {
+
+        private string pointsField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string points
+        {
+            get
+            {
+                return this.pointsField;
+            }
+            set
+            {
+                this.pointsField = value;
+            }
+        }
     }
 
     /// <remarks/>
