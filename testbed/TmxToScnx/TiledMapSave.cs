@@ -58,34 +58,96 @@ namespace TiledMap
         {
             ShapeCollectionSave shapes = new ShapeCollectionSave();
 
-            PolygonSave polygon = new PolygonSave();
-            polygon.X = 2336;
-            polygon.Y = -2688;
-            polygon.Z = 1;
 
-            polygon.Points = new Point[5];
+            if (this.objectgroup == null || this.objectgroup.Length == 0 || string.IsNullOrEmpty(layerName))
+            {
+                return shapes;
+            }
 
-            polygon.Points[0].X = 0;
-            polygon.Points[0].Y = 0;
+            foreach (mapObjectgroup group in this.objectgroup)
+            {
+                if (!string.IsNullOrEmpty(group.name) && group.name.Equals(layerName))
+                {
+                    foreach (mapObjectgroupObject @object in group.@object)
+                    {
+                        if (@object.polygon != null)
+                        {
+                            foreach (mapObjectgroupObjectPolygon polygon in @object.polygon)
+                            {
+                                PolygonSave polygonSave = convertTMXObjectToFRBPolygonSave(group.width, group.height,
+                                    @object.x, @object.y, polygon.points, true);
+                                if (polygonSave != null)
+                                {
+                                    shapes.PolygonSaves.Add(polygonSave);
+                                }
+                            }
+                        }
 
-            polygon.Points[1].X = 288;
-            polygon.Points[1].Y = 0;
-
-            polygon.Points[2].X = 288;
-            polygon.Points[2].Y = -192;
-
-            polygon.Points[3].X = 0;
-            polygon.Points[3].Y = -192;
-
-            polygon.Points[4].X = 0;
-            polygon.Points[4].Y = 0;
-
-            shapes.FileName = "tiletest.schx";
-
-            shapes.PolygonSaves.Add(polygon);
-
+                        if (@object.polyline != null)
+                        {
+                            foreach (mapObjectgroupObjectPolyline polyline in @object.polyline)
+                            {
+                                PolygonSave polygonSave = convertTMXObjectToFRBPolygonSave(group.width, group.height,
+                                    @object.x, @object.y, polyline.points, false);
+                                if (polygonSave != null)
+                                {
+                                    shapes.PolygonSaves.Add(polygonSave);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             return shapes;
         }
+
+        private PolygonSave convertTMXObjectToFRBPolygonSave(int width, int height, int x, int y, string points, bool connectBackToStart)
+        {
+            if (string.IsNullOrEmpty(points))
+            {
+                return null;
+            }
+            PolygonSave polygon = new PolygonSave();
+            string[] pointString = points.Split(" ".ToCharArray());
+
+            polygon.X = -x / (float)width;
+            polygon.Y = -y / (float)height;
+            polygon.Points = new Point[pointString.Length + (connectBackToStart ? 1 : 0)];
+
+            int count = 0;
+            foreach (string pointStr in pointString)
+            {
+                string[] xy = pointStr.Split(",".ToCharArray());
+                int relativeX = -Convert.ToInt32(xy[0]);
+                int relativeY = -Convert.ToInt32(xy[1]);
+
+                int normalizedX = relativeX / width;
+                int normalizedY = relativeY / height;
+
+                polygon.Points[count].X = (float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2)) / width;
+                polygon.Points[count].Y = (float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2 / height;
+                
+                ++count;
+            }
+
+            if (connectBackToStart)
+            {
+                string[] xy = pointString[0].Split(",".ToCharArray());
+                int relativeX = -Convert.ToInt32(xy[0]);
+                int relativeY = -Convert.ToInt32(xy[1]);
+
+                int normalizedX = relativeX / width;
+                int normalizedY = relativeY / height;
+
+                polygon.Points[count].X = (float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2)) / width;
+                polygon.Points[count].Y = (float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2 / height;
+                
+            }
+
+            return polygon;
+        }
+
+       
 
         public NodeNetwork ToNodeNetwork()
         {
@@ -267,7 +329,7 @@ namespace TiledMap
             {
                 y = -(float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2;
                 x = -(float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2));
-                z = -((normalizedY * layerWidth + normalizedX) * .000001f) + layercount;
+                z = ((normalizedY * layerWidth + normalizedX) * .000001f) + layercount;
             }
             else
             {

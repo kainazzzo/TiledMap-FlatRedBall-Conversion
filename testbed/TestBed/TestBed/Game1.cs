@@ -18,6 +18,7 @@ using TiledMap;
 using FlatRedBall.AI.Pathfinding;
 using FlatRedBall.Math.Geometry;
 using FlatRedBall.Content;
+using FlatRedBall.Content.Math.Geometry;
 
 namespace TestBed
 {
@@ -68,6 +69,10 @@ namespace TestBed
 
             sec.Save("isometrictest.scnx");
 
+            ShapeCollectionSave scs = tms.ToShapeCollectionSave("nonodes");
+            scs.Save("polygons.schx");
+            ShapeCollection sc = scs.ToShapeCollection();
+            sc.AddToManagers();
           
             base.LoadContent();
         }
