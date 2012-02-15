@@ -71,7 +71,7 @@ namespace TestBed
 
             ShapeCollectionSave scs = tms.ToShapeCollectionSave("nonodes");
             scs.Save("polygons.schx");
-            ShapeCollection sc = scs.ToShapeCollection();
+            ShapeCollection sc = tms.ToShapeCollection("nonodes");
             sc.AddToManagers();
           
             base.LoadContent();
