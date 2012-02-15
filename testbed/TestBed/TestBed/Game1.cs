@@ -16,6 +16,7 @@ using TestBed.Screens;
 using FlatRedBall.IO;
 using TiledMap;
 using FlatRedBall.AI.Pathfinding;
+using FlatRedBall.Math.Geometry;
 
 namespace TestBed
 {
@@ -42,7 +43,7 @@ namespace TestBed
 
 			Screens.ScreenManager.Start(typeof(TestBed.Screens.TestScreen).FullName);
 
-            SpriteManager.Camera.BackgroundColor = Color.White;
+            SpriteManager.Camera.BackgroundColor = Color.Black;
             
 
             SpriteManager.Camera.Position.Z += 250;
@@ -59,8 +60,10 @@ namespace TestBed
             Scene s = tms.ToScene(typeof(TestBed.Screens.TestScreen).FullName);
             s.AddToManagers();
 
-            NodeNetwork nodeNetwork = tms.ToNodeNetwork();
-            nodeNetwork.Visible = true;
+            tms.ToSpriteEditorScene().Save("isometrictest.scnx");
+
+            ShapeCollection sc = tms.ToShapeCollection("test");
+            sc.AddToManagers();
 
             base.LoadContent();
         }
@@ -70,19 +73,19 @@ namespace TestBed
 
             if (keyboardState.IsKeyDown(Keys.Up))
             {
-                SpriteManager.Camera.Y += 3;
+                SpriteManager.Camera.Y += 10;
             }
             if (keyboardState.IsKeyDown(Keys.Down))
             {
-                SpriteManager.Camera.Y -= 3;
+                SpriteManager.Camera.Y -= 10;
             }
             if (keyboardState.IsKeyDown(Keys.Left))
             {
-                SpriteManager.Camera.X -= 3;
+                SpriteManager.Camera.X -= 10;
             }
             if (keyboardState.IsKeyDown(Keys.Right))
             {
-                SpriteManager.Camera.X += 3;
+                SpriteManager.Camera.X += 10;
             }
             if (keyboardState.IsKeyDown(Keys.OemPlus))
             {
