@@ -49,15 +49,15 @@ namespace TiledMap
             return scene.ToScene(contentManagerName);
         }
 
-        public ShapeCollectionSave ToShapeCollectionSave(string layerName)
-        {
-            ShapeCollectionSave scs = ShapeCollectionSave.FromShapeCollection(ToShapeCollection(layerName));
-            return scs;
-        }
-
         public ShapeCollection ToShapeCollection(string layerName)
         {
-            ShapeCollection shapes = new ShapeCollection();
+            ShapeCollectionSave scs = ToShapeCollectionSave(layerName);
+            return scs.ToShapeCollection();
+        }
+
+        public ShapeCollectionSave ToShapeCollectionSave(string layerName)
+        {
+            ShapeCollectionSave shapes = new ShapeCollectionSave();
 
 
             if (this.objectgroup == null || this.objectgroup.Length == 0 || string.IsNullOrEmpty(layerName))
@@ -75,11 +75,11 @@ namespace TiledMap
                         {
                             foreach (mapObjectgroupObjectPolygon polygon in @object.polygon)
                             {
-                                Polygon p = convertTMXObjectToFRBPolygonSave(group.width, group.height,
+                                PolygonSave p = convertTMXObjectToFRBPolygonSave(group.width, group.height,
                                     @object.x, @object.y, polygon.points, true);
                                 if (p != null)
                                 {
-                                    shapes.Polygons.Add(p);
+                                    shapes.PolygonSaves.Add(p);
                                 }
                             }
                         }
@@ -88,11 +88,11 @@ namespace TiledMap
                         {
                             foreach (mapObjectgroupObjectPolyline polyline in @object.polyline)
                             {
-                                Polygon p = convertTMXObjectToFRBPolygonSave(group.width, group.height,
+                                PolygonSave p = convertTMXObjectToFRBPolygonSave(group.width, group.height,
                                     @object.x, @object.y, polyline.points, false);
                                 if (p != null)
                                 {
-                                    shapes.Polygons.Add(p);
+                                    shapes.PolygonSaves.Add(p);
                                 }
                             }
                         }
@@ -102,32 +102,39 @@ namespace TiledMap
             return shapes;
         }
 
-        private Polygon convertTMXObjectToFRBPolygonSave(int width, int height, int x, int y, string points, bool connectBackToStart)
+        private PolygonSave convertTMXObjectToFRBPolygonSave(int width, int height, int x, int y, string points, bool connectBackToStart)
         {
             if (string.IsNullOrEmpty(points))
             {
                 return null;
             }
-            Polygon polygon = new Polygon();
+            PolygonSave polygon = new PolygonSave();
             string[] pointString = points.Split(" ".ToCharArray());
+            float z;
+            float newx;
+            float newy;
 
-            polygon.X = -x / (float)width;
-            polygon.Y = -y / (float)height;
+            calculateWorldCoordinates(0, x / tileheight, y / tileheight, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
+            polygon.X = newx;
+            polygon.Y = newy;
             Point[] pointsArr = new Point[pointString.Length + (connectBackToStart ? 1 : 0)];
 
             int count = 0;
             foreach (string pointStr in pointString)
             {
                 string[] xy = pointStr.Split(",".ToCharArray());
-                int relativeX = -Convert.ToInt32(xy[0]);
-                int relativeY = -Convert.ToInt32(xy[1]);
+                int relativeX = Convert.ToInt32(xy[0]);
+                int relativeY = Convert.ToInt32(xy[1]);
 
-                int normalizedX = relativeX / width;
-                int normalizedY = relativeY / height;
+                int normalizedX = relativeX / tileheight;
+                int normalizedY = relativeY / tileheight;
 
-                pointsArr[count].X = (float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2)) / width;
-                pointsArr[count].Y = (float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2 / height;
-                
+                calculateWorldCoordinates(0, normalizedX, normalizedY, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
+
+                pointsArr[count].X = newx;
+                pointsArr[count].Y = newy;
+              
+
                 
                 ++count;
             }
@@ -135,21 +142,18 @@ namespace TiledMap
             if (connectBackToStart)
             {
                 string[] xy = pointString[0].Split(",".ToCharArray());
-                int relativeX = -Convert.ToInt32(xy[0]);
-                int relativeY = -Convert.ToInt32(xy[1]);
+                int relativeX = Convert.ToInt32(xy[0]);
+                int relativeY = Convert.ToInt32(xy[1]);
 
-                int normalizedX = relativeX / width;
-                int normalizedY = relativeY / height;
+                int normalizedX = relativeX / tileheight;
+                int normalizedY = relativeY / tileheight;
 
-                pointsArr[count].X = (float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2)) / width;
-                pointsArr[count].Y = (float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2 / height;
-                
+                calculateWorldCoordinates(0, normalizedX, normalizedY, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
+
+                pointsArr[count].X = newx;
+                pointsArr[count].Y = newy;                
             }
             polygon.Points = pointsArr;
-
-            // TODO: I think I need to calculate the polygon without transforming the coordinates, and then do the isometric transformation
-            polygon.X -= polygon.BoundingRadius / width;
-            polygon.Y -= polygon.BoundingRadius / height;
 
             return polygon;
         }
@@ -324,7 +328,11 @@ namespace TiledMap
         {
             int normalizedX = count % this.width;
             int normalizedY = count / this.width;
+            calculateWorldCoordinates(layercount, normalizedX, normalizedY, tilewidth, tileheight, layerWidth, out x, out y, out z);
+        }
 
+        private void calculateWorldCoordinates(int layercount, int normalizedX, int normalizedY, int tileWidth, int tileHeight, int layerWidth, out float x, out float y, out float z)
+        {
             if (this.orientation == null || this.orientation.Equals("orthogonal"))
             {
                 x = (normalizedX * tileWidth);
