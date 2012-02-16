@@ -29,11 +29,15 @@ namespace TmxToScnx
                 // Convert once in case of any exceptions
                 SpriteEditorScene save = tms.ToSpriteEditorScene();
 
+                Console.WriteLine(string.Format("{0} converted successfully.", sourceTmx));
                 copyTmxTilesetImagesToDestination(sourceTmx, destinationScnx, tms);
 
                 // Fix up the image sources to be relative to the newly copied ones.
                 fixupImageSources(tms);
+
+                Console.WriteLine(string.Format("Saving \"{0}\".", destinationScnx));
                 tms.ToSpriteEditorScene().Save(destinationScnx.Trim());
+                Console.WriteLine("Done.");
             }
             catch (Exception ex)
             {
@@ -43,6 +47,7 @@ namespace TmxToScnx
 
         private static void fixupImageSources(TiledMapSave tms)
         {
+            Console.WriteLine("Fixing up tileset relative paths");
             foreach (TiledMap.mapTileset tileset in tms.tileset)
             {
                 foreach (TiledMap.mapTilesetImage image in tileset.image)
@@ -78,6 +83,7 @@ namespace TmxToScnx
                     if (!sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase) && 
                         !FileManager.GetDirectory(destinationFullPath).Equals(FileManager.GetDirectory(sourcepath)))
                     {
+                        Console.WriteLine(string.Format("Copying \"{0}\" to \"{1}\".", sourcepath, destinationFullPath));
                         File.Copy(sourcepath, destinationFullPath, true);
                     }
                 }

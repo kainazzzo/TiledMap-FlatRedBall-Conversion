@@ -51,14 +51,14 @@ namespace TestBed
             SpriteManager.Camera.Position.Z += 250;
             SpriteManager.Camera.Position.Y -= 75;
             SpriteManager.Camera.CameraCullMode = CameraCullMode.None;
-            FlatRedBallServices.GraphicsOptions.TextureFilter = TextureFilter.Point;
+            //FlatRedBallServices.GraphicsOptions.TextureFilter = TextureFilter.Point;
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            TiledMapSave tms = TiledMapSave.FromFile("isometrictest.tmx");
+            TiledMapSave tms = TiledMapSave.FromFile("desert.tmx");
             Scene s = tms.ToScene(typeof(TestBed.Screens.TestScreen).FullName);
             s.AddToManagers();
 
@@ -67,7 +67,7 @@ namespace TestBed
 
             SpriteEditorScene sec = tms.ToSpriteEditorScene();
 
-            sec.Save("isometrictest.scnx");
+            sec.Save("desert.scnx");
 
             ShapeCollectionSave scs = tms.ToShapeCollectionSave("nonodes");
             scs.Save("polygons.schx");

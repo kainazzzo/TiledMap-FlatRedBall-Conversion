@@ -113,8 +113,10 @@ namespace TiledMap
             float z;
             float newx;
             float newy;
-
-            calculateWorldCoordinates(0, x / tileheight, y / tileheight, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
+            float fx = x - (tilewidth / 2.0f);
+            float fy = y - (tileheight / 2.0f);
+            
+            calculateWorldCoordinates(0, fx / (float)tileheight, fy / (float)tileheight, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
             polygon.X = newx;
             polygon.Y = newy;
             Point[] pointsArr = new Point[pointString.Length + (connectBackToStart ? 1 : 0)];
@@ -126,8 +128,8 @@ namespace TiledMap
                 int relativeX = Convert.ToInt32(xy[0]);
                 int relativeY = Convert.ToInt32(xy[1]);
 
-                int normalizedX = relativeX / tileheight;
-                int normalizedY = relativeY / tileheight;
+                float normalizedX = relativeX / (float)tileheight;
+                float normalizedY = relativeY / (float)tileheight;
 
                 calculateWorldCoordinates(0, normalizedX, normalizedY, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
 
@@ -145,8 +147,8 @@ namespace TiledMap
                 int relativeX = Convert.ToInt32(xy[0]);
                 int relativeY = Convert.ToInt32(xy[1]);
 
-                int normalizedX = relativeX / tileheight;
-                int normalizedY = relativeY / tileheight;
+                float normalizedX = relativeX / (float)tileheight;
+                float normalizedY = relativeY / (float)tileheight;
 
                 calculateWorldCoordinates(0, normalizedX, normalizedY, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
 
@@ -331,7 +333,7 @@ namespace TiledMap
             calculateWorldCoordinates(layercount, normalizedX, normalizedY, tilewidth, tileheight, layerWidth, out x, out y, out z);
         }
 
-        private void calculateWorldCoordinates(int layercount, int normalizedX, int normalizedY, int tileWidth, int tileHeight, int layerWidth, out float x, out float y, out float z)
+        private void calculateWorldCoordinates(int layercount, float normalizedX, float normalizedY, int tileWidth, int tileHeight, int layerWidth, out float x, out float y, out float z)
         {
             if (this.orientation == null || this.orientation.Equals("orthogonal"))
             {
