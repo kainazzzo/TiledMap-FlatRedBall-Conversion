@@ -235,42 +235,47 @@ namespace TiledMap
                 }
                 setupNodeLinks(linkHorizontally, linkVertically, linkDiagonally, allNodes);
 
-                ShapeCollection sc = this.ToShapeCollection(layer.name + " node");
-                if (sc != null && sc.Polygons != null)
-                {
-                    foreach (Polygon polygon in sc.Polygons)
-                    {
-                        polygon.ForceUpdateDependencies();
-                    }
-                    List<PositionedNode> nodesToRemove = new List<PositionedNode>();
-                    foreach (KeyValuePair<int, Dictionary<int, PositionedNode>> xpair in allNodes)
-                    {
-                        int x = xpair.Key;
-                        foreach (KeyValuePair<int, PositionedNode> ypair in xpair.Value)
-                        {
-                            PositionedNode node = ypair.Value;
-                            AxisAlignedRectangle rectangle = new AxisAlignedRectangle();
-                            rectangle.Position = node.Position;
-                            rectangle.ScaleX = 1;
-                            rectangle.ScaleY = 1;
-
-                            if (sc.CollideAgainst(rectangle))
-                            {
-                                nodesToRemove.Add(node);
-                            }
-                        }
-                    }
-                    foreach (PositionedNode node in nodesToRemove)
-                    {
-                        toReturn.Remove(node);
-                    }
-                    toReturn.UpdateShapes();
-                }
+                removeExcludedNodesViaPolygonLayer(toReturn, layer, allNodes);
 
                 ++layercount;
             }
+            toReturn.UpdateShapes();
 
             return toReturn;
+        }
+
+        private void removeExcludedNodesViaPolygonLayer(NodeNetwork toReturn, mapLayer layer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        {
+            ShapeCollection sc = this.ToShapeCollection(layer.name + " node");
+            if (sc != null && sc.Polygons != null)
+            {
+                foreach (Polygon polygon in sc.Polygons)
+                {
+                    polygon.ForceUpdateDependencies();
+                }
+                List<PositionedNode> nodesToRemove = new List<PositionedNode>();
+                foreach (KeyValuePair<int, Dictionary<int, PositionedNode>> xpair in allNodes)
+                {
+                    int x = xpair.Key;
+                    foreach (KeyValuePair<int, PositionedNode> ypair in xpair.Value)
+                    {
+                        PositionedNode node = ypair.Value;
+                        AxisAlignedRectangle rectangle = new AxisAlignedRectangle();
+                        rectangle.Position = node.Position;
+                        rectangle.ScaleX = 1;
+                        rectangle.ScaleY = 1;
+
+                        if (sc.CollideAgainst(rectangle))
+                        {
+                            nodesToRemove.Add(node);
+                        }
+                    }
+                }
+                foreach (PositionedNode node in nodesToRemove)
+                {
+                    toReturn.Remove(node);
+                }
+            }
         }
 
         private static void setupNodeLinks(bool linkHorizontally, bool linkVertically, bool linkDiagonally, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
