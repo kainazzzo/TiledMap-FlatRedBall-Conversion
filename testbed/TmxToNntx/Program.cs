@@ -8,6 +8,8 @@ using FlatRedBall.Content;
 using System.IO;
 using FlatRedBall.IO;
 using FlatRedBall.Content.AI.Pathfinding;
+using FlatRedBall.Math.Geometry;
+using FlatRedBall.AI.Pathfinding;
 
 namespace TmxToScnx
 {
@@ -30,7 +32,7 @@ namespace TmxToScnx
                 // Convert once in case of any exceptions
                 NodeNetworkSave save = tms.ToNodeNetworkSave();
 
-                save.Save(destinationNntx);
+                save.Save(destinationNntx.Trim());
             }
             catch (Exception ex)
             {

@@ -173,10 +173,10 @@ namespace TiledMap
             return ToNodeNetwork(true, true, true);
         }
 
-        public NodeNetwork ToNodeNetwork(bool linkHorizontally, bool linkVertically, bool linkDiagonally)
+        public NodeNetworkSave ToNodeNetworkSave(bool linkHorizontally, bool linkVertically, bool linkDiagonally)
         {
-            NodeNetworkSave nodeNetwork = ToNodeNetworkSave(linkHorizontally, linkVertically, linkDiagonally);
-            return nodeNetwork.ToNodeNetwork();
+            NodeNetwork nodeNetwork = ToNodeNetwork(linkHorizontally, linkVertically, linkDiagonally);
+            return NodeNetworkSave.FromNodeNetwork(nodeNetwork);
         }
 
     
@@ -185,15 +185,16 @@ namespace TiledMap
             return ToNodeNetworkSave(true, true, true);
         }
     
-        public NodeNetworkSave ToNodeNetworkSave(bool linkHorizontally, bool linkVertically, bool linkDiagonally)
+        public NodeNetwork ToNodeNetwork(bool linkHorizontally, bool linkVertically, bool linkDiagonally)
         {
-            NodeNetworkSave toReturn = new NodeNetworkSave();
+            NodeNetwork toReturn = new NodeNetwork();
 
-            Dictionary<int, Dictionary<int, PositionedNodeSave>> allNodes = new Dictionary<int, Dictionary<int, PositionedNodeSave>>();
 
             int layercount = 0;
             foreach (mapLayer layer in this.layer)
             {
+                Dictionary<int, Dictionary<int, PositionedNode>> allNodes = new Dictionary<int, Dictionary<int, PositionedNode>>();
+
                 int count = 0;
                 foreach (int gid in layer.data[0].tiles)
                 {
@@ -205,79 +206,100 @@ namespace TiledMap
                         continue;
                     }
 
-                    PositionedNodeSave node = new PositionedNodeSave();
+                    PositionedNode node = new PositionedNode();
 
                     int tileWidth = tileSet.tilewidth;
                     int tileHeight = tileSet.tileheight;
                     int X = count % this.width;
                     int Y = count / this.width;
 
-                    calculateWorldCoordinates(layercount, count, tilewidth, tileheight, layer.width, out node.X, out node.Y, out node.Z);
+                    float nodex;
+                    float nodey;
+                    float nodez;
+
+                    calculateWorldCoordinates(layercount, count, tilewidth, tileheight, layer.width, out nodex, out nodey, out nodez);
+
+                    node.X = nodex;
+                    node.Y = nodey;
+                    node.Z = nodez;
 
                     if (!allNodes.ContainsKey(X))
                     {
-                        allNodes[X] = new Dictionary<int, PositionedNodeSave>();
+                        allNodes[X] = new Dictionary<int, PositionedNode>();
                     }
 
                     allNodes[X][Y] = node;
                     node.Name = string.Format("Node {0}", count);
-                    toReturn.PositionedNodes.Add(node);
+                    toReturn.AddNode(node);
                     ++count;
                 }
+                setupNodeLinks(linkHorizontally, linkVertically, linkDiagonally, allNodes);
+
+                ShapeCollection sc = this.ToShapeCollection(layer.name + " node");
+                if (sc != null && sc.Polygons != null)
+                {
+                    foreach (Polygon polygon in sc.Polygons)
+                    {
+                        polygon.ForceUpdateDependencies();
+                    }
+                    List<PositionedNode> nodesToRemove = new List<PositionedNode>();
+                    foreach (KeyValuePair<int, Dictionary<int, PositionedNode>> xpair in allNodes)
+                    {
+                        int x = xpair.Key;
+                        foreach (KeyValuePair<int, PositionedNode> ypair in xpair.Value)
+                        {
+                            PositionedNode node = ypair.Value;
+                            AxisAlignedRectangle rectangle = new AxisAlignedRectangle();
+                            rectangle.Position = node.Position;
+                            rectangle.ScaleX = 1;
+                            rectangle.ScaleY = 1;
+
+                            if (sc.CollideAgainst(rectangle))
+                            {
+                                nodesToRemove.Add(node);
+                            }
+                        }
+                    }
+                    foreach (PositionedNode node in nodesToRemove)
+                    {
+                        toReturn.Remove(node);
+                    }
+                    toReturn.UpdateShapes();
+                }
+
                 ++layercount;
             }
 
-            foreach(KeyValuePair<int, Dictionary<int, PositionedNodeSave>> xpair in allNodes)
+            return toReturn;
+        }
+
+        private static void setupNodeLinks(bool linkHorizontally, bool linkVertically, bool linkDiagonally, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        {
+            foreach (KeyValuePair<int, Dictionary<int, PositionedNode>> xpair in allNodes)
             {
                 int x = xpair.Key;
-                foreach(KeyValuePair<int, PositionedNodeSave> ypair in xpair.Value)
+                foreach (KeyValuePair<int, PositionedNode> ypair in xpair.Value)
                 {
                     int y = ypair.Key;
 
                     if (linkVertically && allNodes.ContainsKey(x - 1))
                     {
-                        LinkSave link = new LinkSave();
-                        link.NodeLinkingTo = allNodes[x - 1][y].Name;
-                        allNodes[x][y].Links.Add(link);
-
-                        link = new LinkSave();
-                        link.NodeLinkingTo = ypair.Value.Name;
-                        allNodes[x - 1][y].Links.Add(link);
+                        allNodes[x][y].LinkTo(allNodes[x - 1][y]);
                     }
                     if (linkHorizontally && allNodes[x].ContainsKey(y - 1))
                     {
-                        LinkSave link = new LinkSave();
-                        link.NodeLinkingTo = allNodes[x][y - 1].Name;
-                        allNodes[x][y].Links.Add(link);
-
-                        link = new LinkSave();
-                        link.NodeLinkingTo = ypair.Value.Name;
-                        allNodes[x][y - 1].Links.Add(link);
+                        allNodes[x][y].LinkTo(allNodes[x][y - 1]);
                     }
                     if (linkDiagonally && allNodes.ContainsKey(x - 1) && allNodes[x - 1].ContainsKey(y - 1))
                     {
-                        LinkSave link = new LinkSave();
-                        link.NodeLinkingTo = allNodes[x - 1][y - 1].Name;
-                        allNodes[x][y].Links.Add(link);
-
-                        link = new LinkSave();
-                        link.NodeLinkingTo = ypair.Value.Name;
-                        allNodes[x - 1][y - 1].Links.Add(link);
+                        allNodes[x][y].LinkTo(allNodes[x - 1][y - 1]);
                     }
                     if (linkDiagonally && allNodes.ContainsKey(x + 1) && allNodes[x + 1].ContainsKey(y - 1))
                     {
-                        LinkSave link = new LinkSave();
-                        link.NodeLinkingTo = allNodes[x + 1][y - 1].Name;
-                        allNodes[x][y].Links.Add(link);
-
-                        link = new LinkSave();
-                        link.NodeLinkingTo = ypair.Value.Name;
-                        allNodes[x + 1][y - 1].Links.Add(link);
+                        allNodes[x][y].LinkTo(allNodes[x + 1][y - 1]);
                     }
                 }
             }
-
-            return toReturn;
         }
 
         public SpriteEditorScene ToSpriteEditorScene()

@@ -67,13 +67,16 @@ namespace TestBed
 
             SpriteEditorScene sec = tms.ToSpriteEditorScene();
 
-            sec.Save("desert.scnx");
+            sec.Save("isometrictest.scnx");
 
             ShapeCollectionSave scs = tms.ToShapeCollectionSave("nonodes");
             scs.Save("polygons.schx");
             ShapeCollection sc = tms.ToShapeCollection("nonodes");
-            sc.AddToManagers();
-          
+            sc.AddToManagers();            
+
+            // Convert once in case of any exceptions
+            NodeNetwork nodeNetwork = tms.ToNodeNetwork();
+            nodeNetwork.Visible = true;
             base.LoadContent();
         }
         protected override void Update(GameTime gameTime)
