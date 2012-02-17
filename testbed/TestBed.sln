@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToScnx", "TmxToScnx\TmxT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToNntx", "TmxToNntx\TmxToNntx.csproj", "{6C27074B-84C2-495D-87AE-A66C1346680B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToShcx", "TmxToShcx\TmxToShcx.csproj", "{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,26 @@ Global
 		{6C27074B-84C2-495D-87AE-A66C1346680B}.Release|Mixed Platforms.Build.0 = Release|x86
 		{6C27074B-84C2-495D-87AE-A66C1346680B}.Release|x86.ActiveCfg = Release|x86
 		{6C27074B-84C2-495D-87AE-A66C1346680B}.Release|x86.Build.0 = Release|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Debug|x86.ActiveCfg = Debug|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Debug|x86.Build.0 = Debug|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.DebugProfile|Any CPU.ActiveCfg = Debug|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.DebugProfile|Mixed Platforms.ActiveCfg = Debug|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.DebugProfile|Mixed Platforms.Build.0 = Debug|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.DebugProfile|x86.ActiveCfg = Debug|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.DebugProfile|x86.Build.0 = Debug|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Profile|Any CPU.ActiveCfg = Release|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Profile|Mixed Platforms.ActiveCfg = Release|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Profile|Mixed Platforms.Build.0 = Release|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Profile|x86.ActiveCfg = Release|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Profile|x86.Build.0 = Release|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Release|Any CPU.ActiveCfg = Release|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Release|Mixed Platforms.Build.0 = Release|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Release|x86.ActiveCfg = Release|x86
+		{82EE6DFA-DD0F-4C5A-8AB5-0873A073EA16}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

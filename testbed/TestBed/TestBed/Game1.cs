@@ -83,22 +83,31 @@ namespace TestBed
         {
             KeyboardState keyboardState = Keyboard.GetState();
 
-            if (keyboardState.IsKeyDown(Keys.Up))
+            if (keyboardState.IsKeyDown(Keys.W))
             {
                 SpriteManager.Camera.Y += 10;
             }
-            if (keyboardState.IsKeyDown(Keys.Down))
+            if (keyboardState.IsKeyDown(Keys.S))
             {
                 SpriteManager.Camera.Y -= 10;
             }
-            if (keyboardState.IsKeyDown(Keys.Left))
+            if (keyboardState.IsKeyDown(Keys.A))
             {
                 SpriteManager.Camera.X -= 10;
             }
-            if (keyboardState.IsKeyDown(Keys.Right))
+            if (keyboardState.IsKeyDown(Keys.D))
             {
                 SpriteManager.Camera.X += 10;
             }
+            if (keyboardState.IsKeyDown(Keys.Down))
+            {
+                SpriteManager.Camera.RotationX += 3.0f;
+            }
+            if (keyboardState.IsKeyDown(Keys.Up))
+            {
+                SpriteManager.Camera.RotationX -= 3.0f;
+            }
+
             if (keyboardState.IsKeyDown(Keys.OemPlus))
             {
                 SpriteManager.Camera.Z -= 3;

@@ -11,7 +11,7 @@ using FlatRedBall.Content.AI.Pathfinding;
 using FlatRedBall.Math.Geometry;
 using FlatRedBall.AI.Pathfinding;
 
-namespace TmxToScnx
+namespace TmxToNntx
 {
     class Program
     {
@@ -19,7 +19,7 @@ namespace TmxToScnx
         {
             if (args.Length != 2)
             {
-                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.nntx>");
+                Console.WriteLine("Usage: tmxtonntx.exe <input.tmx> <output.nntx>");
                 return;
             }
 

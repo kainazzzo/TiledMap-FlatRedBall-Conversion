@@ -49,9 +49,20 @@ namespace TiledMap
             return scene.ToScene(contentManagerName);
         }
 
+        public ShapeCollectionSave ToShapeCollectionSave()
+        {
+            return ToShapeCollectionSave(null);
+        }
+
+        public ShapeCollection ToShapeCollection()
+        {
+            return ToShapeCollectionSave().ToShapeCollection();
+        }
+
         public ShapeCollection ToShapeCollection(string layerName)
         {
             ShapeCollectionSave scs = ToShapeCollectionSave(layerName);
+            
             return scs.ToShapeCollection();
         }
 
@@ -60,14 +71,14 @@ namespace TiledMap
             ShapeCollectionSave shapes = new ShapeCollectionSave();
 
 
-            if (this.objectgroup == null || this.objectgroup.Length == 0 || string.IsNullOrEmpty(layerName))
+            if (this.objectgroup == null || this.objectgroup.Length == 0)
             {
                 return shapes;
             }
 
             foreach (mapObjectgroup group in this.objectgroup)
             {
-                if (!string.IsNullOrEmpty(group.name) && group.name.Equals(layerName))
+                if (!string.IsNullOrEmpty(group.name) && (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
                 {
                     foreach (mapObjectgroupObject @object in group.@object)
                     {
@@ -193,8 +204,8 @@ namespace TiledMap
             int layercount = 0;
             foreach (mapLayer layer in this.layer)
             {
-                Dictionary<int, Dictionary<int, PositionedNode>> allNodes = new Dictionary<int, Dictionary<int, PositionedNode>>();
-
+                Dictionary<int, Dictionary<int, Dictionary<int, PositionedNode>>> allNodes = new Dictionary<int, Dictionary<int, Dictionary<int, PositionedNode>>>();
+                allNodes[layercount] = new Dictionary<int, Dictionary<int, PositionedNode>>();
                 int count = 0;
                 foreach (int gid in layer.data[0].tiles)
                 {
@@ -223,19 +234,19 @@ namespace TiledMap
                     node.Y = nodey;
                     node.Z = nodez;
 
-                    if (!allNodes.ContainsKey(X))
+                    if (!allNodes[layercount].ContainsKey(X))
                     {
-                        allNodes[X] = new Dictionary<int, PositionedNode>();
+                        allNodes[layercount][X] = new Dictionary<int, PositionedNode>();
                     }
 
-                    allNodes[X][Y] = node;
+                    allNodes[layercount][X][Y] = node;
                     node.Name = string.Format("Node {0}", count);
                     toReturn.AddNode(node);
                     ++count;
                 }
-                setupNodeLinks(linkHorizontally, linkVertically, linkDiagonally, allNodes);
+                setupNodeLinks(linkHorizontally, linkVertically, linkDiagonally, allNodes[layercount]);
 
-                removeExcludedNodesViaPolygonLayer(toReturn, layer, allNodes);
+                removeExcludedNodesViaPolygonLayer(toReturn, layer, allNodes[layercount]);
 
                 ++layercount;
             }
