@@ -58,7 +58,7 @@ namespace TestBed
 
         protected override void LoadContent()
         {
-            TiledMapSave tms = TiledMapSave.FromFile("desert.tmx");
+            TiledMapSave tms = TiledMapSave.FromFile("isometrictest.tmx");
             Scene s = tms.ToScene(typeof(TestBed.Screens.TestScreen).FullName);
             s.AddToManagers();
 

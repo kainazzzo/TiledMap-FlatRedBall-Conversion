@@ -113,8 +113,14 @@ namespace TiledMap
             float z;
             float newx;
             float newy;
-            float fx = x - (tilewidth / 2.0f);
-            float fy = y - (tileheight / 2.0f);
+            float fx = x;
+            float fy = y;
+
+            if ("orthogonal".Equals(this.orientation))
+            {
+                fx -= tilewidth / 2.0f;
+                fy -= tileheight / 2.0f;
+            }
             
             calculateWorldCoordinates(0, fx / (float)tileheight, fy / (float)tileheight, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
             polygon.X = newx;
