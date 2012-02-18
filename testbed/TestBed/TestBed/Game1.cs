@@ -101,11 +101,11 @@ namespace TestBed
             }
             if (keyboardState.IsKeyDown(Keys.Down))
             {
-                SpriteManager.Camera.RotationX += 3.0f;
+                SpriteManager.Camera.RotationX += .01f;
             }
             if (keyboardState.IsKeyDown(Keys.Up))
             {
-                SpriteManager.Camera.RotationX -= 3.0f;
+                SpriteManager.Camera.RotationX -= .01f;
             }
 
             if (keyboardState.IsKeyDown(Keys.OemPlus))

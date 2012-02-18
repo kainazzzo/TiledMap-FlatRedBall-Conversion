@@ -232,7 +232,7 @@ namespace TiledMap
 
                     node.X = nodex;
                     node.Y = nodey;
-                    node.Z = nodez;
+                    node.Z = nodez * 32;
 
                     if (!allNodes[layercount].ContainsKey(X))
                     {
@@ -257,7 +257,7 @@ namespace TiledMap
 
         private void removeExcludedNodesViaPolygonLayer(NodeNetwork toReturn, mapLayer layer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
         {
-            ShapeCollection sc = this.ToShapeCollection(layer.name + " node");
+            ShapeCollection sc = this.ToShapeCollection(layer.name + " nonodes");
             if (sc != null && sc.Polygons != null)
             {
                 foreach (Polygon polygon in sc.Polygons)
@@ -298,7 +298,7 @@ namespace TiledMap
                 {
                     int y = ypair.Key;
 
-                    if (linkVertically && allNodes.ContainsKey(x - 1))
+                    if (linkVertically && allNodes.ContainsKey(x - 1) && allNodes[x - 1].ContainsKey(y))
                     {
                         allNodes[x][y].LinkTo(allNodes[x - 1][y]);
                     }
