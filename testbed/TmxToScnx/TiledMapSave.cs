@@ -232,7 +232,7 @@ namespace TiledMap
 
                     node.X = nodex;
                     node.Y = nodey;
-                    node.Z = nodez * 32;
+                    node.Z = nodez;
 
                     if (!allNodes[layercount].ContainsKey(X))
                     {
