@@ -14,4 +14,9 @@
    eJzt0jEKADAIA8D8wv7/paWDoCVjsuVA6GS0LRCxHVJKNap7qzN67oJvD2Dv4crpPViWWvev7zzvU5Hx57BSmf+MzeHmeKeIiOcC2tcE3w==
   </data>
  </layer>
+ <objectgroup name="Tile Layer 1 nonodes" width="25" height="25">
+  <object x="96" y="448">
+   <polygon points="0,0 0,-96 96,-96 96,0"/>
+  </object>
+ </objectgroup>
 </map>

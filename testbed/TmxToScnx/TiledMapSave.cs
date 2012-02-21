@@ -300,19 +300,19 @@ namespace TiledMap
 
                     if (linkVertically && allNodes.ContainsKey(x - 1) && allNodes[x - 1].ContainsKey(y))
                     {
-                        allNodes[x][y].LinkTo(allNodes[x - 1][y]);
+                        ypair.Value.LinkTo(allNodes[x - 1][y]);
                     }
-                    if (linkHorizontally && allNodes[x].ContainsKey(y - 1))
+                    if (linkHorizontally && xpair.Value.ContainsKey(y - 1))
                     {
-                        allNodes[x][y].LinkTo(allNodes[x][y - 1]);
+                        ypair.Value.LinkTo(xpair.Value[y - 1]);
                     }
                     if (linkDiagonally && allNodes.ContainsKey(x - 1) && allNodes[x - 1].ContainsKey(y - 1))
                     {
-                        allNodes[x][y].LinkTo(allNodes[x - 1][y - 1]);
+                        ypair.Value.LinkTo(allNodes[x - 1][y - 1]);
                     }
                     if (linkDiagonally && allNodes.ContainsKey(x + 1) && allNodes[x + 1].ContainsKey(y - 1))
                     {
-                        allNodes[x][y].LinkTo(allNodes[x + 1][y - 1]);
+                        ypair.Value.LinkTo(allNodes[x + 1][y - 1]);
                     }
                 }
             }
