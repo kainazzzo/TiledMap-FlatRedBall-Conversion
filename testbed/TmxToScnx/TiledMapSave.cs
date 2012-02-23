@@ -132,6 +132,11 @@ namespace TiledMap
                 fx -= tilewidth / 2.0f;
                 fy -= tileheight / 2.0f;
             }
+            else if ("isometric".Equals(this.orientation))
+            {
+                fx -= tilewidth / 4.0f;
+                fy -= tileheight / 2.0f;
+            }
             
             calculateWorldCoordinates(0, fx / (float)tileheight, fy / (float)tileheight, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
             polygon.X = newx;
