@@ -79,7 +79,7 @@ namespace TiledMap
 
             foreach (mapObjectgroup group in this.objectgroup)
             {
-                if (!string.IsNullOrEmpty(group.name) && (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
+                if (group.@object != null && !string.IsNullOrEmpty(group.name) && (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
                 {
                     foreach (mapObjectgroupObject @object in group.@object)
                     {
