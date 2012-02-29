@@ -383,7 +383,7 @@ namespace TiledMap
                     sprite.Texture = tileSet.image[0].source;
 
                     setSpriteTextureCoordinates(gid, sprite, tileSet, imageWidth, imageHeight, tileWidth, spacing, tileHeight, margin);
-                    calculateWorldCoordinates(layercount, count, tilewidth, tileheight, layer.width, out sprite.X, out sprite.Y, out sprite.Z);
+                    calculateWorldCoordinates(layercount, count, tileWidth, tileHeight, this.width, out sprite.X, out sprite.Y, out sprite.Z);
 
                     ++count;
                     sprite.ScaleX = tileWidth / 2;
@@ -403,7 +403,7 @@ namespace TiledMap
         {
             int normalizedX = count % this.width;
             int normalizedY = count / this.width;
-            calculateWorldCoordinates(layercount, normalizedX, normalizedY, tilewidth, tileheight, layerWidth, out x, out y, out z);
+            calculateWorldCoordinates(layercount, normalizedX, normalizedY, tileWidth, tileHeight, layerWidth, out x, out y, out z);
         }
 
         private void calculateWorldCoordinates(int layercount, float normalizedX, float normalizedY, int tileWidth, int tileHeight, int layerWidth, out float x, out float y, out float z)
@@ -418,7 +418,9 @@ namespace TiledMap
             else if (this.orientation != null && this.orientation.Equals("isometric"))
             {
                 y = -(float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2;
+                y += tileHeight / 2.0f;
                 x = -(float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2));
+                x += tileWidth / 2.0f;
                 z = ((normalizedY * layerWidth + normalizedX) * .000001f) + layercount;
             }
             else
