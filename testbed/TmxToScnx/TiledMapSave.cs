@@ -163,8 +163,8 @@ namespace TiledMap
             }
             
             calculateWorldCoordinates(0, fx / (float)tileheight, fy / (float)tileheight, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
-            polygon.X = newx;
-            polygon.Y = newy;
+            polygon.X = newx - tilewidth / 2.0f;
+            polygon.Y = newy - tileheight / 2.0f;
             Point[] pointsArr = new Point[pointString.Length + (connectBackToStart ? 1 : 0)];
 
             int count = 0;
