@@ -389,6 +389,12 @@ namespace TiledMap
                     sprite.ScaleX = tileWidth / 2;
                     sprite.ScaleY = tileHeight / 2;
 
+                    if (tileSet.tileoffset != null && tileSet.tileoffset.Length == 1)
+                    {
+                        sprite.X -= tileSet.tileoffset[0].x;
+                        sprite.Y -= tileSet.tileoffset[0].y;
+                    }
+
 
                     toReturn.SpriteList.Add(sprite);
                    
@@ -679,6 +685,8 @@ namespace TiledMap
 
         private mapTilesetImage[] imageField;
 
+        private mapTilesetTileOffset[] tileOffsetField;
+
         private int firstgidField;
 
         private string nameField;
@@ -759,6 +767,26 @@ namespace TiledMap
             }
         }
 
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("tileoffset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public mapTilesetTileOffset[] tileoffset
+        {
+            get
+            {
+                return this.tileOffsetField;
+            }
+            set
+            {
+                if (this.tileOffsetField != null && this.tileOffsetField.Length > 0)
+                {
+                    return;
+                }
+                else
+                {
+                    this.tileOffsetField = value;
+                }
+            }
+        }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("image", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
@@ -956,6 +984,45 @@ namespace TiledMap
             }
         }
     }
+
+    /// <remarks/>
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class mapTilesetTileOffset
+    {
+
+        private int xField;
+
+        private int yField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int x
+        {
+            get
+            {
+                return xField;
+            }
+            set
+            {
+                xField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int y
+        {
+            get
+            {
+                return yField;
+            }
+            set
+            {
+                yField = value;
+            }
+        }
+    }        
+
 
     /// <remarks/>
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
