@@ -153,8 +153,8 @@ namespace TiledMap
 
             if ("orthogonal".Equals(this.orientation))
             {
-                fx -= tilewidth / 2.0f;
-                fy -= tileheight / 2.0f;
+                //fx -= tilewidth / 2.0f;
+                fy -= tileheight;
             }
             else if ("isometric".Equals(this.orientation))
             {
