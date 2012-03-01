@@ -276,6 +276,8 @@ namespace TiledMap
                 setupNodeLinks(linkHorizontally, linkVertically, linkDiagonally, allNodes[layercount]);
 
                 removeExcludedNodesViaPolygonLayer(toReturn, layer, allNodes[layercount]);
+                lowerNodesInNodesDownShapeCollection(layer, allNodes[layercount]);
+                raiseNodesInNodesUpShapeCollection(layer, allNodes[layercount]);
 
                 ++layercount;
             }
@@ -284,16 +286,50 @@ namespace TiledMap
             return toReturn;
         }
 
-        private void removeExcludedNodesViaPolygonLayer(NodeNetwork toReturn, mapLayer layer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        private void raiseNodesInNodesUpShapeCollection(mapLayer layer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        {
+            ShapeCollection sc = this.ToShapeCollection(layer.name + " nodesup");
+            List<PositionedNode> nodesToMoveUp = getNodesThatCollideWithShapeCollection(sc, allNodes);
+
+            foreach (PositionedNode node in nodesToMoveUp)
+            {
+                node.Z += .1f;
+            }
+        }
+
+        private void lowerNodesInNodesDownShapeCollection(mapLayer layer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        {
+            ShapeCollection sc = this.ToShapeCollection(layer.name + " nodesdown");
+            List<PositionedNode> nodesToMoveDown = getNodesThatCollideWithShapeCollection(sc, allNodes);
+
+            foreach (PositionedNode node in nodesToMoveDown)
+            {
+                node.Z -= .1f;
+            }
+        }
+
+        private void removeExcludedNodesViaPolygonLayer(NodeNetwork nodeNetwork, mapLayer layer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
         {
             ShapeCollection sc = this.ToShapeCollection(layer.name + " nonodes");
+            List<PositionedNode> nodesToRemove = getNodesThatCollideWithShapeCollection(sc, allNodes);
+
+            foreach (PositionedNode node in nodesToRemove)
+            {
+                nodeNetwork.Remove(node);
+            }
+        }
+
+        private List<PositionedNode> getNodesThatCollideWithShapeCollection(ShapeCollection sc, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        {
+            List<PositionedNode> returnValue = new List<PositionedNode>();
+
             if (sc != null && sc.Polygons != null)
             {
                 foreach (Polygon polygon in sc.Polygons)
                 {
                     polygon.ForceUpdateDependencies();
                 }
-                List<PositionedNode> nodesToRemove = new List<PositionedNode>();
+
                 foreach (KeyValuePair<int, Dictionary<int, PositionedNode>> xpair in allNodes)
                 {
                     int x = xpair.Key;
@@ -307,15 +343,12 @@ namespace TiledMap
 
                         if (sc.CollideAgainst(rectangle))
                         {
-                            nodesToRemove.Add(node);
+                            returnValue.Add(node);
                         }
                     }
                 }
-                foreach (PositionedNode node in nodesToRemove)
-                {
-                    toReturn.Remove(node);
-                }
             }
+            return returnValue;
         }
 
         private static void setupNodeLinks(bool linkHorizontally, bool linkVertically, bool linkDiagonally, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
@@ -391,7 +424,7 @@ namespace TiledMap
 
                     if (tileSet.tileoffset != null && tileSet.tileoffset.Length == 1)
                     {
-                        sprite.X -= tileSet.tileoffset[0].x;
+                        sprite.X += tileSet.tileoffset[0].x;
                         sprite.Y -= tileSet.tileoffset[0].y;
                     }
 
