@@ -293,7 +293,7 @@ namespace TiledMap
 
             foreach (PositionedNode node in nodesToMoveUp)
             {
-                node.Z += .1f;
+                node.Z += .001f;
             }
         }
 
@@ -304,7 +304,7 @@ namespace TiledMap
 
             foreach (PositionedNode node in nodesToMoveDown)
             {
-                node.Z -= .1f;
+                node.Z -= .001f;
             }
         }
 
