@@ -401,6 +401,7 @@ namespace TiledMap
                     }
                     
                     SpriteSave sprite = new SpriteSave();
+                    
                     int imageWidth = tileSet.image[0].width;
                     int imageHeight = tileSet.image[0].height;
                     int tileWidth = tileSet.tilewidth;
@@ -414,6 +415,10 @@ namespace TiledMap
 
 
                     sprite.Texture = tileSet.image[0].source;
+                    if (tileSet.tileDictionary.ContainsKey(gid) && tileSet.tileDictionary[gid].PropertyDictionary.ContainsKey("name"))
+                    {
+                        sprite.Name = tileSet.tileDictionary[gid].PropertyDictionary["name"];
+                    }
 
                     setSpriteTextureCoordinates(gid, sprite, tileSet, imageWidth, imageHeight, tileWidth, spacing, tileHeight, margin);
                     calculateWorldCoordinates(layercount, count, tileWidth, tileHeight, this.width, out sprite.X, out sprite.Y, out sprite.Z);
@@ -715,6 +720,7 @@ namespace TiledMap
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class mapTileset
     {
+        private mapTilesetTile[] tileField;
 
         private mapTilesetImage[] imageField;
 
@@ -818,6 +824,50 @@ namespace TiledMap
                 {
                     this.tileOffsetField = value;
                 }
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("tile", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public mapTilesetTile[] tile
+        {
+            get
+            {
+                return this.tileField;
+            }
+            set
+            {
+                if (this.tileField != null && this.tileField.Length > 0)
+                {
+                    return;
+                }
+                else
+                {
+                    this.tileField = value;
+                }
+            }
+        }
+
+        private Dictionary<int, mapTilesetTile> tileDictionaryField = null;
+
+        [XmlIgnore]
+        public Dictionary<int, mapTilesetTile> tileDictionary
+        {
+            get
+            {
+                if (tileDictionaryField == null)
+                {
+                    tileDictionaryField = new Dictionary<int, mapTilesetTile>();
+                }
+
+                if (tile != null)
+                {
+                    foreach (mapTilesetTile t in tile)
+                    {
+                        tileDictionaryField[t.id] = t;
+                    }
+                }
+
+                return tileDictionaryField;
             }
         }
 
@@ -926,6 +976,97 @@ namespace TiledMap
             }
         }
     }
+
+    /// <remarks/>
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+public partial class mapTilesetTile {
+    private Dictionary<string, string> propertyDictionaryField = null;
+
+    [XmlIgnore]
+    public Dictionary<string, string> PropertyDictionary
+    {
+        get
+        {
+            if (propertyDictionaryField == null)
+            {
+                propertyDictionaryField = new Dictionary<string, string>();
+            }
+
+            if (properties != null)
+            {
+                for (int x = 0; x < properties.Length; ++x)
+                {
+                    for (int y = 0; y < properties[x].Length; ++y)
+                    {
+                        mapTilesetTilePropertiesProperty property = properties[x][y];
+
+                        propertyDictionaryField.Add(property.name, property.value);
+                    }
+                }
+            }
+
+            return propertyDictionaryField;
+        }
+    }
+
+    private mapTilesetTilePropertiesProperty[][] propertiesField;
+    
+    private int idField;
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+    [System.Xml.Serialization.XmlArrayItemAttribute("property", typeof(mapTilesetTilePropertiesProperty[]), Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
+    public mapTilesetTilePropertiesProperty[][] properties {
+        get {
+            return this.propertiesField;
+        }
+        set {
+            this.propertiesField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public int id {
+        get {
+            return this.idField;
+        }
+        set {
+            this.idField = value;
+        }
+    }
+}
+
+/// <remarks/>
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+public partial class mapTilesetTilePropertiesProperty {
+    
+    private string nameField;
+    
+    private string valueField;
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public string name {
+        get {
+            return this.nameField;
+        }
+        set {
+            this.nameField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public string value {
+        get {
+            return this.valueField;
+        }
+        set {
+            this.valueField = value;
+        }
+    }
+}
 
     /// <remarks/>
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
