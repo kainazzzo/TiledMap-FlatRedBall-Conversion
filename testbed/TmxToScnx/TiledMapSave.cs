@@ -998,35 +998,23 @@ public partial class mapTilesetTile {
 
             if (properties != null)
             {
-                for (int x = 0; x < properties.Length; ++x)
+                foreach (property p in properties)
                 {
-                    for (int y = 0; y < properties[x].Length; ++y)
-                    {
-                        mapTilesetTilePropertiesProperty property = properties[x][y];
 
-                        propertyDictionaryField.Add(property.name, property.value);
-                    }
+                    propertyDictionaryField.Add(p.name, p.value);
                 }
             }
 
             return propertyDictionaryField;
         }
     }
-
-    private mapTilesetTilePropertiesProperty[][] propertiesField;
     
     private int idField;
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-    [System.Xml.Serialization.XmlArrayItemAttribute("property", typeof(mapTilesetTilePropertiesProperty[]), Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-    public mapTilesetTilePropertiesProperty[][] properties {
-        get {
-            return this.propertiesField;
-        }
-        set {
-            this.propertiesField = value;
-        }
+
+    public List<property> properties
+    {
+        get;
+        set;
     }
     
     /// <remarks/>
@@ -1041,35 +1029,22 @@ public partial class mapTilesetTile {
     }
 }
 
-/// <remarks/>
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
-public partial class mapTilesetTilePropertiesProperty {
-    
-    private string nameField;
-    
-    private string valueField;
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
-    public string name {
-        get {
-            return this.nameField;
-        }
-        set {
-            this.nameField = value;
-        }
+public partial class property
+{
+    [XmlAttributeAttribute()]
+    public string name
+    {
+        get;
+        set;
     }
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
-    public string value {
-        get {
-            return this.valueField;
-        }
-        set {
-            this.valueField = value;
-        }
+
+    [XmlAttributeAttribute()]
+    public string value
+    {
+        get;
+        set;
     }
+
 }
 
     /// <remarks/>
