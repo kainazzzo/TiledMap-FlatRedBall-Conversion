@@ -362,19 +362,23 @@ namespace TiledMap
 
                     if (linkVertically && allNodes.ContainsKey(x - 1) && allNodes[x - 1].ContainsKey(y))
                     {
-                        ypair.Value.LinkTo(allNodes[x - 1][y]);
+                        float cost = (ypair.Value.Position - allNodes[x - 1][y].Position).Length();
+                        ypair.Value.LinkTo(allNodes[x - 1][y], cost);
                     }
                     if (linkHorizontally && xpair.Value.ContainsKey(y - 1))
                     {
-                        ypair.Value.LinkTo(xpair.Value[y - 1]);
+                        float cost = (ypair.Value.Position - xpair.Value[y - 1].Position).Length();
+                        ypair.Value.LinkTo(xpair.Value[y - 1], cost);
                     }
                     if (linkDiagonally && allNodes.ContainsKey(x - 1) && allNodes[x - 1].ContainsKey(y - 1))
                     {
-                        ypair.Value.LinkTo(allNodes[x - 1][y - 1]);
+                        float cost = (ypair.Value.Position - allNodes[x - 1][y - 1].Position).Length();
+                        ypair.Value.LinkTo(allNodes[x - 1][y - 1], cost);
                     }
                     if (linkDiagonally && allNodes.ContainsKey(x + 1) && allNodes[x + 1].ContainsKey(y - 1))
                     {
-                        ypair.Value.LinkTo(allNodes[x + 1][y - 1]);
+                        float cost = (ypair.Value.Position - allNodes[x + 1][y - 1].Position).Length();
+                        ypair.Value.LinkTo(allNodes[x + 1][y - 1], cost);
                     }
                 }
             }
