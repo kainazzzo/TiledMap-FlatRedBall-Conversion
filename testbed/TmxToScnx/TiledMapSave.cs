@@ -862,12 +862,16 @@ namespace TiledMap
                 {
                     tileDictionaryField = new Dictionary<int, mapTilesetTile>();
                 }
+                else
+                {
+                    return tileDictionaryField;
+                }
 
                 if (tile != null)
                 {
                     foreach (mapTilesetTile t in tile)
                     {
-                        tileDictionaryField[t.id] = t;
+                        tileDictionaryField[t.id + 1] = t;
                     }
                 }
 
@@ -995,13 +999,17 @@ public partial class mapTilesetTile {
             {
                 propertyDictionaryField = new Dictionary<string, string>();
             }
+            else
+            {
+                return propertyDictionaryField;
+            }
 
             if (properties != null)
             {
                 foreach (property p in properties)
                 {
 
-                    propertyDictionaryField.Add(p.name, p.value);
+                    propertyDictionaryField[p.name] = p.value;
                 }
             }
 
