@@ -63,7 +63,7 @@ namespace TiledMap
         public ShapeCollection ToShapeCollection(string layerName)
         {
             ShapeCollectionSave scs = ToShapeCollectionSave(layerName);
-            
+
             return scs.ToShapeCollection();
         }
 
@@ -132,7 +132,7 @@ namespace TiledMap
             pointsSB.AppendFormat(" {0},{1}", width, 0);
             pointsSB.AppendFormat(" {0},{1}", width, height);
             pointsSB.AppendFormat(" {0},{1}", 0, height);
-           
+
 
             return convertTMXObjectToFRBPolygonSave(groupWidth, groupHeight, x, y, pointsSB.ToString(), true);
         }
@@ -161,7 +161,7 @@ namespace TiledMap
                 fx -= tilewidth / 4.0f;
                 fy -= tileheight / 2.0f;
             }
-            
+
             calculateWorldCoordinates(0, fx / (float)tileheight, fy / (float)tileheight, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
             polygon.X = newx - tilewidth / 2.0f;
             polygon.Y = newy - tileheight / 2.0f;
@@ -181,9 +181,9 @@ namespace TiledMap
 
                 pointsArr[count].X = newx;
                 pointsArr[count].Y = newy;
-              
 
-                
+
+
                 ++count;
             }
 
@@ -199,14 +199,14 @@ namespace TiledMap
                 calculateWorldCoordinates(0, normalizedX, normalizedY, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
 
                 pointsArr[count].X = newx;
-                pointsArr[count].Y = newy;                
+                pointsArr[count].Y = newy;
             }
             polygon.Points = pointsArr;
 
             return polygon;
         }
 
-       
+
 
         public NodeNetwork ToNodeNetwork()
         {
@@ -219,12 +219,12 @@ namespace TiledMap
             return NodeNetworkSave.FromNodeNetwork(nodeNetwork);
         }
 
-    
+
         public NodeNetworkSave ToNodeNetworkSave()
         {
             return ToNodeNetworkSave(true, true, true);
         }
-    
+
         public NodeNetwork ToNodeNetwork(bool linkHorizontally, bool linkVertically, bool linkDiagonally)
         {
             NodeNetwork toReturn = new NodeNetwork();
@@ -238,7 +238,7 @@ namespace TiledMap
                 int count = 0;
                 foreach (int gid in layer.data[0].tiles)
                 {
-                    
+
                     mapTileset tileSet = getTilesetForGid(gid);
                     if (tileSet == null)
                     {
@@ -362,19 +362,23 @@ namespace TiledMap
 
                     if (linkVertically && allNodes.ContainsKey(x - 1) && allNodes[x - 1].ContainsKey(y))
                     {
-                        ypair.Value.LinkTo(allNodes[x - 1][y]);
+                        float cost = (ypair.Value.Position - allNodes[x - 1][y].Position).Length();
+                        ypair.Value.LinkTo(allNodes[x - 1][y], cost);
                     }
                     if (linkHorizontally && xpair.Value.ContainsKey(y - 1))
                     {
-                        ypair.Value.LinkTo(xpair.Value[y - 1]);
+                        float cost = (ypair.Value.Position - xpair.Value[y - 1].Position).Length();
+                        ypair.Value.LinkTo(xpair.Value[y - 1], cost);
                     }
                     if (linkDiagonally && allNodes.ContainsKey(x - 1) && allNodes[x - 1].ContainsKey(y - 1))
                     {
-                        ypair.Value.LinkTo(allNodes[x - 1][y - 1]);
+                        float cost = (ypair.Value.Position - allNodes[x - 1][y - 1].Position).Length();
+                        ypair.Value.LinkTo(allNodes[x - 1][y - 1], cost);
                     }
                     if (linkDiagonally && allNodes.ContainsKey(x + 1) && allNodes[x + 1].ContainsKey(y - 1))
                     {
-                        ypair.Value.LinkTo(allNodes[x + 1][y - 1]);
+                        float cost = (ypair.Value.Position - allNodes[x + 1][y - 1].Position).Length();
+                        ypair.Value.LinkTo(allNodes[x + 1][y - 1], cost);
                     }
                 }
             }
@@ -399,9 +403,9 @@ namespace TiledMap
                         ++count;
                         continue;
                     }
-                    
+
                     SpriteSave sprite = new SpriteSave();
-                    
+
                     int imageWidth = tileSet.image[0].width;
                     int imageHeight = tileSet.image[0].height;
                     int tileWidth = tileSet.tilewidth;
@@ -415,9 +419,9 @@ namespace TiledMap
 
 
                     sprite.Texture = tileSet.image[0].source;
-                    if (tileSet.tileDictionary.ContainsKey(gid) && tileSet.tileDictionary[gid].PropertyDictionary.ContainsKey("name"))
+                    if (tileSet.tileDictionary.ContainsKey(gid - tileSet.firstgid + 1) && tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary.ContainsKey("name"))
                     {
-                        sprite.Name = tileSet.tileDictionary[gid].PropertyDictionary["name"];
+                        sprite.Name = tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary["name"];
                     }
 
                     setSpriteTextureCoordinates(gid, sprite, tileSet, imageWidth, imageHeight, tileWidth, spacing, tileHeight, margin);
@@ -435,7 +439,7 @@ namespace TiledMap
 
 
                     toReturn.SpriteList.Add(sprite);
-                   
+
                 }
                 ++layercount;
             }
@@ -802,6 +806,7 @@ namespace TiledMap
                     this.spacing = xts.spacing;
                     this.tileheight = xts.tileheight;
                     this.tilewidth = xts.tilewidth;
+                    this.tile = xts.tile;
                 }
             }
         }
@@ -858,12 +863,16 @@ namespace TiledMap
                 {
                     tileDictionaryField = new Dictionary<int, mapTilesetTile>();
                 }
+                else
+                {
+                    return tileDictionaryField;
+                }
 
                 if (tile != null)
                 {
                     foreach (mapTilesetTile t in tile)
                     {
-                        tileDictionaryField[t.id] = t;
+                        tileDictionaryField[t.id + 1] = t;
                     }
                 }
 
@@ -978,101 +987,84 @@ namespace TiledMap
     }
 
     /// <remarks/>
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
-public partial class mapTilesetTile {
-    private Dictionary<string, string> propertyDictionaryField = null;
-
-    [XmlIgnore]
-    public Dictionary<string, string> PropertyDictionary
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class mapTilesetTile
     {
-        get
+        private Dictionary<string, string> propertyDictionaryField = null;
+
+        [XmlIgnore]
+        public Dictionary<string, string> PropertyDictionary
         {
-            if (propertyDictionaryField == null)
+            get
             {
-                propertyDictionaryField = new Dictionary<string, string>();
-            }
-
-            if (properties != null)
-            {
-                for (int x = 0; x < properties.Length; ++x)
+                if (propertyDictionaryField == null)
                 {
-                    for (int y = 0; y < properties[x].Length; ++y)
-                    {
-                        mapTilesetTilePropertiesProperty property = properties[x][y];
+                    propertyDictionaryField = new Dictionary<string, string>();
+                }
+                else
+                {
+                    return propertyDictionaryField;
+                }
 
-                        propertyDictionaryField.Add(property.name, property.value);
+                if (properties != null)
+                {
+                    foreach (property p in properties)
+                    {
+
+                        propertyDictionaryField[p.name] = p.value;
                     }
                 }
+
+                return propertyDictionaryField;
             }
+        }
 
-            return propertyDictionaryField;
+        private int idField;
+
+        public List<property> properties
+        {
+            get;
+            set;
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int id
+        {
+            get
+            {
+                return this.idField;
+            }
+            set
+            {
+                this.idField = value;
+            }
         }
     }
 
-    private mapTilesetTilePropertiesProperty[][] propertiesField;
-    
-    private int idField;
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-    [System.Xml.Serialization.XmlArrayItemAttribute("property", typeof(mapTilesetTilePropertiesProperty[]), Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-    public mapTilesetTilePropertiesProperty[][] properties {
-        get {
-            return this.propertiesField;
+    public partial class property
+    {
+        [XmlAttributeAttribute()]
+        public string name
+        {
+            get;
+            set;
         }
-        set {
-            this.propertiesField = value;
-        }
-    }
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int id {
-        get {
-            return this.idField;
-        }
-        set {
-            this.idField = value;
-        }
-    }
-}
 
-/// <remarks/>
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
-public partial class mapTilesetTilePropertiesProperty {
-    
-    private string nameField;
-    
-    private string valueField;
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
-    public string name {
-        get {
-            return this.nameField;
+        [XmlAttributeAttribute()]
+        public string value
+        {
+            get;
+            set;
         }
-        set {
-            this.nameField = value;
-        }
+
     }
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
-    public string value {
-        get {
-            return this.valueField;
-        }
-        set {
-            this.valueField = value;
-        }
-    }
-}
 
     /// <remarks/>
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class mapTilesetImage
     {
-        
+
         private string sourceField;
 
         private int widthField;
@@ -1195,7 +1187,7 @@ public partial class mapTilesetTilePropertiesProperty {
                 yField = value;
             }
         }
-    }        
+    }
 
 
     /// <remarks/>

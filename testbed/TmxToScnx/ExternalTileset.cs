@@ -19,7 +19,9 @@ using System.Xml.Serialization;
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
 [System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
 public partial class tileset {
-    
+
+    private TiledMap.mapTilesetTile[] tileField;
+
     private tilesetImage[] imageField;
     
     private string nameField;
@@ -31,6 +33,25 @@ public partial class tileset {
     private int spacingField;
     
     private int marginField;
+    [System.Xml.Serialization.XmlElementAttribute("tile", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+    public TiledMap.mapTilesetTile[] tile
+    {
+        get
+        {
+            return this.tileField;
+        }
+        set
+        {
+            if (this.tileField != null && this.tileField.Length > 0)
+            {
+                return;
+            }
+            else
+            {
+                this.tileField = value;
+            }
+        }
+    }
     
     /// <remarks/>
     [System.Xml.Serialization.XmlElementAttribute("image", Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
