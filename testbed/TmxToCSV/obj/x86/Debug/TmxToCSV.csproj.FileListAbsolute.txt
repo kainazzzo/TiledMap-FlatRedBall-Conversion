@@ -3,3 +3,5 @@ C:\Users\Domenic\Documents\Visual Studio 2010\Projects\TiledMap-FlatRedBall-Conv
 C:\Users\Domenic\Documents\Visual Studio 2010\Projects\TiledMap-FlatRedBall-Conversion\testbed\TmxToCSV\obj\x86\Debug\ResolveAssemblyReference.cache
 C:\Users\Domenic\Documents\Visual Studio 2010\Projects\TiledMap-FlatRedBall-Conversion\testbed\TmxToCSV\obj\x86\Debug\TmxToCSV.exe
 C:\Users\Domenic\Documents\Visual Studio 2010\Projects\TiledMap-FlatRedBall-Conversion\testbed\TmxToCSV\obj\x86\Debug\TmxToCSV.pdb
+C:\Users\Domenic\Documents\Visual Studio 2010\Projects\TiledMap-FlatRedBall-Conversion\testbed\TmxToCSV\bin\Debug\FlatRedBall.dll
+C:\Users\Domenic\Documents\Visual Studio 2010\Projects\TiledMap-FlatRedBall-Conversion\testbed\TmxToCSV\bin\Debug\FlatRedBall.xml

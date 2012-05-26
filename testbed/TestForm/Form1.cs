@@ -70,6 +70,13 @@ namespace TestForm
             return filepath.Substring(filepath.LastIndexOf("\\") + 1).Replace(".tmx", "");
         }
 
+        private void tmxCSVButton_Click(object sender, EventArgs e)
+        {
+            TiledMapSave save = TiledMapSave.FromFile(tmxFilename.Text);
+            string csv = save.ToCSVString();
+            System.IO.File.WriteAllText(tmxDestinationFolder.Text + GetFilename(tmxFilename.Text) + ".csv", csv);
+        }
+
 
 
 

@@ -39,6 +39,7 @@
             this.tmxConvertToShcx = new System.Windows.Forms.Button();
             this.tmxConvertToNntx = new System.Windows.Forms.Button();
             this.tmxFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.tmxCSVButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -102,7 +103,7 @@
             // 
             // tmxConvertToScnx
             // 
-            this.tmxConvertToScnx.Location = new System.Drawing.Point(168, 98);
+            this.tmxConvertToScnx.Location = new System.Drawing.Point(228, 86);
             this.tmxConvertToScnx.Name = "tmxConvertToScnx";
             this.tmxConvertToScnx.Size = new System.Drawing.Size(75, 23);
             this.tmxConvertToScnx.TabIndex = 6;
@@ -112,7 +113,7 @@
             // 
             // tmxConvertToShcx
             // 
-            this.tmxConvertToShcx.Location = new System.Drawing.Point(330, 98);
+            this.tmxConvertToShcx.Location = new System.Drawing.Point(390, 86);
             this.tmxConvertToShcx.Name = "tmxConvertToShcx";
             this.tmxConvertToShcx.Size = new System.Drawing.Size(75, 23);
             this.tmxConvertToShcx.TabIndex = 7;
@@ -122,7 +123,7 @@
             // 
             // tmxConvertToNntx
             // 
-            this.tmxConvertToNntx.Location = new System.Drawing.Point(249, 98);
+            this.tmxConvertToNntx.Location = new System.Drawing.Point(309, 86);
             this.tmxConvertToNntx.Name = "tmxConvertToNntx";
             this.tmxConvertToNntx.Size = new System.Drawing.Size(75, 23);
             this.tmxConvertToNntx.TabIndex = 8;
@@ -134,11 +135,22 @@
             // 
             this.tmxFolderDialog.Description = "Choose the destination folder";
             // 
+            // tmxCSVButton
+            // 
+            this.tmxCSVButton.Location = new System.Drawing.Point(147, 86);
+            this.tmxCSVButton.Name = "tmxCSVButton";
+            this.tmxCSVButton.Size = new System.Drawing.Size(75, 23);
+            this.tmxCSVButton.TabIndex = 9;
+            this.tmxCSVButton.Text = "CSV";
+            this.tmxCSVButton.UseVisualStyleBackColor = true;
+            this.tmxCSVButton.Click += new System.EventHandler(this.tmxCSVButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(530, 138);
+            this.Controls.Add(this.tmxCSVButton);
             this.Controls.Add(this.tmxConvertToNntx);
             this.Controls.Add(this.tmxConvertToShcx);
             this.Controls.Add(this.tmxConvertToScnx);
@@ -168,6 +180,7 @@
         private System.Windows.Forms.Button tmxConvertToShcx;
         private System.Windows.Forms.Button tmxConvertToNntx;
         private System.Windows.Forms.FolderBrowserDialog tmxFolderDialog;
+        private System.Windows.Forms.Button tmxCSVButton;
     }
 }
 

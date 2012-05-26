@@ -19,7 +19,7 @@ namespace TmxToNntx
         {
             if (args.Length != 2)
             {
-                Console.WriteLine("Usage: tmxtonntx.exe <input.tmx> <output.nntx>");
+                Console.WriteLine("Usage: tmxtonntx.exe <input.tmx> <output.csv>");
                 return;
             }
 
@@ -32,7 +32,7 @@ namespace TmxToNntx
                 // Convert once in case of any exceptions
                 NodeNetworkSave save = tms.ToNodeNetworkSave();
 
-                save.Save(destinationNntx.Trim());
+                save.Save(destinationNntx);
             }
             catch (Exception ex)
             {

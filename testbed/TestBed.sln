@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToShcx", "TmxToShcx\TmxT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestForm", "TestForm\TestForm.csproj", "{4867343E-BC4E-4ED8-B01C-735115A94D22}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToCSV", "TmxToCSV\TmxToCSV.csproj", "{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,6 +143,26 @@ Global
 		{4867343E-BC4E-4ED8-B01C-735115A94D22}.Release|Mixed Platforms.Build.0 = Release|x86
 		{4867343E-BC4E-4ED8-B01C-735115A94D22}.Release|x86.ActiveCfg = Release|x86
 		{4867343E-BC4E-4ED8-B01C-735115A94D22}.Release|x86.Build.0 = Release|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Debug|x86.ActiveCfg = Debug|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Debug|x86.Build.0 = Debug|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.DebugProfile|Any CPU.ActiveCfg = Debug|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.DebugProfile|Mixed Platforms.ActiveCfg = Debug|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.DebugProfile|Mixed Platforms.Build.0 = Debug|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.DebugProfile|x86.ActiveCfg = Debug|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.DebugProfile|x86.Build.0 = Debug|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Profile|Any CPU.ActiveCfg = Release|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Profile|Mixed Platforms.ActiveCfg = Release|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Profile|Mixed Platforms.Build.0 = Release|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Profile|x86.ActiveCfg = Release|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Profile|x86.Build.0 = Release|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Release|Any CPU.ActiveCfg = Release|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Release|Mixed Platforms.Build.0 = Release|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Release|x86.ActiveCfg = Release|x86
+		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

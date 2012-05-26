@@ -34,6 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FlatRedBall">
+      <HintPath>..\TmxToScnx\bin\Debug\FlatRedBall.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,6 +48,45 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\TmxToScnx\DotNetZip\Zlib\Crc32.cs">
+      <Link>DotNetZip\zlib\Crc32.cs</Link>
+    </Compile>
+    <Compile Include="..\TmxToScnx\DotNetZip\Zlib\Deflate.cs">
+      <Link>DotNetZip\zlib\Deflate.cs</Link>
+    </Compile>
+    <Compile Include="..\TmxToScnx\DotNetZip\Zlib\GZipStream.cs">
+      <Link>DotNetZip\zlib\GZipStream.cs</Link>
+    </Compile>
+    <Compile Include="..\TmxToScnx\DotNetZip\Zlib\Inflate.cs">
+      <Link>DotNetZip\zlib\Inflate.cs</Link>
+    </Compile>
+    <Compile Include="..\TmxToScnx\DotNetZip\Zlib\InfTree.cs">
+      <Link>DotNetZip\zlib\InfTree.cs</Link>
+    </Compile>
+    <Compile Include="..\TmxToScnx\DotNetZip\Zlib\Tree.cs">
+      <Link>DotNetZip\zlib\Tree.cs</Link>
+    </Compile>
+    <Compile Include="..\TmxToScnx\DotNetZip\Zlib\Zlib.cs">
+      <Link>DotNetZip\zlib\Zlib.cs</Link>
+    </Compile>
+    <Compile Include="..\TmxToScnx\DotNetZip\Zlib\ZlibBaseStream.cs">
+      <Link>DotNetZip\zlib\ZlibBaseStream.cs</Link>
+    </Compile>
+    <Compile Include="..\TmxToScnx\DotNetZip\Zlib\ZlibCodec.cs">
+      <Link>DotNetZip\zlib\ZlibCodec.cs</Link>
+    </Compile>
+    <Compile Include="..\TmxToScnx\DotNetZip\Zlib\ZlibConstants.cs">
+      <Link>DotNetZip\zlib\ZlibConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\TmxToScnx\DotNetZip\Zlib\ZlibStream.cs">
+      <Link>DotNetZip\zlib\ZlibStream.cs</Link>
+    </Compile>
+    <Compile Include="..\TmxToScnx\ExternalTileset.cs">
+      <Link>ExternalTileset.cs</Link>
+    </Compile>
+    <Compile Include="..\TmxToScnx\TiledMapSave.cs">
+      <Link>TiledMapSave.cs</Link>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
