@@ -516,17 +516,16 @@ namespace TiledMap
         {
             if (this.orientation == null || this.orientation.Equals("orthogonal"))
             {
-                x = (normalizedX * tileWidth);
-                y = -(normalizedY * tileHeight);
+                x = (normalizedX * tileWidth) + (tileWidth / 2.0f);
+                y = -(normalizedY * tileHeight) - (tileHeight / 2.0f);
                 z = layercount;
 
             }
             else if (this.orientation != null && this.orientation.Equals("isometric"))
             {
                 y = -(float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2;
-                y += tileHeight / 2.0f;
+                y -= tileHeight / 2.0f;
                 x = -(float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2));
-                x += tileWidth / 2.0f;
                 z = ((normalizedY * layerWidth + normalizedX) * .000001f) + layercount;
             }
             else
