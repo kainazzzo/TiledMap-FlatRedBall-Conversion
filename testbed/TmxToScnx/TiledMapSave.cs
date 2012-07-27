@@ -148,6 +148,7 @@ namespace TiledMap
                         {
                             foreach (mapObjectgroupObjectPolygon polygon in @object.polygon)
                             {
+                                // TODO: Make this a rectangle object
                                 PolygonSave p = convertTMXObjectToFRBPolygonSave(group.width, group.height,
                                     @object.x, @object.y, polygon.points, true);
                                 if (p != null)
@@ -524,8 +525,9 @@ namespace TiledMap
             else if (this.orientation != null && this.orientation.Equals("isometric"))
             {
                 y = -(float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2;
-                y -= tileHeight / 2.0f;
+                y += tileHeight / 2.0f;
                 x = -(float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2));
+                x += tileWidth / 2.0f;
                 z = ((normalizedY * layerWidth + normalizedX) * .000001f) + layercount;
             }
             else
