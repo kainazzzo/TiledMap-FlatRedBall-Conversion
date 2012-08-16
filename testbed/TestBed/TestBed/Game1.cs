@@ -59,13 +59,13 @@ namespace TestBed
         protected override void LoadContent()
         {
             TiledMapSave tms = TiledMapSave.FromFile("isometrictest.tmx");
-            Scene s = tms.ToScene(typeof(TestBed.Screens.TestScreen).FullName);
+            Scene s = tms.ToScene(typeof(TestBed.Screens.TestScreen).FullName, 1.0f);
             s.AddToManagers();
 
             //SpriteEditorScene sec = SpriteEditorScene.FromScene(s);
             //sec.Save("isometrictest.scnx");
 
-            SpriteEditorScene sec = tms.ToSpriteEditorScene();
+            SpriteEditorScene sec = tms.ToSpriteEditorScene(1.0f);
 
             sec.Save("isometrictest.scnx");
 

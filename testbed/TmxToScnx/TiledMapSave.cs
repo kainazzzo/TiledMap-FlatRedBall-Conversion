@@ -45,9 +45,9 @@ namespace TiledMap
             NoChange
         }
 
-        public Scene ToScene(string contentManagerName)
+        public Scene ToScene(string contentManagerName, float scale)
         {
-            SpriteEditorScene scene = ToSpriteEditorScene();
+            SpriteEditorScene scene = ToSpriteEditorScene(scale);
             return scene.ToScene(contentManagerName);
         }
 
@@ -443,7 +443,7 @@ namespace TiledMap
             }
         }
 
-        public SpriteEditorScene ToSpriteEditorScene()
+        public SpriteEditorScene ToSpriteEditorScene(float scale)
         {
             SpriteEditorScene toReturn = new SpriteEditorScene();
             toReturn.CoordinateSystem = FlatRedBall.Math.CoordinateSystem.RightHanded;
@@ -496,6 +496,12 @@ namespace TiledMap
                         sprite.Y -= tileSet.tileoffset[0].y;
                     }
 
+                  
+                    sprite.X *= scale;
+                    sprite.Y *= scale;
+                    sprite.Z *= scale;
+                    sprite.ScaleX *= scale;
+                    sprite.ScaleY *= scale;
 
                     toReturn.SpriteList.Add(sprite);
 

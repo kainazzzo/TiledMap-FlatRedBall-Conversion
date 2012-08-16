@@ -14,9 +14,9 @@ namespace TmxToScnx
     {
         static void Main(string[] args)
         {
-            if (args.Length != 2)
+            if (args.Length < 2)
             {
-                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx>");
+                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx> [scale]");
                 return;
             }
 
@@ -24,10 +24,18 @@ namespace TmxToScnx
             {
                 string sourceTmx = args[0];
                 string destinationScnx = args[1];
+                float scale = 1.0f;
+                if (args.Length >= 3)
+                {
+                    if (!float.TryParse(args[2], out scale))
+                    {
+                        scale = 1.0f;
+                    }
+                }
 
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
-                SpriteEditorScene save = tms.ToSpriteEditorScene();
+                SpriteEditorScene save = tms.ToSpriteEditorScene(scale);
 
                 Console.WriteLine(string.Format("{0} converted successfully.", sourceTmx));
                 copyTmxTilesetImagesToDestination(sourceTmx, destinationScnx, tms);
@@ -36,7 +44,7 @@ namespace TmxToScnx
                 fixupImageSources(tms);
 
                 Console.WriteLine(string.Format("Saving \"{0}\".", destinationScnx));
-                tms.ToSpriteEditorScene().Save(destinationScnx.Trim());
+                tms.ToSpriteEditorScene(scale).Save(destinationScnx.Trim());
                 Console.WriteLine("Done.");
             }
             catch (Exception ex)

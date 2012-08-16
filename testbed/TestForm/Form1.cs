@@ -44,7 +44,7 @@ namespace TestForm
         private void tmxConvertToScnx_Click(object sender, EventArgs e)
         {
             TiledMapSave save = TiledMapSave.FromFile(tmxFilename.Text);
-            SpriteEditorScene ses = save.ToSpriteEditorScene();
+            SpriteEditorScene ses = save.ToSpriteEditorScene(1.0f);
             string pathtosave = tmxDestinationFolder.Text + GetFilename(tmxFilename.Text) + ".scnx";
             ses.Save(pathtosave);
         }
