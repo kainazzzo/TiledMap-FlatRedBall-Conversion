@@ -299,10 +299,8 @@ namespace TiledMap
                 {
 
                     mapTileset tileSet = getTilesetForGid(gid);
-                    bool isTile = true;
                     if (tileSet == null)
                     {
-                        isTile = false;
                         if (requireTile)
                         {
                             ++count;
@@ -312,8 +310,8 @@ namespace TiledMap
 
                     PositionedNode node = new PositionedNode();
 
-                    int tileWidth = isTile ? tileSet.tilewidth : tilewidth;
-                    int tileHeight = isTile ? tileSet.tileheight : tileheight;
+                    int tileWidth = requireTile ? tileSet.tilewidth : tilewidth;
+                    int tileHeight = requireTile ? tileSet.tileheight : tileheight;
                     int X = count % this.width;
                     int Y = count / this.width;
 
