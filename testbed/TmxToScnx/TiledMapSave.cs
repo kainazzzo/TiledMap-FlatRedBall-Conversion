@@ -268,23 +268,23 @@ namespace TiledMap
             return polygon;
         }
 
-        public NodeNetwork ToNodeNetwork()
+        public NodeNetwork ToNodeNetwork(bool requireTile=true)
         {
-            return ToNodeNetwork(true, true, true);
+            return ToNodeNetwork(true, true, true, requireTile);
         }
 
-        public NodeNetworkSave ToNodeNetworkSave(bool linkHorizontally, bool linkVertically, bool linkDiagonally)
+        public NodeNetworkSave ToNodeNetworkSave(bool linkHorizontally, bool linkVertically, bool linkDiagonally, bool requireTile)
         {
-            NodeNetwork nodeNetwork = ToNodeNetwork(linkHorizontally, linkVertically, linkDiagonally);
+            NodeNetwork nodeNetwork = ToNodeNetwork(linkHorizontally, linkVertically, linkDiagonally, requireTile);
             return NodeNetworkSave.FromNodeNetwork(nodeNetwork);
         }
 
-        public NodeNetworkSave ToNodeNetworkSave()
+        public NodeNetworkSave ToNodeNetworkSave(bool requireTile=true)
         {
-            return ToNodeNetworkSave(true, true, true);
+            return ToNodeNetworkSave(true, true, true, requireTile);
         }
 
-        public NodeNetwork ToNodeNetwork(bool linkHorizontally, bool linkVertically, bool linkDiagonally)
+        public NodeNetwork ToNodeNetwork(bool linkHorizontally, bool linkVertically, bool linkDiagonally, bool requireTile)
         {
             NodeNetwork toReturn = new NodeNetwork();
 
@@ -299,16 +299,21 @@ namespace TiledMap
                 {
 
                     mapTileset tileSet = getTilesetForGid(gid);
+                    bool isTile = true;
                     if (tileSet == null)
                     {
-                        ++count;
-                        continue;
+                        isTile = false;
+                        if (requireTile)
+                        {
+                            ++count;
+                            continue;
+                        }
                     }
 
                     PositionedNode node = new PositionedNode();
 
-                    int tileWidth = tileSet.tilewidth;
-                    int tileHeight = tileSet.tileheight;
+                    int tileWidth = isTile ? tileSet.tilewidth : tilewidth;
+                    int tileHeight = isTile ? tileSet.tileheight : tileheight;
                     int X = count % this.width;
                     int Y = count / this.width;
 

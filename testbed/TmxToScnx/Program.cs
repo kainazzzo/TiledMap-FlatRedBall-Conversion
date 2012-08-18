@@ -36,7 +36,7 @@ namespace TmxToScnx
                             string key = tokens[0];
                             string value = tokens[1];
 
-                            switch(key)
+                            switch(key.ToLowerInvariant())
                             {
                                 case "scale":
                                     if (!float.TryParse(value, out scale))
