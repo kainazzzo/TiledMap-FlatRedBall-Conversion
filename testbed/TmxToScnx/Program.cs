@@ -16,7 +16,7 @@ namespace TmxToScnx
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx> [scale]");
+                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx> [scale=##.#]");
                 return;
             }
 
@@ -27,9 +27,28 @@ namespace TmxToScnx
                 float scale = 1.0f;
                 if (args.Length >= 3)
                 {
-                    if (!float.TryParse(args[2], out scale))
+                    for (int x = 2; x < args.Length; ++x)
                     {
-                        scale = 1.0f;
+                        string arg = args[x];
+                        string[] tokens = arg.Split("=".ToCharArray());
+                        if (tokens != null && tokens.Length == 2)
+                        {
+                            string key = tokens[0];
+                            string value = tokens[1];
+
+                            switch(key)
+                            {
+                                case "scale":
+                                    if (!float.TryParse(value, out scale))
+                                    {
+                                        scale = 1.0f;
+                                    }
+                                    break;
+                                default:
+                                    Console.Error.WriteLine("Invalid command line argument: {0}", arg);
+                                    break;
+                            }
+                        }
                     }
                 }
 
