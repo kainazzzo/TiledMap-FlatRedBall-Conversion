@@ -526,8 +526,10 @@ namespace TiledMap
         {
             if (this.orientation == null || this.orientation.Equals("orthogonal"))
             {
-                x = (normalizedX * tileWidth) + (tileWidth / 2.0f);
-                y = -(normalizedY * tileHeight) - (tileHeight / 2.0f);
+                x = (normalizedX * this.tilewidth) + (this.tilewidth / 2.0f);
+                x += (tileWidth - this.tilewidth) / 2.0f;
+                y = -(normalizedY * this.tileheight) - (this.tileheight / 2.0f);
+                y += (tileHeight - this.tileheight) / 2.0f;
                 z = layercount;
 
             }
