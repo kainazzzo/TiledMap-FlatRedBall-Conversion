@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestForm", "TestForm\TestFo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToCSV", "TmxToCSV\TmxToCSV.csproj", "{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxEditor", "TmxEditor\TmxEditor.csproj", "{02D8D83A-96C7-4D2E-953C-9433C3817412}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -163,6 +165,26 @@ Global
 		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Release|Mixed Platforms.Build.0 = Release|x86
 		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Release|x86.ActiveCfg = Release|x86
 		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}.Release|x86.Build.0 = Release|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Debug|x86.ActiveCfg = Debug|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Debug|x86.Build.0 = Debug|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.DebugProfile|Any CPU.ActiveCfg = Debug|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.DebugProfile|Mixed Platforms.ActiveCfg = Debug|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.DebugProfile|Mixed Platforms.Build.0 = Debug|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.DebugProfile|x86.ActiveCfg = Debug|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.DebugProfile|x86.Build.0 = Debug|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Profile|Any CPU.ActiveCfg = Release|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Profile|Mixed Platforms.ActiveCfg = Release|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Profile|Mixed Platforms.Build.0 = Release|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Profile|x86.ActiveCfg = Release|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Profile|x86.Build.0 = Release|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Release|Any CPU.ActiveCfg = Release|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Release|Mixed Platforms.Build.0 = Release|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Release|x86.ActiveCfg = Release|x86
+		{02D8D83A-96C7-4D2E-953C-9433C3817412}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

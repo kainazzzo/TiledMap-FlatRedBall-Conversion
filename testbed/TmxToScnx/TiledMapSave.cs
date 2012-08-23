@@ -657,6 +657,13 @@ namespace TiledMap
             return tms;
         }
 
+        public void Save(string fileName)
+        {
+            FileManager.XmlSerialize<TiledMapSave>(this, fileName);
+
+        }
+
+
         private mapTileset[] tilesetField;
 
         private mapLayer[] layerField;
