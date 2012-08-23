@@ -920,6 +920,28 @@ namespace TiledMap
                 }
             }
         }
+        
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("image", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public mapTilesetImage[] image
+        {
+            get
+            {
+                return this.imageField;
+            }
+            set
+            {
+                if (this.imageField != null && this.imageField.Length > 0)
+                {
+                    return;
+                }
+                else
+                {
+                    this.imageField = value;
+                }
+            }
+        }
 
         [System.Xml.Serialization.XmlElementAttribute("tile", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public mapTilesetTile[] tile
@@ -969,26 +991,7 @@ namespace TiledMap
             }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("image", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public mapTilesetImage[] image
-        {
-            get
-            {
-                return this.imageField;
-            }
-            set
-            {
-                if (this.imageField != null && this.imageField.Length > 0)
-                {
-                    return;
-                }
-                else
-                {
-                    this.imageField = value;
-                }
-            }
-        }
+
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]

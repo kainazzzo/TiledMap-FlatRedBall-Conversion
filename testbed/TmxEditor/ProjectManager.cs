@@ -40,14 +40,35 @@ namespace TmxEditor
 
         internal void LoadTilesetFrom(string fileName)
         {
-            TiledMapSave tms = TiledMapSave.FromFile(fileName);
+            TiledMapSave toCopyFrom = TiledMapSave.FromFile(fileName);
 
-            foreach (var tileset in tms.tileset)
+            for(int i = 0; i < toCopyFrom.tileset.Length; i++)
             {
+                var tileset = toCopyFrom.tileset[i];
 
+                var copyTo = GetTilesetByName(mTiledMapSave, tileset.name);
 
-
+                if (tileset != null && copyTo != null)
+                {
+                    copyTo.tile = tileset.tile;
+                }
             }
         }
+
+
+        internal mapTileset GetTilesetByName(TiledMapSave tms, string name)
+        {
+            foreach (var tileset in tms.tileset)
+            {
+                if (tileset != null && tileset.name == name)
+                {
+                    return tileset;
+                }
+            }
+
+            return null;
+
+        }
+
     }
 }
