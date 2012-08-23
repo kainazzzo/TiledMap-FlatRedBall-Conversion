@@ -104,13 +104,22 @@ namespace TmxToScnx
                     string sourcepath = tmxPath + "\\" + image.source;
                     if (tileset.source != null)
                     {
-                        sourcepath = tmxPath + "\\" + tileset.SourceDirectory + "\\" + image.source;
+                        if (tileset.SourceDirectory != ".")
+                        {
+                            sourcepath = tmxPath + "\\" + tileset.SourceDirectory + "\\" + image.source;
+                        }
+                        else
+                        {
+                            sourcepath = tmxPath + "\\" + image.source;
+
+                        }
                     }
                     string destinationFullPath = destinationPath + "\\" + image.sourceFileName;
                     if (!sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase) && 
                         !FileManager.GetDirectory(destinationFullPath).Equals(FileManager.GetDirectory(sourcepath)))
                     {
                         Console.WriteLine(string.Format("Copying \"{0}\" to \"{1}\".", sourcepath, destinationFullPath));
+
                         File.Copy(sourcepath, destinationFullPath, true);
                     }
                 }
