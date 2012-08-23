@@ -72,24 +72,7 @@ namespace TiledMap
         {
             StringBuilder sb = new StringBuilder();
 
-            HashSet<string> columnNames = new HashSet<string>();
-
-            foreach (mapTileset tileSet in this.tileset)
-            {
-                foreach (mapTilesetTile tile in tileSet.tile)
-                {
-                    if (tile.PropertyDictionary.ContainsKey("name"))
-                    {
-                        foreach (KeyValuePair<string, string> pair in tile.PropertyDictionary)
-                        {
-                            if (!columnNames.Contains(pair.Key))
-                            {
-                                columnNames.Add(pair.Key);
-                            }
-                        }
-                    }
-                }
-            }
+            HashSet<string> columnNames = GetColumnNames();
 
             sb.Append("name (required)");
             foreach (string columnName in columnNames)
@@ -103,29 +86,58 @@ namespace TiledMap
 
             foreach (mapTileset tileSet in this.tileset)
             {
-                foreach (mapTilesetTile tile in tileSet.tile)
+                if (tileSet.tile != null)
                 {
-                    if (tile.PropertyDictionary.ContainsKey("name"))
+                    foreach (mapTilesetTile tile in tileSet.tile)
                     {
-                        sb.Append(tile.PropertyDictionary["name"]);
-                        foreach (string columnName in columnNames)
+                        if (tile.PropertyDictionary.ContainsKey("name"))
                         {
-                            if (columnName != "name" && 
-                                tile.PropertyDictionary.ContainsKey(columnName))
+                            sb.Append(tile.PropertyDictionary["name"]);
+                            foreach (string columnName in columnNames)
                             {
-                                sb.AppendFormat(",\"{0}\"", tile.PropertyDictionary[columnName].Replace("\"", "\"\""));
+                                if (columnName != "name" &&
+                                    tile.PropertyDictionary.ContainsKey(columnName))
+                                {
+                                    sb.AppendFormat(",\"{0}\"", tile.PropertyDictionary[columnName].Replace("\"", "\"\""));
+                                }
+                                else if (columnName != "name")
+                                {
+                                    sb.Append(",");
+                                }
                             }
-                            else if (columnName != "name")
-                            {
-                                sb.Append(",");
-                            }
+                            sb.AppendLine();
                         }
-                        sb.AppendLine();
                     }
                 }
             }
 
             return sb.ToString();
+        }
+
+        private HashSet<string> GetColumnNames()
+        {
+            HashSet<string> columnNames = new HashSet<string>();
+
+            foreach (mapTileset tileSet in this.tileset)
+            {
+                if (tileSet.tile != null)
+                {
+                    foreach (mapTilesetTile tile in tileSet.tile)
+                    {
+                        if (tile.PropertyDictionary.ContainsKey("name"))
+                        {
+                            foreach (KeyValuePair<string, string> pair in tile.PropertyDictionary)
+                            {
+                                if (!columnNames.Contains(pair.Key))
+                                {
+                                    columnNames.Add(pair.Key);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return columnNames;
         }
 
         public ShapeCollectionSave ToShapeCollectionSave(string layerName)
