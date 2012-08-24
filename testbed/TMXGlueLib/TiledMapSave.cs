@@ -1286,6 +1286,40 @@ namespace TiledMap
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class mapLayer
     {
+        public List<property> properties
+        {
+            get;
+            set;
+        }
+
+        private Dictionary<string, string> propertyDictionaryField = null;
+
+        [XmlIgnore]
+        public Dictionary<string, string> PropertyDictionary
+        {
+            get
+            {
+                if (propertyDictionaryField == null)
+                {
+                    propertyDictionaryField = new Dictionary<string, string>();
+                }
+                else
+                {
+                    return propertyDictionaryField;
+                }
+
+                if (properties != null)
+                {
+                    foreach (property p in properties)
+                    {
+
+                        propertyDictionaryField[p.name] = p.value;
+                    }
+                }
+
+                return propertyDictionaryField;
+            }
+        }
 
         private mapLayerData[] dataField;
 
@@ -1369,6 +1403,29 @@ namespace TiledMap
                         layerData.length = width * height;
                     }
                 }
+            }
+        }
+
+        private int visibleField;
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public int visible
+        {
+            get
+            {
+                return this.visibleField;
+            }
+            set
+            {
+                this.visibleField = value;
+            }
+        }
+
+        [XmlIgnore]
+        public bool IsVisible
+        {
+            get
+            {
+                return visibleField == 0;
             }
         }
     }

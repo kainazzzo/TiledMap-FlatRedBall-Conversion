@@ -45,7 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="DotNetZip\Zlib\Crc32.cs" />
     <Compile Include="DotNetZip\Zlib\Deflate.cs" />
     <Compile Include="DotNetZip\Zlib\GZipStream.cs" />
