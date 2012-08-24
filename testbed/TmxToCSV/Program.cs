@@ -12,7 +12,7 @@ namespace TmxToCSV
         {
             if (args.Length != 2)
             {
-                Console.WriteLine("Usage: tmxtocsv.exe <input.tmx> <output.csv>");
+                Console.WriteLine("Usage: tmxtocsv.exe <input.tmx> <output.csv> [type=tile|layer]");
                 return;
             }
 

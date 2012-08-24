@@ -74,12 +74,19 @@ namespace TiledMap
 
             HashSet<string> columnNames = GetColumnNames();
 
-            sb.Append("name (required)");
+            sb.Append("Name (required)");
             foreach (string columnName in columnNames)
             {
-                if (columnName != "name")
+                if (!columnName.Equals("name", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    sb.AppendFormat(",{0}", columnName);
+                    if (columnName.Length > 1)
+                    {
+                        sb.AppendFormat(",{0}{1}", columnName.Substring(0, 1).ToUpper(), columnName.Substring(1));
+                    }
+                    else
+                    {
+                        sb.AppendFormat(",{0}", columnName.ToUpper());
+                    }
                 }
             }
             sb.AppendLine();
@@ -1103,7 +1110,7 @@ namespace TiledMap
                     foreach (property p in properties)
                     {
 
-                        propertyDictionaryField[p.name] = p.value;
+                        propertyDictionaryField[p.name.ToLower()] = p.value;
                     }
                 }
 
