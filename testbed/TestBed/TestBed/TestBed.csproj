@@ -161,9 +161,9 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
-    <ProjectReference Include="..\..\TmxToScnx\TmxToScnx.csproj">
-      <Project>{EAA9B407-D6C9-46AC-82D4-F1861D235883}</Project>
-      <Name>TmxToScnx</Name>
+    <ProjectReference Include="..\..\TMXGlueLib\TMXGlueLib.csproj">
+      <Project>{8600173A-6281-45E1-8076-54366E42CBDE}</Project>
+      <Name>TMXGlueLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\TestBedContent\TestBedContent.contentproj">
       <Project>{64B23BEF-DD26-4B81-AAA6-D9F46B0140B4}</Project>

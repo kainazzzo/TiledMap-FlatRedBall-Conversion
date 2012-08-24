@@ -80,9 +80,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TmxToScnx\TmxToScnx.csproj">
-      <Project>{EAA9B407-D6C9-46AC-82D4-F1861D235883}</Project>
-      <Name>TmxToScnx</Name>
+    <ProjectReference Include="..\TMXGlueLib\TMXGlueLib.csproj">
+      <Project>{8600173A-6281-45E1-8076-54366E42CBDE}</Project>
+      <Name>TMXGlueLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
