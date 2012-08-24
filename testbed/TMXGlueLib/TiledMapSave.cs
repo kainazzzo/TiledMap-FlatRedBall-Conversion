@@ -32,6 +32,7 @@ using FlatRedBall.IO.Csv;
 // 
 namespace TiledMap
 {
+    public enum CSVPropertyType { Tile, Layer };
 
     /// <remarks/>
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
@@ -68,7 +69,7 @@ namespace TiledMap
             return scs.ToShapeCollection();
         }
 
-        public string ToCSVString()
+        public string ToCSVString(CSVPropertyType type = CSVPropertyType.Tile)
         {
             StringBuilder sb = new StringBuilder();
 
