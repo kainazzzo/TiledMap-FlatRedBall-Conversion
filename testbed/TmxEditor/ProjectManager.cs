@@ -42,7 +42,7 @@ namespace TmxEditor
         {
             TiledMapSave toCopyFrom = TiledMapSave.FromFile(fileName);
 
-            for(int i = 0; i < toCopyFrom.tileset.Count; i++)
+            for(int i = 0; i < toCopyFrom.tileset.Length; i++)
             {
                 var tileset = toCopyFrom.tileset[i];
 

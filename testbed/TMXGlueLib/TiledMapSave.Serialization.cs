@@ -38,9 +38,9 @@ namespace TiledMap
     [System.Xml.Serialization.XmlRootAttribute(ElementName = "map", Namespace = "", IsNullable = false)]
     public partial class TiledMapSave
     {
-        private List<mapTileset> tilesetField;
+        private mapTileset[] tilesetField;
 
-        private List<mapLayer> layerField;
+        private mapLayer[] layerField;
 
         private string versionField;
 
@@ -54,11 +54,11 @@ namespace TiledMap
 
         private int tileheightField;
 
-        private List<mapObjectgroup> objectgroupField;
+        private mapObjectgroup[] objectgroupField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("tileset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public List<mapTileset> tileset
+        public mapTileset[] tileset
         {
             get
             {
@@ -72,7 +72,7 @@ namespace TiledMap
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("layer", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public List<mapLayer> layer
+        public mapLayer[] layer
         {
             get
             {
@@ -86,7 +86,7 @@ namespace TiledMap
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("objectgroup", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public List<mapObjectgroup> objectgroup
+        public mapObjectgroup[] objectgroup
         {
             get
             {
@@ -187,11 +187,11 @@ namespace TiledMap
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class mapTileset
     {
-        private List<mapTilesetTile> tileField;
+        private mapTilesetTile[] tileField;
 
-        private List<mapTilesetImage> imageField;
+        private mapTilesetImage[] imageField;
 
-        private List<mapTilesetTileOffset> tileOffsetField;
+        private mapTilesetTileOffset[] tileOffsetField;
 
         private int firstgidField;
 
@@ -237,7 +237,7 @@ namespace TiledMap
                 {
                     sourceField = sourceField.Replace("/", "\\");
                     tileset xts = FileManager.XmlDeserialize<tileset>(sourceField);
-                    image = new List<mapTilesetImage>(xts.image.Count);
+                    image = new mapTilesetImage[xts.image.Length];
                     int count = 0;
                     foreach (tilesetImage ximage in xts.image)
                     {
@@ -276,7 +276,7 @@ namespace TiledMap
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("tileoffset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public List<mapTilesetTileOffset> tileoffset
+        public mapTilesetTileOffset[] tileoffset
         {
             get
             {
@@ -284,7 +284,7 @@ namespace TiledMap
             }
             set
             {
-                if (this.tileOffsetField != null && this.tileOffsetField.Count > 0)
+                if (this.tileOffsetField != null && this.tileOffsetField.Length > 0)
                 {
                     return;
                 }
@@ -298,7 +298,7 @@ namespace TiledMap
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("image", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public List<mapTilesetImage> image
+        public mapTilesetImage[] image
         {
             get
             {
@@ -306,7 +306,7 @@ namespace TiledMap
             }
             set
             {
-                if (this.imageField != null && this.imageField.Count > 0)
+                if (this.imageField != null && this.imageField.Length > 0)
                 {
                     return;
                 }
@@ -318,7 +318,7 @@ namespace TiledMap
         }
 
         [System.Xml.Serialization.XmlElementAttribute("tile", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public List<mapTilesetTile> tile
+        public mapTilesetTile[] tile
         {
             get
             {
@@ -326,7 +326,7 @@ namespace TiledMap
             }
             set
             {
-                if (this.tileField != null && this.tileField.Count > 0)
+                if (this.tileField != null && this.tileField.Length > 0)
                 {
                     return;
                 }
@@ -695,7 +695,7 @@ namespace TiledMap
             }
         }
 
-        private List<mapLayerData> dataField;
+        private mapLayerData[] dataField;
 
         private string nameField;
 
@@ -705,7 +705,7 @@ namespace TiledMap
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("data", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = true)]
-        public List<mapLayerData> data
+        public mapLayerData[] data
         {
             get
             {
@@ -915,7 +915,7 @@ namespace TiledMap
     public partial class mapObjectgroup
     {
 
-        private List<mapObjectgroupObject> objectField;
+        private mapObjectgroupObject[] objectField;
 
         private string nameField;
 
@@ -925,7 +925,7 @@ namespace TiledMap
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("object", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public List<mapObjectgroupObject> @object
+        public mapObjectgroupObject[] @object
         {
             get
             {
@@ -985,9 +985,9 @@ namespace TiledMap
     public partial class mapObjectgroupObject
     {
 
-        private List<mapObjectgroupObjectPolygon> polygonField;
+        private mapObjectgroupObjectPolygon[] polygonField;
 
-        private List<mapObjectgroupObjectPolyline> polylineField;
+        private mapObjectgroupObjectPolyline[] polylineField;
 
         private int xField;
 
@@ -999,7 +999,7 @@ namespace TiledMap
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("polygon", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public List<mapObjectgroupObjectPolygon> polygon
+        public mapObjectgroupObjectPolygon[] polygon
         {
             get
             {
@@ -1013,7 +1013,7 @@ namespace TiledMap
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("polyline", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public List<mapObjectgroupObjectPolyline> polyline
+        public mapObjectgroupObjectPolyline[] polyline
         {
             get
             {
@@ -1132,11 +1132,11 @@ namespace TiledMap
     public partial class NewDataSet
     {
 
-        private List<TiledMapSave> itemsField;
+        private TiledMapSave[] itemsField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("map")]
-        public List<TiledMapSave> Items
+        public TiledMapSave[] Items
         {
             get
             {
