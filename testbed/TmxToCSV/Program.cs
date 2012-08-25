@@ -20,7 +20,7 @@ namespace TmxToCSV
             {
                 string sourceTmx = args[0];
                 string destinationCSV = args[1];
-                CSVPropertyType type = CSVPropertyType.Tile;
+                TiledMapSave.CSVPropertyType type = TiledMapSave.CSVPropertyType.Tile;
                 if (args.Length >= 3)
                 {
                     for (int x = 2; x < args.Length; ++x)
@@ -35,9 +35,9 @@ namespace TmxToCSV
                             switch (key.ToLowerInvariant())
                             {
                                 case "type":
-                                    if (!Enum.TryParse<CSVPropertyType>(value, out type))
+                                    if (!Enum.TryParse<TiledMapSave.CSVPropertyType>(value, out type))
                                     {
-                                        type = CSVPropertyType.Tile;
+                                        type = TiledMapSave.CSVPropertyType.Tile;
                                     }
                                     break;
                                 default:

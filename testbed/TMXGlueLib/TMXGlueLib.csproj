@@ -58,7 +58,8 @@
     <Compile Include="DotNetZip\Zlib\ZlibStream.cs" />
     <Compile Include="ExternalTileset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TiledMapSave.cs" />
+    <Compile Include="TiledMapSave.Serialization.cs" />
+    <Compile Include="TiledMapSave.Conversion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
