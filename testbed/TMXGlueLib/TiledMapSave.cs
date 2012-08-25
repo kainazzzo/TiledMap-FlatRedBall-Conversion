@@ -74,7 +74,6 @@ namespace TiledMap
             StringBuilder sb = new StringBuilder();
 
             HashSet<string> columnNames = GetColumnNames(type);
-
             WriteColumnHeader(sb, columnNames);
 
             WriteColumnValues(sb, columnNames, type);
@@ -194,7 +193,6 @@ namespace TiledMap
                 {
                     if (!string.IsNullOrEmpty(layer.name))
                     {
-                        columnNames.Add(layer.name);
                         layer.PropertyDictionary["name"] = layer.name;
                         foreach (KeyValuePair<string, string> pair in layer.PropertyDictionary)
                         {
@@ -202,7 +200,7 @@ namespace TiledMap
                             {
                                 columnNames.Add(pair.Key);
                             }
-                        }                        
+                        }
                     }
                 }
             }
@@ -349,7 +347,7 @@ namespace TiledMap
             return polygon;
         }
 
-        public NodeNetwork ToNodeNetwork(bool requireTile=true)
+        public NodeNetwork ToNodeNetwork(bool requireTile = true)
         {
             return ToNodeNetwork(true, true, true, requireTile);
         }
@@ -360,7 +358,7 @@ namespace TiledMap
             return NodeNetworkSave.FromNodeNetwork(nodeNetwork);
         }
 
-        public NodeNetworkSave ToNodeNetworkSave(bool requireTile=true)
+        public NodeNetworkSave ToNodeNetworkSave(bool requireTile = true)
         {
             return ToNodeNetworkSave(true, true, true, requireTile);
         }
@@ -580,7 +578,7 @@ namespace TiledMap
                         sprite.Y -= tileSet.tileoffset[0].y;
                     }
 
-                  
+
                     sprite.X *= scale;
                     sprite.Y *= scale;
                     sprite.Z *= scale;
@@ -989,8 +987,8 @@ namespace TiledMap
                 }
             }
         }
-        
-        
+
+
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("image", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public mapTilesetImage[] image
