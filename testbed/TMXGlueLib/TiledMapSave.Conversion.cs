@@ -18,6 +18,7 @@ namespace TiledMap
     {
         public enum CSVPropertyType { Tile, Layer };
         public enum LayerVisibleBehavior { Ignore, Match, Skip };
+        public LayerVisibleBehavior layerVisibleBehavior = LayerVisibleBehavior.Ignore;
 
         enum LessOrGreaterDesired
         {
@@ -49,6 +50,8 @@ namespace TiledMap
             return scs.ToShapeCollection();
         }
 
+        #region CSV Related Functions
+        
         public string ToCSVString(CSVPropertyType type = CSVPropertyType.Tile)
         {
             StringBuilder sb = new StringBuilder();
@@ -187,12 +190,14 @@ namespace TiledMap
             return columnNames;
         }
 
+        #endregion area
+
         public ShapeCollectionSave ToShapeCollectionSave(string layerName)
         {
             ShapeCollectionSave shapes = new ShapeCollectionSave();
 
 
-            if (this.objectgroup == null || this.objectgroup.Length == 0)
+            if (this.objectgroup == null || this.objectgroup.Count == 0)
             {
                 return shapes;
             }
@@ -552,7 +557,7 @@ namespace TiledMap
                     sprite.ScaleX = tileWidth / 2;
                     sprite.ScaleY = tileHeight / 2;
 
-                    if (tileSet.tileoffset != null && tileSet.tileoffset.Length == 1)
+                    if (tileSet.tileoffset != null && tileSet.tileoffset.Count == 1)
                     {
                         sprite.X += tileSet.tileoffset[0].x;
                         sprite.Y -= tileSet.tileoffset[0].y;
@@ -639,7 +644,7 @@ namespace TiledMap
         {
             // Assuming tilesets are sorted by the firstgid value...
             // Resort with LINQ if not
-            for (int i = tileset.Length - 1; i >= 0; --i)
+            for (int i = tileset.Count - 1; i >= 0; --i)
             {
                 mapTileset tileSet = tileset[i];
                 if (gid >= tileSet.firstgid)
