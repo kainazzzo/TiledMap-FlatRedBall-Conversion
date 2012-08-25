@@ -73,8 +73,77 @@ namespace TiledMap
         {
             StringBuilder sb = new StringBuilder();
 
-            HashSet<string> columnNames = GetColumnNames();
+            HashSet<string> columnNames = GetColumnNames(type);
 
+            WriteColumnHeader(sb, columnNames);
+
+            WriteColumnValues(sb, columnNames, type);
+
+            return sb.ToString();
+        }
+
+        private void WriteColumnValues(StringBuilder sb, HashSet<string> columnNames, CSVPropertyType type)
+        {
+            // TODO: There is probably a good way to refactor this code
+            if (type == CSVPropertyType.Tile)
+            {
+                foreach (mapTileset tileSet in this.tileset)
+                {
+                    if (tileSet.tile != null)
+                    {
+                        foreach (mapTilesetTile tile in tileSet.tile)
+                        {
+                            if (tile.PropertyDictionary.ContainsKey("name"))
+                            {
+                                sb.Append(tile.PropertyDictionary["name"]);
+                                foreach (string columnName in columnNames)
+                                {
+                                    if (columnName != "name" &&
+                                        tile.PropertyDictionary.ContainsKey(columnName))
+                                    {
+                                        sb.AppendFormat(",\"{0}\"", tile.PropertyDictionary[columnName].Replace("\"", "\"\""));
+                                    }
+                                    else if (columnName != "name")
+                                    {
+                                        sb.Append(",");
+                                    }
+                                }
+                                sb.AppendLine();
+                            }
+                        }
+                    }
+                }
+            }
+            else if (type == CSVPropertyType.Layer)
+            {
+                foreach (mapLayer layer in this.layer)
+                {
+                    if (!string.IsNullOrEmpty(layer.name))
+                    {
+                        if (layer.PropertyDictionary.ContainsKey("name"))
+                        {
+                            sb.Append(layer.PropertyDictionary["name"]);
+                            foreach (string columnName in columnNames)
+                            {
+                                if (columnName != "name" &&
+                                    layer.PropertyDictionary.ContainsKey(columnName))
+                                {
+                                    sb.AppendFormat(",\"{0}\"", layer.PropertyDictionary[columnName].Replace("\"", "\"\""));
+                                }
+                                else if (columnName != "name")
+                                {
+                                    sb.Append(",");
+                                }
+                            }
+                            sb.AppendLine();
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void WriteColumnHeader(StringBuilder sb, HashSet<string> columnNames)
+        {
             sb.Append("Name (required)");
             foreach (string columnName in columnNames)
             {
@@ -91,57 +160,49 @@ namespace TiledMap
                 }
             }
             sb.AppendLine();
+        }
 
-            foreach (mapTileset tileSet in this.tileset)
+        private HashSet<string> GetColumnNames(CSVPropertyType type)
+        {
+            HashSet<string> columnNames = new HashSet<string>();
+
+            if (type == CSVPropertyType.Tile)
             {
-                if (tileSet.tile != null)
+                foreach (mapTileset tileSet in this.tileset)
                 {
-                    foreach (mapTilesetTile tile in tileSet.tile)
+                    if (tileSet.tile != null)
                     {
-                        if (tile.PropertyDictionary.ContainsKey("name"))
+                        foreach (mapTilesetTile tile in tileSet.tile)
                         {
-                            sb.Append(tile.PropertyDictionary["name"]);
-                            foreach (string columnName in columnNames)
+                            if (tile.PropertyDictionary.ContainsKey("name"))
                             {
-                                if (columnName != "name" &&
-                                    tile.PropertyDictionary.ContainsKey(columnName))
+                                foreach (KeyValuePair<string, string> pair in tile.PropertyDictionary)
                                 {
-                                    sb.AppendFormat(",\"{0}\"", tile.PropertyDictionary[columnName].Replace("\"", "\"\""));
-                                }
-                                else if (columnName != "name")
-                                {
-                                    sb.Append(",");
+                                    if (!columnNames.Contains(pair.Key))
+                                    {
+                                        columnNames.Add(pair.Key);
+                                    }
                                 }
                             }
-                            sb.AppendLine();
                         }
                     }
                 }
             }
-
-            return sb.ToString();
-        }
-
-        private HashSet<string> GetColumnNames()
-        {
-            HashSet<string> columnNames = new HashSet<string>();
-
-            foreach (mapTileset tileSet in this.tileset)
+            else if (type == CSVPropertyType.Layer)
             {
-                if (tileSet.tile != null)
+                foreach (mapLayer layer in this.layer)
                 {
-                    foreach (mapTilesetTile tile in tileSet.tile)
+                    if (!string.IsNullOrEmpty(layer.name))
                     {
-                        if (tile.PropertyDictionary.ContainsKey("name"))
+                        columnNames.Add(layer.name);
+                        layer.PropertyDictionary["name"] = layer.name;
+                        foreach (KeyValuePair<string, string> pair in layer.PropertyDictionary)
                         {
-                            foreach (KeyValuePair<string, string> pair in tile.PropertyDictionary)
+                            if (!columnNames.Contains(pair.Key))
                             {
-                                if (!columnNames.Contains(pair.Key))
-                                {
-                                    columnNames.Add(pair.Key);
-                                }
+                                columnNames.Add(pair.Key);
                             }
-                        }
+                        }                        
                     }
                 }
             }
