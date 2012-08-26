@@ -16,7 +16,7 @@ namespace TmxToScnx
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx> [scale=##.#]");
+                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match]");
                 return;
             }
 
@@ -27,29 +27,7 @@ namespace TmxToScnx
                 float scale = 1.0f;
                 if (args.Length >= 3)
                 {
-                    for (int x = 2; x < args.Length; ++x)
-                    {
-                        string arg = args[x];
-                        string[] tokens = arg.Split("=".ToCharArray());
-                        if (tokens != null && tokens.Length == 2)
-                        {
-                            string key = tokens[0];
-                            string value = tokens[1];
-
-                            switch(key.ToLowerInvariant())
-                            {
-                                case "scale":
-                                    if (!float.TryParse(value, out scale))
-                                    {
-                                        scale = 1.0f;
-                                    }
-                                    break;
-                                default:
-                                    Console.Error.WriteLine("Invalid command line argument: {0}", arg);
-                                    break;
-                            }
-                        }
-                    }
+                    ParseOptionalCommandLineArgs(args, out scale);
                 }
 
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
@@ -72,6 +50,33 @@ namespace TmxToScnx
             }
         }
 
+        private static void ParseOptionalCommandLineArgs(string[] args, out float scale)
+        {
+            scale = 1.0f;
+            for (int x = 2; x < args.Length; ++x)
+            {
+                string arg = args[x];
+                string[] tokens = arg.Split("=".ToCharArray());
+                if (tokens != null && tokens.Length == 2)
+                {
+                    string key = tokens[0];
+                    string value = tokens[1];
+
+                    switch (key.ToLowerInvariant())
+                    {
+                        case "scale":
+                            if (!float.TryParse(value, out scale))
+                            {
+                                scale = 1.0f;
+                            }
+                            break;
+                        default:
+                            Console.Error.WriteLine("Invalid command line argument: {0}", arg);
+                            break;
+                    }
+                }
+            }
+        }
         private static void fixupImageSources(TiledMapSave tms)
         {
             Console.WriteLine("Fixing up tileset relative paths");

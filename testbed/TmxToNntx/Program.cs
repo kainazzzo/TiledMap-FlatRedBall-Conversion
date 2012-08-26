@@ -19,7 +19,7 @@ namespace TmxToNntx
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: tmxtonntx.exe <input.tmx> <output.csv> [requiretile=true|false]");
+                Console.WriteLine("Usage: tmxtonntx.exe <input.tmx> <output.csv> [requiretile=true|false] [layervisibilitybehavior=Ignore|Skip|Match]");
                 return;
             }
 
@@ -30,29 +30,7 @@ namespace TmxToNntx
                 bool requiretile = true;
                 if (args.Length >= 3)
                 {
-                    for (int x = 2; x < args.Length; ++x)
-                    {
-                        string arg = args[x];
-                        string[] tokens = arg.Split("=".ToCharArray());
-                        if (tokens != null && tokens.Length == 2)
-                        {
-                            string key = tokens[0];
-                            string value = tokens[1];
-
-                            switch (key.ToLowerInvariant())
-                            {
-                                case "requiretile":
-                                    if (!bool.TryParse(value, out requiretile))
-                                    {
-                                        requiretile = true;
-                                    }
-                                    break;
-                                default:
-                                    Console.Error.WriteLine("Invalid command line argument: {0}", arg);
-                                    break;
-                            }
-                        }
-                    }
+                    ParseOptionalCommandLineArgs(args, out requiretile);
                 }
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
@@ -65,5 +43,34 @@ namespace TmxToNntx
                 Console.Error.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
             }
         }
+
+        private static void ParseOptionalCommandLineArgs(string[] args, out bool requiretile)
+        {
+            requiretile = true;
+            for (int x = 2; x < args.Length; ++x)
+            {
+                string arg = args[x];
+                string[] tokens = arg.Split("=".ToCharArray());
+                if (tokens != null && tokens.Length == 2)
+                {
+                    string key = tokens[0];
+                    string value = tokens[1];
+
+                    switch (key.ToLowerInvariant())
+                    {
+                        case "requiretile":
+                            if (!bool.TryParse(value, out requiretile))
+                            {
+                                requiretile = true;
+                            }
+                            break;
+                        default:
+                            Console.Error.WriteLine("Invalid command line argument: {0}", arg);
+                            break;
+                    }
+                }
+            }
+        }
+
     }
 }

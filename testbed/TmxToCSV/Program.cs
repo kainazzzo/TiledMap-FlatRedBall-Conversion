@@ -10,7 +10,7 @@ namespace TmxToCSV
     {
         static void Main(string[] args)
         {
-            if (args.Length < 2 || args.Length > 3)
+            if (args.Length < 2)
             {
                 Console.WriteLine("Usage: tmxtocsv.exe <input.tmx> <output.csv> [type=Tile|Layer]");
                 return;
@@ -21,7 +21,11 @@ namespace TmxToCSV
                 string sourceTmx = args[0];
                 string destinationCSV = args[1];
 
-                TiledMapSave.CSVPropertyType type = GetCsvPropertyType(args);
+                TiledMapSave.CSVPropertyType type = TiledMapSave.CSVPropertyType.Tile;
+                if (args.Length >= 3)
+                {
+                    ParseOptionalCommandLineArgs(args, out type);
+                }
                 
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 
@@ -36,9 +40,9 @@ namespace TmxToCSV
             }
         }
 
-        private static TiledMapSave.CSVPropertyType GetCsvPropertyType(string[] args)
+        private static void ParseOptionalCommandLineArgs(string[] args, out TiledMapSave.CSVPropertyType type)
         {
-            TiledMapSave.CSVPropertyType type = TiledMapSave.CSVPropertyType.Tile;
+            type = TiledMapSave.CSVPropertyType.Tile;
             if (args.Length >= 3)
             {
                 for (int x = 2; x < args.Length; ++x)
@@ -66,7 +70,6 @@ namespace TmxToCSV
                     }
                 }
             }
-            return type;
         }
     }
 }
