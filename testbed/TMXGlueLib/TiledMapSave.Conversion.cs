@@ -11,6 +11,7 @@ using FlatRedBall.Content.AI.Pathfinding;
 using FlatRedBall.Content.Polygon;
 using FlatRedBall.Content.Math.Geometry;
 using FlatRedBall;
+using System.Xml.Serialization;
 
 namespace TiledMap
 {
@@ -18,6 +19,8 @@ namespace TiledMap
     {
         public enum CSVPropertyType { Tile, Layer };
         public enum LayerVisibleBehavior { Ignore, Match, Skip };
+
+        public static LayerVisibleBehavior layerVisibleBehavior = LayerVisibleBehavior.Ignore;
 
         enum LessOrGreaterDesired
         {
@@ -189,10 +192,15 @@ namespace TiledMap
 
         public ShapeCollectionSave ToShapeCollectionSave(string layerName)
         {
+            mapLayer layer = null;
+            if (!string.IsNullOrEmpty(layerName))
+            {
+                layer = this.layer.FirstOrDefault(l => l.name.Equals(layerName));
+            }
             ShapeCollectionSave shapes = new ShapeCollectionSave();
 
-
-            if (this.objectgroup == null || this.objectgroup.Length == 0)
+            if ((layer != null && !layer.IsVisible && layer.VisibleBehavior == LayerVisibleBehavior.Skip) ||
+                this.objectgroup == null || this.objectgroup.Length == 0)
             {
                 return shapes;
             }
@@ -351,6 +359,16 @@ namespace TiledMap
             int layercount = 0;
             foreach (mapLayer layer in this.layer)
             {
+                if (!layer.IsVisible)
+                {
+                    switch(layer.VisibleBehavior)
+                    {
+                        case LayerVisibleBehavior.Ignore:
+                            break;
+                        case LayerVisibleBehavior.Skip:
+                            continue;
+                    }
+                }
                 Dictionary<int, Dictionary<int, Dictionary<int, PositionedNode>>> allNodes = new Dictionary<int, Dictionary<int, Dictionary<int, PositionedNode>>>();
                 allNodes[layercount] = new Dictionary<int, Dictionary<int, PositionedNode>>();
                 int count = 0;
@@ -515,6 +533,16 @@ namespace TiledMap
             int layercount = 0;
             foreach (mapLayer layer in this.layer)
             {
+                if (!layer.IsVisible)
+                {
+                    switch (layerVisibleBehavior)
+                    {
+                        case LayerVisibleBehavior.Ignore:
+                            break;
+                        case LayerVisibleBehavior.Skip:
+                            continue;
+                    }
+                }
                 int count = 0;
                 foreach (int gid in layer.data[0].tiles)
                 {
@@ -526,6 +554,10 @@ namespace TiledMap
                     }
 
                     SpriteSave sprite = new SpriteSave();
+                    if (!layer.IsVisible && layer.VisibleBehavior == LayerVisibleBehavior.Match)
+                    {
+                        sprite.Visible = false;
+                    }
 
                     int imageWidth = tileSet.image[0].width;
                     int imageHeight = tileSet.image[0].height;
@@ -701,6 +733,21 @@ namespace TiledMap
             }
             TiledMapSave tms = FileManager.XmlDeserialize<TiledMapSave>(fileName);
             FileManager.RelativeDirectory = oldRelativeDirectory;
+
+            tms.layer.AsParallel().ForAll((layer) => 
+            {
+                if (!layer.PropertyDictionary.ContainsKey("VisibleBehavior"))
+                {
+                    layer.VisibleBehavior = layerVisibleBehavior;
+                }
+                else
+                {
+                    if (!Enum.TryParse<LayerVisibleBehavior>(layer.PropertyDictionary["VisibleBehavior"], out layer.VisibleBehavior))
+                    {
+                        layer.VisibleBehavior = layerVisibleBehavior;
+                    }
+                }
+            });
             return tms;
         }
 
@@ -709,5 +756,11 @@ namespace TiledMap
             FileManager.XmlSerialize<TiledMapSave>(this, fileName);
 
         }
+    }
+
+    public partial class mapLayer
+    {
+        [XmlIgnore]
+        public TiledMapSave.LayerVisibleBehavior VisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
     }
 }

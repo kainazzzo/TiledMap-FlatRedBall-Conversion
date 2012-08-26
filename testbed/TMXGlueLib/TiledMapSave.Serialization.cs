@@ -802,6 +802,8 @@ namespace TiledMap
                 return visibleField == 0;
             }
         }
+
+       
     }
 
     /// <remarks/>
