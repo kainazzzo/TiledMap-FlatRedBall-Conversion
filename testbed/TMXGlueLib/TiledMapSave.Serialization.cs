@@ -357,7 +357,10 @@ namespace TiledMap
                 {
                     Parallel.ForEach(tile, (t) =>
                     {
-                        tileDictionaryField[(uint)t.id + 1] = t;
+                        if (t != null && !tileDictionaryField.ContainsKey((uint)t.id + 1))
+                        {
+                            tileDictionaryField.Add((uint)t.id + 1, t);
+                        }
                     });
                 }
 
@@ -476,7 +479,10 @@ namespace TiledMap
                 {
                     Parallel.ForEach(properties, (p) =>
                     {
-                        propertyDictionaryField[p.name.ToLower()] = p.value;
+                        if (p != null && !propertyDictionaryField.ContainsKey(p.name.ToLower()))
+                        {
+                            propertyDictionaryField.Add(p.name.ToLower(), p.value);
+                        }
                     });
                 }
 
@@ -685,7 +691,10 @@ namespace TiledMap
                 {
                     Parallel.ForEach(properties, (p) =>
                         {
-                            propertyDictionaryField[p.name.ToLower()] = p.value;
+                            if (p != null && !propertyDictionaryField.ContainsKey(p.name.ToLower()))
+                            {
+                                propertyDictionaryField.Add(p.name.ToLower(), p.value);
+                            }
                         });
                 }
 
