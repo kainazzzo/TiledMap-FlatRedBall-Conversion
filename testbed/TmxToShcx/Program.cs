@@ -35,7 +35,7 @@ namespace TmxToShcx
                 {
                     ParseOptionalCommandLineArgs(args, out layername, out layerVisibilityBehavior);
                 }
-
+                TiledMapSave.layerVisibleBehavior = layerVisibilityBehavior;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
                 ShapeCollectionSave save = tms.ToShapeCollectionSave(layername);

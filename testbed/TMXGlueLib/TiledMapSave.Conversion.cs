@@ -535,7 +535,7 @@ namespace TiledMap
             {
                 if (!layer.IsVisible)
                 {
-                    switch (layerVisibleBehavior)
+                    switch (layer.VisibleBehavior)
                     {
                         case LayerVisibleBehavior.Ignore:
                             break;

@@ -28,10 +28,13 @@ namespace TmxToNntx
                 string sourceTmx = args[0];
                 string destinationNntx = args[1];
                 bool requiretile = true;
+                TiledMapSave.LayerVisibleBehavior layerVisibilityBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
                 if (args.Length >= 3)
                 {
-                    ParseOptionalCommandLineArgs(args, out requiretile);
+                    ParseOptionalCommandLineArgs(args, out requiretile, out layerVisibilityBehavior);
                 }
+
+                TiledMapSave.layerVisibleBehavior = layerVisibilityBehavior;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
                 NodeNetworkSave save = tms.ToNodeNetworkSave(requiretile);
@@ -44,9 +47,10 @@ namespace TmxToNntx
             }
         }
 
-        private static void ParseOptionalCommandLineArgs(string[] args, out bool requiretile)
+        private static void ParseOptionalCommandLineArgs(string[] args, out bool requiretile, out TiledMapSave.LayerVisibleBehavior layerVisibleBehavior)
         {
             requiretile = true;
+            layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
             for (int x = 2; x < args.Length; ++x)
             {
                 string arg = args[x];
@@ -62,6 +66,12 @@ namespace TmxToNntx
                             if (!bool.TryParse(value, out requiretile))
                             {
                                 requiretile = true;
+                            }
+                            break;
+                        case "layervisiblebehavior":
+                            if (!Enum.TryParse(value, out layerVisibleBehavior))
+                            {
+                                layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
                             }
                             break;
                         default:

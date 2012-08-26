@@ -25,11 +25,12 @@ namespace TmxToScnx
                 string sourceTmx = args[0];
                 string destinationScnx = args[1];
                 float scale = 1.0f;
+                TiledMapSave.LayerVisibleBehavior layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
                 if (args.Length >= 3)
                 {
-                    ParseOptionalCommandLineArgs(args, out scale);
+                    ParseOptionalCommandLineArgs(args, out scale, out layerVisibleBehavior);
                 }
-
+                TiledMapSave.layerVisibleBehavior = layerVisibleBehavior;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
                 SpriteEditorScene save = tms.ToSpriteEditorScene(scale);
@@ -50,9 +51,10 @@ namespace TmxToScnx
             }
         }
 
-        private static void ParseOptionalCommandLineArgs(string[] args, out float scale)
+        private static void ParseOptionalCommandLineArgs(string[] args, out float scale, out TiledMapSave.LayerVisibleBehavior layerVisibleBehavior)
         {
             scale = 1.0f;
+            layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
             for (int x = 2; x < args.Length; ++x)
             {
                 string arg = args[x];
@@ -68,6 +70,12 @@ namespace TmxToScnx
                             if (!float.TryParse(value, out scale))
                             {
                                 scale = 1.0f;
+                            }
+                            break;
+                        case "layervisiblebehavior":
+                            if (!Enum.TryParse(value, out layerVisibleBehavior))
+                            {
+                                layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
                             }
                             break;
                         default:
