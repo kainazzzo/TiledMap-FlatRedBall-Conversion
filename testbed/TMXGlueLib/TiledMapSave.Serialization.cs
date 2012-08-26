@@ -39,148 +39,76 @@ namespace TiledMap
     [System.Xml.Serialization.XmlRootAttribute(ElementName = "map", Namespace = "", IsNullable = false)]
     public partial class TiledMapSave
     {
-        private mapTileset[] tilesetField;
-
-        private mapLayer[] layerField;
-
-        private string versionField;
-
-        private string orientationField;
-
-        private int widthField;
-
-        private int heightField;
-
-        private int tilewidthField;
-
-        private int tileheightField;
-
-        private mapObjectgroup[] objectgroupField;
-
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("tileset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public mapTileset[] tileset
         {
-            get
-            {
-                return this.tilesetField;
-            }
-            set
-            {
-                this.tilesetField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("layer", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public mapLayer[] layer
         {
-            get
-            {
-                return this.layerField;
-            }
-            set
-            {
-                this.layerField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("objectgroup", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public mapObjectgroup[] objectgroup
         {
-            get
-            {
-                return this.objectgroupField;
-            }
-            set
-            {
-                this.objectgroupField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public string version
         {
-            get
-            {
-                return this.versionField;
-            }
-            set
-            {
-                this.versionField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public string orientation
         {
-            get
-            {
-                return this.orientationField;
-            }
-            set
-            {
-                this.orientationField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public int width
         {
-            get
-            {
-                return this.widthField;
-            }
-            set
-            {
-                this.widthField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public int height
         {
-            get
-            {
-                return this.heightField;
-            }
-            set
-            {
-                this.heightField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public int tilewidth
         {
-            get
-            {
-                return this.tilewidthField;
-            }
-            set
-            {
-                this.tilewidthField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public int tileheight
         {
-            get
-            {
-                return this.tileheightField;
-            }
-            set
-            {
-                this.tileheightField = value;
-            }
+            get;
+            set;
         }
     }
 
@@ -193,18 +121,6 @@ namespace TiledMap
         private mapTilesetImage[] imageField;
 
         private mapTilesetTileOffset[] tileOffsetField;
-
-        private uint firstgidField;
-
-        private string nameField;
-
-        private int tilewidthField;
-
-        private int tileheightField;
-
-        private int spacingField;
-
-        private int marginField;
 
         private string sourceField;
 
@@ -374,84 +290,48 @@ namespace TiledMap
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public uint firstgid
         {
-            get
-            {
-                return this.firstgidField;
-            }
-            set
-            {
-                this.firstgidField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public string name
         {
-            get
-            {
-                return this.nameField;
-            }
-            set
-            {
-                this.nameField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public int tilewidth
         {
-            get
-            {
-                return this.tilewidthField;
-            }
-            set
-            {
-                this.tilewidthField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public int tileheight
         {
-            get
-            {
-                return this.tileheightField;
-            }
-            set
-            {
-                this.tileheightField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public int spacing
         {
-            get
-            {
-                return this.spacingField;
-            }
-            set
-            {
-                this.spacingField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public int margin
         {
-            get
-            {
-                return this.marginField;
-            }
-            set
-            {
-                this.marginField = value;
-            }
+            get;
+            set;
         }
     }
 
@@ -490,8 +370,6 @@ namespace TiledMap
             }
         }
 
-        private int idField;
-
         public List<property> properties
         {
             get;
@@ -502,14 +380,8 @@ namespace TiledMap
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public int id
         {
-            get
-            {
-                return this.idField;
-            }
-            set
-            {
-                this.idField = value;
-            }
+            get;
+            set;
         }
     }
 
@@ -537,10 +409,6 @@ namespace TiledMap
     {
 
         private string sourceField;
-
-        private int widthField;
-
-        private int heightField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -597,28 +465,16 @@ namespace TiledMap
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public int width
         {
-            get
-            {
-                return this.widthField;
-            }
-            set
-            {
-                this.widthField = value;
-            }
+            get;
+            set;
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public int height
         {
-            get
-            {
-                return this.heightField;
-            }
-            set
-            {
-                this.heightField = value;
-            }
+            get;
+            set;
         }
     }
 
