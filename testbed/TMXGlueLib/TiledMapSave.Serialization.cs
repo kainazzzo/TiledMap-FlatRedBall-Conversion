@@ -194,7 +194,7 @@ namespace TiledMap
 
         private mapTilesetTileOffset[] tileOffsetField;
 
-        private int firstgidField;
+        private uint firstgidField;
 
         private string nameField;
 
@@ -337,16 +337,16 @@ namespace TiledMap
             }
         }
 
-        private Dictionary<int, mapTilesetTile> tileDictionaryField = null;
+        private Dictionary<uint, mapTilesetTile> tileDictionaryField = null;
 
         [XmlIgnore]
-        public Dictionary<int, mapTilesetTile> tileDictionary
+        public Dictionary<uint, mapTilesetTile> tileDictionary
         {
             get
             {
                 if (tileDictionaryField == null)
                 {
-                    tileDictionaryField = new Dictionary<int, mapTilesetTile>();
+                    tileDictionaryField = new Dictionary<uint, mapTilesetTile>();
                 }
                 else
                 {
@@ -355,10 +355,10 @@ namespace TiledMap
 
                 if (tile != null)
                 {
-                    foreach (mapTilesetTile t in tile)
+                    Parallel.ForEach(tile, (t) =>
                     {
-                        tileDictionaryField[t.id + 1] = t;
-                    }
+                        tileDictionaryField[(uint)t.id + 1] = t;
+                    });
                 }
 
                 return tileDictionaryField;
@@ -369,7 +369,7 @@ namespace TiledMap
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public int firstgid
+        public uint firstgid
         {
             get
             {
@@ -474,11 +474,10 @@ namespace TiledMap
 
                 if (properties != null)
                 {
-                    foreach (property p in properties)
+                    Parallel.ForEach(properties, (p) =>
                     {
-
                         propertyDictionaryField[p.name.ToLower()] = p.value;
-                    }
+                    });
                 }
 
                 return propertyDictionaryField;
@@ -684,11 +683,10 @@ namespace TiledMap
 
                 if (properties != null)
                 {
-                    foreach (property p in properties)
-                    {
-
-                        propertyDictionaryField[p.name] = p.value;
-                    }
+                    Parallel.ForEach(properties, (p) =>
+                        {
+                            propertyDictionaryField[p.name.ToLower()] = p.value;
+                        });
                 }
 
                 return propertyDictionaryField;

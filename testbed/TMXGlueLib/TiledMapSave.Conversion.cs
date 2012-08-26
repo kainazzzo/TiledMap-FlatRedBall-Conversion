@@ -12,6 +12,7 @@ using FlatRedBall.Content.Polygon;
 using FlatRedBall.Content.Math.Geometry;
 using FlatRedBall;
 using System.Xml.Serialization;
+using System.Threading.Tasks;
 
 namespace TiledMap
 {
@@ -371,20 +372,15 @@ namespace TiledMap
                 }
                 Dictionary<int, Dictionary<int, Dictionary<int, PositionedNode>>> allNodes = new Dictionary<int, Dictionary<int, Dictionary<int, PositionedNode>>>();
                 allNodes[layercount] = new Dictionary<int, Dictionary<int, PositionedNode>>();
-                int count = 0;
-                foreach (int gid in layer.data[0].tiles)
+                
+                Parallel.For(0, layer.data[0].tiles.Count, (count) =>
                 {
+                    uint gid = layer.data[0].tiles[(int)count];
 
                     mapTileset tileSet = getTilesetForGid(gid);
-                    if (tileSet == null)
+                    if (tileSet != null || !requireTile)
                     {
-                        if (requireTile)
-                        {
-                            ++count;
-                            continue;
-                        }
-                    }
-
+                        
                     PositionedNode node = new PositionedNode();
 
                     int tileWidth = requireTile ? tileSet.tilewidth : tilewidth;
@@ -410,8 +406,9 @@ namespace TiledMap
                     allNodes[layercount][X][Y] = node;
                     node.Name = string.Format("Node {0}", count);
                     toReturn.AddNode(node);
-                    ++count;
-                }
+                    }
+                });
+
                 setupNodeLinks(linkHorizontally, linkVertically, linkDiagonally, allNodes[layercount]);
 
                 removeExcludedNodesViaPolygonLayer(toReturn, layer, allNodes[layercount]);
@@ -544,7 +541,7 @@ namespace TiledMap
                     }
                 }
                 int count = 0;
-                foreach (int gid in layer.data[0].tiles)
+                foreach (uint gid in layer.data[0].tiles)
                 {
                     mapTileset tileSet = getTilesetForGid(gid);
                     if (tileSet == null)
@@ -638,7 +635,7 @@ namespace TiledMap
             }
         }
 
-        private void setSpriteTextureCoordinates(int gid, SpriteSave sprite, mapTileset tileSet, int imageWidth, int imageHeight, int tileWidth, int spacing, int tileHeight, int margin)
+        private void setSpriteTextureCoordinates(uint gid, SpriteSave sprite, mapTileset tileSet, int imageWidth, int imageHeight, int tileWidth, int spacing, int tileHeight, int margin)
         {
             // Calculate pixel coordinates in the texture sheet
             int leftPixelCoord = TiledMapSave.calculateXCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, spacing, margin);
@@ -667,7 +664,7 @@ namespace TiledMap
             sprite.BottomTextureCoordinate = GetTextureCoordinate(bottomPixelCoord, imageHeight, changeVal);
         }
 
-        private mapTileset getTilesetForGid(int gid)
+        public mapTileset getTilesetForGid(uint gid)
         {
             // Assuming tilesets are sorted by the firstgid value...
             // Resort with LINQ if not
@@ -703,19 +700,19 @@ namespace TiledMap
             }
         }
 
-        private static int calculateYCoordinate(int gid, int imageWidth, int tileWidth, int tileHeight, int spacing, int margin)
+        private static int calculateYCoordinate(uint gid, int imageWidth, int tileWidth, int tileHeight, int spacing, int margin)
         {
             int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
-            int normalizedy = gid / tilesWide;
+            int normalizedy = (int)(gid / tilesWide);
             int pixely = normalizedy * (tileHeight + spacing) + margin;
 
             return pixely;
         }
 
-        private static int calculateXCoordinate(int gid, int imageWidth, int tileWidth, int spacing, int margin)
+        private static int calculateXCoordinate(uint gid, int imageWidth, int tileWidth, int spacing, int margin)
         {
             int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
-            int normalizedX = gid % tilesWide;
+            int normalizedX = (int)(gid % tilesWide);
             int pixelX = normalizedX * (tileWidth + spacing) + margin;
 
             return pixelX;
