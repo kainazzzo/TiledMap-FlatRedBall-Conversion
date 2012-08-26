@@ -780,13 +780,13 @@ namespace TiledMap
             }
         }
 
-        private int visibleField;
+        private int? visibleField;
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public int visible
         {
             get
             {
-                return this.visibleField;
+                return this.visibleField.HasValue ? this.visibleField.Value : 1;
             }
             set
             {
