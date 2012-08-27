@@ -591,7 +591,14 @@ namespace TiledMap
 
                         sprite.X *= scale;
                         sprite.Y *= scale;
-                        sprite.Z *= scale;
+                        // Update August 28, 2012
+                        // The TMX converter splits
+                        // the Layers by their Z values.
+                        // We want each Layer to have its
+                        // own explicit Z value, so we don't
+                        // want to adjust the Z's when we scale:
+                        //sprite.Z *= scale;
+
                         sprite.ScaleX *= scale;
                         sprite.ScaleY *= scale;
                         lock (toReturn)
