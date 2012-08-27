@@ -20,7 +20,12 @@ namespace TmxEditor
         {
             string fileName = LoadFile("tmx");
 
-            ProjectManager.Self.LoadTiledMapSave(fileName);
+            if (!string.IsNullOrEmpty(fileName))
+            {
+                ProjectManager.Self.LoadTiledMapSave(fileName);
+
+                this.LoadedTmxLabel.Text = fileName;
+            }
         }
 
         
@@ -44,8 +49,10 @@ namespace TmxEditor
         private void saveTMXAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string fileName = SaveFile("tmx");
-
-            ProjectManager.Self.SaveTiledMapSave(fileName);
+            if (!string.IsNullOrEmpty(fileName))
+            {
+                ProjectManager.Self.SaveTiledMapSave(fileName);
+            }
         }
 
         private string SaveFile(string extension)
@@ -68,7 +75,18 @@ namespace TmxEditor
         {
             string fileName = LoadFile("tmx");
 
-            ProjectManager.Self.LoadTilesetFrom(fileName);
+            if (!string.IsNullOrEmpty(fileName))
+            {
+                string output;
+
+                ProjectManager.Self.LoadTilesetFrom(fileName, out output);
+
+                if (!string.IsNullOrEmpty(output))
+                {
+                    MessageBox.Show(output);
+                }
+
+            }
         }
     }
 }

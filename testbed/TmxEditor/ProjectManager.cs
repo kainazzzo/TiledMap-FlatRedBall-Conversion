@@ -38,9 +38,12 @@ namespace TmxEditor
             mTiledMapSave.Save(fileName);
         }
 
-        internal void LoadTilesetFrom(string fileName)
+        internal void LoadTilesetFrom(string fileName, out string output)
         {
             TiledMapSave toCopyFrom = TiledMapSave.FromFile(fileName);
+
+            StringBuilder stringBuilder = new StringBuilder();
+
 
             for(int i = 0; i < toCopyFrom.tileset.Length; i++)
             {
@@ -50,9 +53,16 @@ namespace TmxEditor
 
                 if (tileset != null && copyTo != null)
                 {
+
+                    stringBuilder.AppendLine("Modified " + tileset.name + " count before: " + copyTo.tile.Count + ", count after: " + tileset.tile.Count);
+
                     copyTo.tile = tileset.tile;
+
+
                 }
             }
+
+            output = stringBuilder.ToString();
         }
 
 

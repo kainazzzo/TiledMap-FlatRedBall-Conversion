@@ -191,7 +191,7 @@ namespace TiledMap
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("tileoffset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [System.Xml.Serialization.XmlElementAttribute("tileoffset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
         public mapTilesetTileOffset[] tileoffset
         {
             get
@@ -213,7 +213,7 @@ namespace TiledMap
 
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("image", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [System.Xml.Serialization.XmlElementAttribute("image", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
         public mapTilesetImage[] image
         {
             get
@@ -233,25 +233,25 @@ namespace TiledMap
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute("tile", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public mapTilesetTile[] tile
-        {
-            get
-            {
-                return this.tileField;
-            }
-            set
-            {
-                if (this.tileField != null && this.tileField.Length > 0)
-                {
-                    return;
-                }
-                else
-                {
-                    this.tileField = value;
-                }
-            }
-        }
+        [System.Xml.Serialization.XmlElementAttribute("tile", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
+        public List<mapTilesetTile> tile = new List<mapTilesetTile>();
+        //{
+        //    get
+        //    {
+        //        return this.tileField;
+        //    }
+        //    set
+        //    {
+        //        if (this.tileField != null && this.tileField.Length > 0)
+        //        {
+        //            return;
+        //        }
+        //        else
+        //        {
+        //            this.tileField = value;
+        //        }
+        //    }
+        //}
 
         private Dictionary<uint, mapTilesetTile> tileDictionaryField = null;
 
@@ -549,7 +549,11 @@ namespace TiledMap
                         {
                             if (p != null && !propertyDictionaryField.ContainsKey(p.name.ToLower()))
                             {
-                                propertyDictionaryField.Add(p.name.ToLower(), p.value);
+                                // NO NO NO!
+                                // This screws up a lot of things.  We want to preserve case
+                                //propertyDictionaryField.Add(p.name.ToLower(), p.value);
+                                propertyDictionaryField.Add(p.name, p.value);
+
                             }
                         });
                 }

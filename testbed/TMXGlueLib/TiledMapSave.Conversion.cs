@@ -132,14 +132,22 @@ namespace TiledMap
             {
                 if (!columnName.Equals("name", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    if (columnName.Length > 1)
-                    {
-                        sb.AppendFormat(",{0}{1}", columnName.Substring(0, 1).ToUpper(), columnName.Substring(1));
-                    }
-                    else
-                    {
-                        sb.AppendFormat(",{0}", columnName.ToUpper());
-                    }
+                    // Update August 27, 2012
+                    // We can't just assume that
+                    // all of the column names are
+                    // going to be capitalized.  This
+                    // was likely done to force the Name
+                    // property to be capitalized, which we
+                    // want, but we don't want to do it for everything.
+                    //if (columnName.Length > 1)
+                    //{
+                    //    sb.AppendFormat(",{0}{1}", columnName.Substring(0, 1).ToUpper(), columnName.Substring(1));
+                    //}
+                    //else
+                    //{
+                    //    sb.AppendFormat(",{0}", columnName.ToUpper());
+                    //}
+                    sb.Append("," + columnName);
                 }
             }
             sb.AppendLine();
