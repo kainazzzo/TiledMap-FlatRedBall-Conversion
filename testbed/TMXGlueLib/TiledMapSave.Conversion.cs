@@ -176,7 +176,7 @@ namespace TiledMap
                         {
                             if (tile.PropertyDictionary.ContainsKey("name") ||
                                 tile.PropertyDictionary.ContainsKey("Name")
-                                
+
                                 )
                             {
                                 foreach (KeyValuePair<string, string> pair in tile.PropertyDictionary)
@@ -393,48 +393,57 @@ namespace TiledMap
                 Dictionary<int, Dictionary<int, Dictionary<int, PositionedNode>>> allNodes = new Dictionary<int, Dictionary<int, Dictionary<int, PositionedNode>>>();
                 allNodes[layercount] = new Dictionary<int, Dictionary<int, PositionedNode>>();
 
-                Parallel.For(0, layer.data[0].tiles.Count, (count) =>
+
+                try
                 {
-                    uint gid = layer.data[0].tiles[(int)count];
-
-                    mapTileset tileSet = getTilesetForGid(gid);
-                    if (tileSet != null || !requireTile)
+                    Parallel.For(0, layer.data[0].tiles.Count, (count) =>
                     {
-                        PositionedNode node = new PositionedNode();
+                        uint gid = layer.data[0].tiles[(int)count];
 
-                        int tileWidth = requireTile ? tileSet.tilewidth : tilewidth;
-                        int tileHeight = requireTile ? tileSet.tileheight : tileheight;
-                        int X = count % this.width;
-                        int Y = count / this.width;
-
-                        float nodex;
-                        float nodey;
-                        float nodez;
-
-                        calculateWorldCoordinates(layercount, count, tilewidth, tileheight, layer.width, out nodex, out nodey, out nodez);
-
-                        node.X = nodex;
-                        node.Y = nodey;
-                        node.Z = nodez;
-
-                        lock (allNodes)
+                        mapTileset tileSet = getTilesetForGid(gid);
+                        if (tileSet != null || !requireTile)
                         {
-                            if (!allNodes[layercount].ContainsKey(X))
+                            PositionedNode node = new PositionedNode();
+
+                            int tileWidth = requireTile ? tileSet.tilewidth : tilewidth;
+                            int tileHeight = requireTile ? tileSet.tileheight : tileheight;
+                            int X = count % this.width;
+                            int Y = count / this.width;
+
+                            float nodex;
+                            float nodey;
+                            float nodez;
+
+                            calculateWorldCoordinates(layercount, count, tilewidth, tileheight, layer.width, out nodex, out nodey, out nodez);
+
+                            node.X = nodex;
+                            node.Y = nodey;
+                            node.Z = nodez;
+
+                            lock (allNodes)
                             {
-                                allNodes[layercount][X] = new Dictionary<int, PositionedNode>();
+                                if (!allNodes[layercount].ContainsKey(X))
+                                {
+                                    allNodes[layercount][X] = new Dictionary<int, PositionedNode>();
+                                }
+
+                                allNodes[layercount][X][Y] = node;
                             }
-
-                            allNodes[layercount][X][Y] = node;
+                            node.Name = string.Format("Node {0}", count);
+                            lock (toReturn)
+                            {
+                                toReturn.AddNode(node);
+                            }
                         }
-                        node.Name = string.Format("Node {0}", count);
-                        lock (toReturn)
-                        {
-                            toReturn.AddNode(node);
-                        }
-                    }
-                });
+                    });
 
-                setupNodeLinks(linkHorizontally, linkVertically, linkDiagonally, allNodes[layercount]);
+
+                }
+                catch (AggregateException)
+                {
+
+                    throw;
+                } setupNodeLinks(linkHorizontally, linkVertically, linkDiagonally, allNodes[layercount]);
 
                 removeExcludedNodesViaPolygonLayer(toReturn, layer, allNodes[layercount]);
                 lowerNodesInNodesDownShapeCollection(layer, allNodes[layercount]);
@@ -566,68 +575,76 @@ namespace TiledMap
                     }
                 }
 
-                Parallel.For(0, layer.data[0].tiles.Count, (count) =>
+                try
                 {
-                    uint gid = layer.data[0].tiles[count];
-                    mapTileset tileSet = getTilesetForGid(gid);
-                    if (tileSet != null)
+                    Parallel.For(0, layer.data[0].tiles.Count, (count) =>
                     {
-                        SpriteSave sprite = new SpriteSave();
-                        if (!layer.IsVisible && layer.VisibleBehavior == LayerVisibleBehavior.Match)
+                        uint gid = layer.data[0].tiles[count];
+                        mapTileset tileSet = getTilesetForGid(gid);
+                        if (tileSet != null)
                         {
-                            sprite.Visible = false;
+                            SpriteSave sprite = new SpriteSave();
+                            if (!layer.IsVisible && layer.VisibleBehavior == LayerVisibleBehavior.Match)
+                            {
+                                sprite.Visible = false;
+                            }
+
+                            int imageWidth = tileSet.image[0].width;
+                            int imageHeight = tileSet.image[0].height;
+                            int tileWidth = tileSet.tilewidth;
+                            int spacing = tileSet.spacing;
+                            int tileHeight = tileSet.tileheight;
+                            int margin = tileSet.margin;
+
+                            // TODO: only calculate these once per tileset. Perhaps it can be done in the deserialize method
+                            int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
+                            int tilesHigh = (imageHeight - margin) / (tileHeight + spacing);
+
+
+                            sprite.Texture = tileSet.image[0].source;
+                            if (tileSet.tileDictionary.ContainsKey(gid - tileSet.firstgid + 1) && tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary.ContainsKey("name"))
+                            {
+                                sprite.Name = tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary["name"];
+                            }
+
+                            setSpriteTextureCoordinates(gid, sprite, tileSet, imageWidth, imageHeight, tileWidth, spacing, tileHeight, margin);
+                            calculateWorldCoordinates(layercount, count, tileWidth, tileHeight, this.width, out sprite.X, out sprite.Y, out sprite.Z);
+
+                            sprite.ScaleX = tileWidth / 2;
+                            sprite.ScaleY = tileHeight / 2;
+
+                            if (tileSet.tileoffset != null && tileSet.tileoffset.Length == 1)
+                            {
+                                sprite.X += tileSet.tileoffset[0].x;
+                                sprite.Y -= tileSet.tileoffset[0].y;
+                            }
+
+
+                            sprite.X *= scale;
+                            sprite.Y *= scale;
+                            // Update August 28, 2012
+                            // The TMX converter splits
+                            // the Layers by their Z values.
+                            // We want each Layer to have its
+                            // own explicit Z value, so we don't
+                            // want to adjust the Z's when we scale:
+                            //sprite.Z *= scale;
+
+                            sprite.ScaleX *= scale;
+                            sprite.ScaleY *= scale;
+                            lock (toReturn)
+                            {
+                                toReturn.SpriteList.Add(sprite);
+                            }
                         }
+                    });
 
-                        int imageWidth = tileSet.image[0].width;
-                        int imageHeight = tileSet.image[0].height;
-                        int tileWidth = tileSet.tilewidth;
-                        int spacing = tileSet.spacing;
-                        int tileHeight = tileSet.tileheight;
-                        int margin = tileSet.margin;
-
-                        // TODO: only calculate these once per tileset. Perhaps it can be done in the deserialize method
-                        int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
-                        int tilesHigh = (imageHeight - margin) / (tileHeight + spacing);
-
-
-                        sprite.Texture = tileSet.image[0].source;
-                        if (tileSet.tileDictionary.ContainsKey(gid - tileSet.firstgid + 1) && tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary.ContainsKey("name"))
-                        {
-                            sprite.Name = tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary["name"];
-                        }
-
-                        setSpriteTextureCoordinates(gid, sprite, tileSet, imageWidth, imageHeight, tileWidth, spacing, tileHeight, margin);
-                        calculateWorldCoordinates(layercount, count, tileWidth, tileHeight, this.width, out sprite.X, out sprite.Y, out sprite.Z);
-
-                        sprite.ScaleX = tileWidth / 2;
-                        sprite.ScaleY = tileHeight / 2;
-
-                        if (tileSet.tileoffset != null && tileSet.tileoffset.Length == 1)
-                        {
-                            sprite.X += tileSet.tileoffset[0].x;
-                            sprite.Y -= tileSet.tileoffset[0].y;
-                        }
-
-
-                        sprite.X *= scale;
-                        sprite.Y *= scale;
-                        // Update August 28, 2012
-                        // The TMX converter splits
-                        // the Layers by their Z values.
-                        // We want each Layer to have its
-                        // own explicit Z value, so we don't
-                        // want to adjust the Z's when we scale:
-                        //sprite.Z *= scale;
-
-                        sprite.ScaleX *= scale;
-                        sprite.ScaleY *= scale;
-                        lock (toReturn)
-                        {
-                            toReturn.SpriteList.Add(sprite);
-                        }
-                    }
-                });
-                ++layercount;
+                }
+                catch (AggregateException)
+                {
+                    
+                    throw;
+                } ++layercount;
             }
 
             return toReturn;
@@ -761,7 +778,7 @@ namespace TiledMap
             TiledMapSave tms = FileManager.XmlDeserialize<TiledMapSave>(fileName);
             FileManager.RelativeDirectory = oldRelativeDirectory;
 
-            tms.layer.AsParallel().ForAll((layer) =>
+            foreach (mapLayer layer in tms.layer)
             {
                 if (!layer.PropertyDictionary.ContainsKey("VisibleBehavior"))
                 {
@@ -774,7 +791,7 @@ namespace TiledMap
                         layer.VisibleBehavior = layerVisibleBehavior;
                     }
                 }
-            });
+            }
             return tms;
         }
 
