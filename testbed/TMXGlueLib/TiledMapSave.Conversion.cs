@@ -76,17 +76,26 @@ namespace TiledMap
                     {
                         foreach (mapTilesetTile tile in tileSet.tile)
                         {
-                            if (tile.PropertyDictionary.ContainsKey("name"))
+                            if (tile.PropertyDictionary.ContainsKey("name") ||
+                                tile.PropertyDictionary.ContainsKey("Name")
+                                )
                             {
-                                sb.Append(tile.PropertyDictionary["name"]);
+                                if (tile.PropertyDictionary.ContainsKey("name"))
+                                {
+                                    sb.Append(tile.PropertyDictionary["name"]);
+                                }
+                                else
+                                {
+                                    sb.Append(tile.PropertyDictionary["Name"]);
+                                }
                                 foreach (string columnName in columnNames)
                                 {
-                                    if (columnName != "name" &&
+                                    if (columnName.ToLower() != "name" &&
                                         tile.PropertyDictionary.ContainsKey(columnName))
                                     {
                                         sb.AppendFormat(",\"{0}\"", tile.PropertyDictionary[columnName].Replace("\"", "\"\""));
                                     }
-                                    else if (columnName != "name")
+                                    else if (columnName.ToLower() != "name")
                                     {
                                         sb.Append(",");
                                     }

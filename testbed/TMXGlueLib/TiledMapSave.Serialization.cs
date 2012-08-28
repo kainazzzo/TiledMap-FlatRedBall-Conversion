@@ -359,9 +359,12 @@ namespace TiledMap
                 {
                     Parallel.ForEach(properties, (p) =>
                     {
-                        if (p != null && !propertyDictionaryField.ContainsKey(p.name.ToLower()))
+                        if (p != null && !propertyDictionaryField.ContainsKey(p.name))
                         {
-                            propertyDictionaryField.Add(p.name.ToLower(), p.value);
+                            // Don't ToLower it - it causes problems when we try to get the column name out again.
+                            //propertyDictionaryField.Add(p.name.ToLower(), p.value);
+                            
+                            propertyDictionaryField.Add(p.name, p.value);
                         }
                     });
                 }
@@ -370,10 +373,15 @@ namespace TiledMap
             }
         }
 
+        List<property> mProperties = new List<property>();
+
         public List<property> properties
         {
-            get;
-            set;
+            get { return mProperties; }
+            set
+            {
+                mProperties = value;
+            }
         }
 
         /// <remarks/>
@@ -521,10 +529,14 @@ namespace TiledMap
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class mapLayer
     {
+        List<property> mProperties = new List<property>();
         public List<property> properties
         {
-            get;
-            set;
+            get { return mProperties; }
+            set 
+            { 
+                mProperties = value; 
+            }
         }
 
         private Dictionary<string, string> propertyDictionaryField = null;
@@ -547,7 +559,7 @@ namespace TiledMap
                 {
                     Parallel.ForEach(properties, (p) =>
                         {
-                            if (p != null && !propertyDictionaryField.ContainsKey(p.name.ToLower()))
+                            if (p != null && !propertyDictionaryField.ContainsKey(p.name))
                             {
                                 // NO NO NO!
                                 // This screws up a lot of things.  We want to preserve case
