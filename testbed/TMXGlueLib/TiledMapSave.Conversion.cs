@@ -174,7 +174,10 @@ namespace TiledMap
                     {
                         foreach (mapTilesetTile tile in tileSet.tile)
                         {
-                            if (tile.PropertyDictionary.ContainsKey("name"))
+                            if (tile.PropertyDictionary.ContainsKey("name") ||
+                                tile.PropertyDictionary.ContainsKey("Name")
+                                
+                                )
                             {
                                 foreach (KeyValuePair<string, string> pair in tile.PropertyDictionary)
                                 {
