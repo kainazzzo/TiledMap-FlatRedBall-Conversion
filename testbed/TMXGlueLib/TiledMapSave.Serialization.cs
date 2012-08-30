@@ -42,6 +42,52 @@ namespace TiledMap
     [System.Xml.Serialization.XmlRootAttribute(ElementName = "map", Namespace = "", IsNullable = false)]
     public partial class TiledMapSave
     {
+        private IDictionary<string, string> propertyDictionaryField = null;
+
+        [XmlIgnore]
+        public IDictionary<string, string> PropertyDictionary
+        {
+            get
+            {
+                lock (this)
+                {
+                    if (propertyDictionaryField == null)
+                    {
+                        propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
+                    }
+                    return propertyDictionaryField;
+                }
+            }
+        }
+
+        public static IDictionary<string, string> BuildPropertyDictionaryConcurrently(IEnumerable<property> properties)
+        {
+            ConcurrentDictionary<string, string> propertyDictionary = new ConcurrentDictionary<string, string>();
+            Parallel.ForEach(properties, (p) =>
+            {
+                if (p != null && !propertyDictionary.ContainsKey(p.name))
+                {
+                    // Don't ToLower it - it causes problems when we try to get the column name out again.
+                    //propertyDictionaryField.Add(p.name.ToLower(), p.value);
+
+                    propertyDictionary[p.name] = p.value;
+                }
+            });
+            return propertyDictionary;
+        }
+        
+
+        List<property> mProperties = new List<property>();
+
+        public List<property> properties
+        {
+            get { return mProperties; }
+            set
+            {
+                mProperties = value;
+            }
+        }
+
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("tileset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public mapTileset[] tileset
@@ -385,36 +431,9 @@ namespace TiledMap
                 {
                     if (propertyDictionaryField == null)
                     {
-                        propertyDictionaryField = new ConcurrentDictionary<string, string>();
-
-                        if (properties != null)
-                        {
-                            try
-                            {
-                                Parallel.ForEach(properties, (p) =>
-                                {
-                                    if (p != null && !propertyDictionaryField.ContainsKey(p.name))
-                                    {
-                                        // Don't ToLower it - it causes problems when we try to get the column name out again.
-                                        //propertyDictionaryField.Add(p.name.ToLower(), p.value);
-
-                                        propertyDictionaryField.Add(p.name, p.value);
-                                    }
-                                });
-                            }
-                            catch (AggregateException)
-                            {
-                                throw;
-                            }
-                        }
-
-                        return propertyDictionaryField;
+                        propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
                     }
-                    else
-                    {
-                        return propertyDictionaryField;
-                    }
-
+                    return propertyDictionaryField;
                 }
             }
         }
@@ -575,16 +594,6 @@ namespace TiledMap
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class mapLayer
     {
-        List<property> mProperties = new List<property>();
-        public List<property> properties
-        {
-            get { return mProperties; }
-            set 
-            { 
-                mProperties = value; 
-            }
-        }
-
         private IDictionary<string, string> propertyDictionaryField = null;
 
         [XmlIgnore]
@@ -592,42 +601,29 @@ namespace TiledMap
         {
             get
             {
-                if (propertyDictionaryField == null)
+                lock (this)
                 {
-                    
-                    propertyDictionaryField = new ConcurrentDictionary<string, string>();
-                }
-                else
-                {
+                    if (propertyDictionaryField == null)
+                    {
+                        propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
+                    }
                     return propertyDictionaryField;
                 }
-
-                if (properties != null)
-                {
-                    try
-                    {
-                        Parallel.ForEach(properties, (p) =>
-                    {
-                        if (p != null && !propertyDictionaryField.ContainsKey(p.name))
-                        {
-                            // NO NO NO!
-                            // This screws up a lot of things.  We want to preserve case
-                            //propertyDictionaryField.Add(p.name.ToLower(), p.value);
-                            propertyDictionaryField.Add(p.name, p.value);
-                        }
-                    });
-
-                    }
-                    catch (AggregateException)
-                    {
-                        
-                        throw;
-                    }
-                }
-
-                return propertyDictionaryField;
             }
         }
+
+
+        List<property> mProperties = new List<property>();
+
+        public List<property> properties
+        {
+            get { return mProperties; }
+            set
+            {
+                mProperties = value;
+            }
+        }
+
 
         private mapLayerData[] dataField;
 

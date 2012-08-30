@@ -18,7 +18,7 @@ namespace TiledMap
 {
     public partial class TiledMapSave
     {
-        public enum CSVPropertyType { Tile, Layer };
+        public enum CSVPropertyType { Tile, Layer, Map };
         public enum LayerVisibleBehavior { Ignore, Match, Skip };
 
         public static LayerVisibleBehavior layerVisibleBehavior = LayerVisibleBehavior.Ignore;
@@ -56,16 +56,14 @@ namespace TiledMap
         public string ToCSVString(CSVPropertyType type = CSVPropertyType.Tile)
         {
             StringBuilder sb = new StringBuilder();
-
-            HashSet<string> columnNames = GetColumnNames(type);
+            IEnumerable<string> columnNames = GetColumnNames(type);
             WriteColumnHeader(sb, columnNames);
-
             WriteColumnValues(sb, columnNames, type);
 
             return sb.ToString();
         }
 
-        private void WriteColumnValues(StringBuilder sb, HashSet<string> columnNames, CSVPropertyType type)
+        private void WriteColumnValues(StringBuilder sb, IEnumerable<string> columnNames, CSVPropertyType type)
         {
             // TODO: There is probably a good way to refactor this code
             if (type == CSVPropertyType.Tile)
@@ -76,32 +74,7 @@ namespace TiledMap
                     {
                         foreach (mapTilesetTile tile in tileSet.tile)
                         {
-                            if (tile.PropertyDictionary.ContainsKey("name") ||
-                                tile.PropertyDictionary.ContainsKey("Name")
-                                )
-                            {
-                                if (tile.PropertyDictionary.ContainsKey("name"))
-                                {
-                                    sb.Append(tile.PropertyDictionary["name"]);
-                                }
-                                else
-                                {
-                                    sb.Append(tile.PropertyDictionary["Name"]);
-                                }
-                                foreach (string columnName in columnNames)
-                                {
-                                    if (columnName.ToLower() != "name" &&
-                                        tile.PropertyDictionary.ContainsKey(columnName))
-                                    {
-                                        sb.AppendFormat(",\"{0}\"", tile.PropertyDictionary[columnName].Replace("\"", "\"\""));
-                                    }
-                                    else if (columnName.ToLower() != "name")
-                                    {
-                                        sb.Append(",");
-                                    }
-                                }
-                                sb.AppendLine();
-                            }
+                            WriteValuesFromDictionary(sb, tile.PropertyDictionary, columnNames);
                         }
                     }
                 }
@@ -110,43 +83,40 @@ namespace TiledMap
             {
                 foreach (mapLayer layer in this.layer)
                 {
-                    if (!string.IsNullOrEmpty(layer.name))
-                    {
-                        if (layer.PropertyDictionary.ContainsKey("name") ||
-                            layer.PropertyDictionary.ContainsKey("Name")
-                            )
-                        {
-
-
-                            if (layer.PropertyDictionary.ContainsKey("name"))
-                            {
-                                sb.Append(layer.PropertyDictionary["name"]);
-                            }
-                            else
-                            {
-                                sb.Append(layer.PropertyDictionary["Name"]);
-                            }
-
-                            foreach (string columnName in columnNames)
-                            {
-                                if (columnName.ToLower() != "name" &&
-                                    layer.PropertyDictionary.ContainsKey(columnName))
-                                {
-                                    sb.AppendFormat(",\"{0}\"", layer.PropertyDictionary[columnName].Replace("\"", "\"\""));
-                                }
-                                else if (columnName.ToLower() != "name")
-                                {
-                                    sb.Append(",");
-                                }
-                            }
-                            sb.AppendLine();
-                        }
-                    }
+                    WriteValuesFromDictionary(sb, layer.PropertyDictionary, columnNames);
                 }
+            }
+            else if (type == CSVPropertyType.Map)
+            {
+                WriteValuesFromDictionary(sb, PropertyDictionary, columnNames);
             }
         }
 
-        private static void WriteColumnHeader(StringBuilder sb, HashSet<string> columnNames)
+        private void WriteValuesFromDictionary(StringBuilder sb, IDictionary<string, string> iDictionary, IEnumerable<string> columnNames)
+        {
+            if (iDictionary.Any(p => p.Key.Equals("name", StringComparison.CurrentCultureIgnoreCase)))
+            {
+                sb.Append(iDictionary.Where(p => p.Key.Equals("name", StringComparison.CurrentCultureIgnoreCase)).First().Value);
+
+                foreach (string columnName in columnNames)
+                {
+                    if (!columnName.Equals("name", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        if (iDictionary.Any(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
+                        {
+                            sb.AppendFormat(",\"{0}\"", iDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value.Replace("\"", "\"\""));
+                        }
+                        else
+                        {
+                            sb.Append(",");
+                        }
+                    }
+                }
+                sb.AppendLine();
+            }
+        }
+
+        private static void WriteColumnHeader(StringBuilder sb, IEnumerable<string> columnNames)
         {
             sb.Append("Name (required)");
             foreach (string columnName in columnNames)
@@ -174,51 +144,34 @@ namespace TiledMap
             sb.AppendLine();
         }
 
-        private HashSet<string> GetColumnNames(CSVPropertyType type)
+        public class CaseInsensitiveEqualityComparer<T> : IEqualityComparer<string>
+        {
+            public bool Equals(string x, string y)
+            {
+                return x.Equals(y, StringComparison.CurrentCultureIgnoreCase);
+            }
+
+            public int GetHashCode(string obj)
+            {
+                return obj.ToLowerInvariant().GetHashCode();
+            }
+        }
+
+        private IEnumerable<string> GetColumnNames(CSVPropertyType type)
         {
             HashSet<string> columnNames = new HashSet<string>();
 
             if (type == CSVPropertyType.Tile)
             {
-                foreach (mapTileset tileSet in this.tileset)
-                {
-                    if (tileSet.tile != null)
-                    {
-                        foreach (mapTilesetTile tile in tileSet.tile)
-                        {
-                            if (tile.PropertyDictionary.ContainsKey("name") ||
-                                tile.PropertyDictionary.ContainsKey("Name")
-
-                                )
-                            {
-                                foreach (KeyValuePair<string, string> pair in tile.PropertyDictionary)
-                                {
-                                    if (!columnNames.Contains(pair.Key))
-                                    {
-                                        columnNames.Add(pair.Key);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                return this.tileset.SelectMany(t => t.tile).SelectMany(tile => tile.PropertyDictionary).Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer<string>());
             }
             else if (type == CSVPropertyType.Layer)
             {
-                foreach (mapLayer layer in this.layer)
-                {
-                    if (!string.IsNullOrEmpty(layer.name))
-                    {
-                        layer.PropertyDictionary["name"] = layer.name;
-                        foreach (KeyValuePair<string, string> pair in layer.PropertyDictionary)
-                        {
-                            if (!columnNames.Contains(pair.Key))
-                            {
-                                columnNames.Add(pair.Key);
-                            }
-                        }
-                    }
-                }
+                return this.layer.SelectMany(l => l.PropertyDictionary).Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer<string>());
+            }
+            else if (type == CSVPropertyType.Map)
+            {
+                return this.PropertyDictionary.Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer<string>());
             }
             return columnNames;
         }
@@ -661,7 +614,7 @@ namespace TiledMap
                 }
                 catch (AggregateException)
                 {
-                    
+
                     throw;
                 } ++layercount;
             }
