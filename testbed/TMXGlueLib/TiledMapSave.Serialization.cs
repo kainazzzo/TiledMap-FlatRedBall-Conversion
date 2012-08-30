@@ -270,36 +270,52 @@ namespace TiledMap
         {
             get
             {
-                if (tileDictionaryField == null)
+                lock (this)
                 {
-                    tileDictionaryField = new ConcurrentDictionary<uint, mapTilesetTile>();
-                }
-                else
-                {
-                    return tileDictionaryField;
-                }
-
-                if (tile != null)
-                {
-
-                    try
+                    if (tileDictionaryField == null)
                     {
-                        Parallel.ForEach(tile, (t) =>
+                        tileDictionaryField = new ConcurrentDictionary<uint, mapTilesetTile>();
+
+                        if (tile != null)
+                        {
+
+                            try
+                            {
+                                //Parallel.ForEach(tile, (t) =>
+                                //            {
+                                //                if (t != null && !tileDictionaryField.ContainsKey((uint)t.id + 1))
+                                //                {
+                                //                    tileDictionaryField.Add((uint)t.id + 1, t);
+                                //                }
+                                //            });
+
+                                foreach (var t in tile)
+                                {
+                                    uint key = (uint)t.id + 1;
+                                    if (t != null && !tileDictionaryField.ContainsKey(key))
                                     {
-                                        if (t != null && !tileDictionaryField.ContainsKey((uint)t.id + 1))
-                                        {
-                                            tileDictionaryField.Add((uint)t.id + 1, t);
-                                        }
-                                    });
+                                        tileDictionaryField.Add(key, t);
+                                    }
+                                }
+
+
+                            }
+                            catch (AggregateException)
+                            {
+
+                                throw;
+                            }
+                        }
+
+                        return tileDictionaryField;
+
                     }
-                    catch (AggregateException)
+                    else
                     {
-                        
-                        throw;
+                        return tileDictionaryField;
                     }
                 }
 
-                return tileDictionaryField;
             }
         }
 
@@ -365,37 +381,41 @@ namespace TiledMap
         {
             get
             {
-                if (propertyDictionaryField == null)
+                lock (this)
                 {
-                    propertyDictionaryField = new ConcurrentDictionary<string, string>();
-                }
-                else
-                {
-                    return propertyDictionaryField;
-                }
-
-                if (properties != null)
-                {
-                    try
+                    if (propertyDictionaryField == null)
                     {
-                        Parallel.ForEach(properties, (p) =>
+                        propertyDictionaryField = new ConcurrentDictionary<string, string>();
+
+                        if (properties != null)
                         {
-                            if (p != null && !propertyDictionaryField.ContainsKey(p.name))
+                            try
                             {
-                                // Don't ToLower it - it causes problems when we try to get the column name out again.
-                                //propertyDictionaryField.Add(p.name.ToLower(), p.value);
+                                Parallel.ForEach(properties, (p) =>
+                                {
+                                    if (p != null && !propertyDictionaryField.ContainsKey(p.name))
+                                    {
+                                        // Don't ToLower it - it causes problems when we try to get the column name out again.
+                                        //propertyDictionaryField.Add(p.name.ToLower(), p.value);
 
-                                propertyDictionaryField.Add(p.name, p.value);
+                                        propertyDictionaryField.Add(p.name, p.value);
+                                    }
+                                });
                             }
-                        });
-                    }
-                    catch (AggregateException)
-                    {
-                        throw;
-                    }
-                }
+                            catch (AggregateException)
+                            {
+                                throw;
+                            }
+                        }
 
-                return propertyDictionaryField;
+                        return propertyDictionaryField;
+                    }
+                    else
+                    {
+                        return propertyDictionaryField;
+                    }
+
+                }
             }
         }
 

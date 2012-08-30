@@ -112,17 +112,29 @@ namespace TiledMap
                 {
                     if (!string.IsNullOrEmpty(layer.name))
                     {
-                        if (layer.PropertyDictionary.ContainsKey("name"))
+                        if (layer.PropertyDictionary.ContainsKey("name") ||
+                            layer.PropertyDictionary.ContainsKey("Name")
+                            )
                         {
-                            sb.Append(layer.PropertyDictionary["name"]);
+
+
+                            if (layer.PropertyDictionary.ContainsKey("name"))
+                            {
+                                sb.Append(layer.PropertyDictionary["name"]);
+                            }
+                            else
+                            {
+                                sb.Append(layer.PropertyDictionary["Name"]);
+                            }
+
                             foreach (string columnName in columnNames)
                             {
-                                if (columnName != "name" &&
+                                if (columnName.ToLower() != "name" &&
                                     layer.PropertyDictionary.ContainsKey(columnName))
                                 {
                                     sb.AppendFormat(",\"{0}\"", layer.PropertyDictionary[columnName].Replace("\"", "\"\""));
                                 }
-                                else if (columnName != "name")
+                                else if (columnName.ToLower() != "name")
                                 {
                                     sb.Append(",");
                                 }
@@ -602,9 +614,16 @@ namespace TiledMap
 
 
                             sprite.Texture = tileSet.image[0].source;
-                            if (tileSet.tileDictionary.ContainsKey(gid - tileSet.firstgid + 1) && tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary.ContainsKey("name"))
+                            if (tileSet.tileDictionary.ContainsKey(gid - tileSet.firstgid + 1))
                             {
-                                sprite.Name = tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary["name"];
+                                if (tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary.ContainsKey("name"))
+                                {
+                                    sprite.Name = tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary["name"];
+                                }
+                                else if (tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary.ContainsKey("Name"))
+                                {
+                                    sprite.Name = tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary["Name"];
+                                }
                             }
 
                             setSpriteTextureCoordinates(gid, sprite, tileSet, imageWidth, imageHeight, tileWidth, spacing, tileHeight, margin);

@@ -42,7 +42,9 @@ namespace TmxToScnx
                 fixupImageSources(tms);
 
                 Console.WriteLine(string.Format("Saving \"{0}\".", destinationScnx));
-                tms.ToSpriteEditorScene(scale).Save(destinationScnx.Trim());
+                SpriteEditorScene spriteEditorScene = tms.ToSpriteEditorScene(scale);
+
+                spriteEditorScene.Save(destinationScnx.Trim());
                 Console.WriteLine("Done.");
             }
             catch (Exception ex)
