@@ -8,9 +8,15 @@ namespace TmxEditor
 {
     public class ProjectManager
     {
+        #region Fields
+
         static ProjectManager mSelf;
 
         TiledMapSave mTiledMapSave;
+
+        #endregion
+
+        #region Properties
 
         public static ProjectManager Self
         {
@@ -25,9 +31,26 @@ namespace TmxEditor
 
         }
 
+        public TiledMapSave TiledMapSave
+        {
+            get
+            {
+
+                return mTiledMapSave;
+            }
+        }
+
+        public string LastLoadedFile
+        {
+            get;
+            private set;
+        }
+        #endregion
+
 
         public void LoadTiledMapSave(string fileName)
         {
+            LastLoadedFile = fileName;
             mTiledMapSave = TiledMapSave.FromFile(fileName);
 
 

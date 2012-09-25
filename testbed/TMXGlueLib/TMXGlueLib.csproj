@@ -57,6 +57,7 @@
     <Compile Include="DotNetZip\Zlib\ZlibConstants.cs" />
     <Compile Include="DotNetZip\Zlib\ZlibStream.cs" />
     <Compile Include="ExternalTileset.cs" />
+    <Compile Include="MapTileset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TiledMapSave.Serialization.cs" />
     <Compile Include="TiledMapSave.Conversion.cs" />

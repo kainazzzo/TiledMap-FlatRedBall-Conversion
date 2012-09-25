@@ -1,0 +1,72 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using RenderingLibrary;
+
+namespace TmxEditor
+{
+    public class ToolComponentManager
+    {
+        #region Fields
+
+        static ToolComponentManager mSelf;
+
+        List<ToolComponent> mComponents = new List<ToolComponent>();
+        #endregion
+
+        #region Properties
+
+        public static ToolComponentManager Self
+        {
+            get
+            {
+                if (mSelf == null)
+                {
+                    mSelf = new ToolComponentManager();
+                }
+                return mSelf;
+            }
+        }
+        #endregion
+
+        #region Register
+
+        public void Register(ToolComponent component)
+        {
+            mComponents.Add(component);
+        }
+
+        #endregion
+
+        public void ReactToLoadedFile(string fileName)
+        {
+
+            foreach (var component in mComponents.Where((component) => component.ReactToLoadedFile != null))
+            {
+                component.ReactToLoadedFile(fileName);
+            }
+
+        }
+
+        public void ReactToXnaInitialize(SystemManagers managers)
+        {
+            foreach (var component in mComponents.Where((component) => component.ReactToXnaInitialize != null))
+            {
+                component.ReactToXnaInitialize(managers);
+            }
+
+
+        }
+
+        public void ReactToWindowResize()
+        {
+            foreach (var component in mComponents.Where((component) => component.ReactToWindowResize != null))
+            {
+                component.ReactToWindowResize();
+            }
+
+
+        }
+    }
+}
