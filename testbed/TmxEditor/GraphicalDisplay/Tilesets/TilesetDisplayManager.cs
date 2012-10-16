@@ -168,7 +168,7 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
             var image = currentTileset.image[0];
 
             string fileName = image.source;
-            string absoluteFile = FileManager.GetDirectory(ProjectManager.Self.LastLoadedFile) + fileName;
+            string absoluteFile = ProjectManager.Self.MakeAbsolute(fileName);
             mSprite.Visible = true;
             mSprite.Texture = LoaderManager.Self.Load(absoluteFile, mManagers);
 

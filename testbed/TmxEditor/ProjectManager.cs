@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TiledMap;
+using FlatRedBall.IO;
 
 namespace TmxEditor
 {
@@ -47,6 +48,10 @@ namespace TmxEditor
         }
         #endregion
 
+        public string MakeAbsolute(string fileName)
+        {
+            return FileManager.GetDirectory(LastLoadedFile) + fileName;
+        }
 
         public void LoadTiledMapSave(string fileName)
         {

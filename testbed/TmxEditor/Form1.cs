@@ -11,6 +11,9 @@ using RenderingLibrary;
 using RenderingLibrary.Content;
 using System.Reflection;
 using FlatRedBall.SpecializedXnaControls;
+using System.IO;
+using TMXGlueLib.DataTypes;
+using FlatRedBall.IO;
 
 namespace TmxEditor
 {
@@ -149,6 +152,56 @@ namespace TmxEditor
         private void Form1_Resize(object sender, EventArgs e)
         {
             ToolComponentManager.Self.ReactToWindowResize();
+        }
+
+        private void saveTILBToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string fileName = SaveFile("tilb");
+
+            if (!string.IsNullOrEmpty(fileName))
+            {
+
+                using (FileStream stream = File.OpenWrite(fileName))
+                using(BinaryWriter writer = new BinaryWriter(stream))
+                {
+                    ReducedTileMapInfo rtmi = 
+                        ReducedTileMapInfo.FromTiledMapSave( 
+                            ProjectManager.Self.TiledMapSave , 
+                            1, 
+                            FileManager.GetDirectory( ProjectManager.Self.LastLoadedFile));
+
+                    rtmi.WriteTo(writer);
+
+                    writer.Close();
+                    stream.Close();
+
+
+                    Verify(rtmi, fileName);
+
+
+                }
+
+            }
+        }
+
+        private void Verify(ReducedTileMapInfo rtmi, string fileName)
+        {
+            using(FileStream stream = File.OpenRead(fileName))
+            using(BinaryReader reader = new BinaryReader(stream))
+            {
+                ReducedTileMapInfo compareAgainst = ReducedTileMapInfo.ReadFrom(reader);
+
+                string original;
+                string fromFile;
+
+                FileManager.XmlSerialize(rtmi, out original);
+                FileManager.XmlSerialize(compareAgainst, out fromFile);
+
+                if (original != fromFile)
+                {
+                    throw new Exception("NONONO");
+                }
+            }
         }
     }
 }

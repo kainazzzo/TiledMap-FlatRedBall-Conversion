@@ -38,6 +38,7 @@
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\ReducedTileMapInfo.cs" />
+    <Compile Include="DataTypes\ReducedTileMapInfo.TiledMapSave.cs" />
     <Compile Include="DotNetZip\Zlib\Crc32.cs" />
     <Compile Include="DotNetZip\Zlib\Deflate.cs" />
     <Compile Include="DotNetZip\Zlib\GZipStream.cs" />
@@ -57,11 +60,13 @@
     <Compile Include="DotNetZip\Zlib\ZlibConstants.cs" />
     <Compile Include="DotNetZip\Zlib\ZlibStream.cs" />
     <Compile Include="ExternalTileset.cs" />
+    <Compile Include="ImageHeader.cs" />
     <Compile Include="MapTileset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TiledMapSave.Serialization.cs" />
     <Compile Include="TiledMapSave.Conversion.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

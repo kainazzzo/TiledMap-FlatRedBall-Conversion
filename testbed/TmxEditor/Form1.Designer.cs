@@ -38,6 +38,7 @@
             this.XnaControl = new XnaAndWinforms.GraphicsDeviceControl();
             this.ListBox = new System.Windows.Forms.ListBox();
             this.StatusLabel = new System.Windows.Forms.Label();
+            this.saveTILBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,7 +67,8 @@
             this.loadTMXToolStripMenuItem,
             this.loadTilesetPropertiesFromToolStripMenuItem,
             this.toolStripSeparator1,
-            this.saveTMXAsToolStripMenuItem});
+            this.saveTMXAsToolStripMenuItem,
+            this.saveTILBToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -129,6 +131,13 @@
             this.StatusLabel.TabIndex = 4;
             this.StatusLabel.Text = "Status Label";
             // 
+            // saveTILBToolStripMenuItem
+            // 
+            this.saveTILBToolStripMenuItem.Name = "saveTILBToolStripMenuItem";
+            this.saveTILBToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.saveTILBToolStripMenuItem.Text = "Save TILB";
+            this.saveTILBToolStripMenuItem.Click += new System.EventHandler(this.saveTILBToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -162,6 +171,7 @@
         private XnaAndWinforms.GraphicsDeviceControl XnaControl;
         private System.Windows.Forms.ListBox ListBox;
         private System.Windows.Forms.Label StatusLabel;
+        private System.Windows.Forms.ToolStripMenuItem saveTILBToolStripMenuItem;
     }
 }
 
