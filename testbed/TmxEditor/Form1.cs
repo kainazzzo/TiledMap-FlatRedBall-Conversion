@@ -83,8 +83,25 @@ namespace TmxEditor
                 this.LoadedTmxLabel.Text = fileName;
             }
         }
-
         
+        private void loadTilesetPropertiesFromToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string fileName = ShowLoadFile("tmx");
+
+            if (!string.IsNullOrEmpty(fileName))
+            {
+                string output;
+
+                ProjectManager.Self.LoadTilesetFrom(fileName, out output);
+
+                ToolComponentManager.Self.ReactToLoadedAndMergedProperties(fileName);
+                if (!string.IsNullOrEmpty(output))
+                {
+                    MessageBox.Show(output);
+                }
+
+            }
+        }
 
         private string ShowLoadFile(string extension)
         {
@@ -127,22 +144,7 @@ namespace TmxEditor
             }
         }
 
-        private void loadTilesetPropertiesFromToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string fileName = ShowLoadFile("tmx");
 
-            if (!string.IsNullOrEmpty(fileName))
-            {
-                string output;
-
-                ProjectManager.Self.LoadTilesetFrom(fileName, out output);
-                if (!string.IsNullOrEmpty(output))
-                {
-                    MessageBox.Show(output);
-                }
-
-            }
-        }
 
         private void Form1_Resize(object sender, EventArgs e)
         {

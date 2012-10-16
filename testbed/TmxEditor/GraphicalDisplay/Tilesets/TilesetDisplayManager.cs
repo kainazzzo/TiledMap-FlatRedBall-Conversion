@@ -72,6 +72,8 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
             
             ReactToWindowResize = HandleWindowResize;
 
+            ReactToLoadedAndMergedProperties = HandleLoadedAndMergedProperties;
+
             control.XnaUpdate += new Action(HandleXnaUpdate);
 
             mInfoLabel = infoLabel;
@@ -131,6 +133,20 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
         {
             FillListBox();
 
+            ClearAllHighlights();
+
+            mSprite.Visible = false;
+        }
+
+        void HandleLoadedAndMergedProperties(string fileName)
+        {
+            FillListBox();
+
+            ClearAllHighlights();
+
+            mSprite.Visible = false;
+
+
         }
 
         private void FillListBox()
@@ -144,6 +160,9 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
 
         void HandleTilesetSelect(object sender, EventArgs e)
         {
+            ClearAllHighlights();
+
+
             var currentTileset = mTilesetsListBox.SelectedItem as TiledMap.mapTileset;
 
             var image = currentTileset.image[0];
@@ -181,6 +200,15 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
                     mHighlights.Add(tph);
                 }
             }
+        }
+
+        private void ClearAllHighlights()
+        {
+            foreach (TilePropertyHighlight tph in mHighlights)
+            {
+                tph.RemoveFromManagers();
+            }
+            mHighlights.Clear();
         }
 
 

@@ -76,11 +76,11 @@ namespace TmxEditor
 
                 if (tileset != null && copyTo != null)
                 {
+                    copyTo.RefreshTileDictionary();
 
                     stringBuilder.AppendLine("Modified " + tileset.name + " count before: " + copyTo.tile.Count + ", count after: " + tileset.tile.Count);
 
                     copyTo.tile = tileset.tile;
-
 
                 }
             }

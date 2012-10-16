@@ -41,12 +41,10 @@ namespace TmxEditor
 
         public void ReactToLoadedFile(string fileName)
         {
-
             foreach (var component in mComponents.Where((component) => component.ReactToLoadedFile != null))
             {
                 component.ReactToLoadedFile(fileName);
             }
-
         }
 
         public void ReactToXnaInitialize(SystemManagers managers)
@@ -65,8 +63,14 @@ namespace TmxEditor
             {
                 component.ReactToWindowResize();
             }
+        }
 
-
+        public void ReactToLoadedAndMergedProperties(string fileName)
+        {
+            foreach (var component in mComponents.Where((component) => component.ReactToLoadedAndMergedProperties != null))
+            {
+                component.ReactToLoadedAndMergedProperties(fileName);
+            }
         }
     }
 }

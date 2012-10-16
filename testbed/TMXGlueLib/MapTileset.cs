@@ -158,6 +158,12 @@ namespace TiledMap
         //    }
         //}
 
+        public void RefreshTileDictionary()
+        {
+            tileDictionaryField = null;
+        }
+
+
         private IDictionary<uint, mapTilesetTile> tileDictionaryField = null;
 
         [XmlIgnore]

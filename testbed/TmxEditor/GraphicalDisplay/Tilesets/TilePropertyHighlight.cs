@@ -120,7 +120,8 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
 
         public void RemoveFromManagers()
         {
-
+            mManagers.ShapeManager.Remove(this.mLineRectangle);
+            mManagers.TextManager.Remove(this.mCountDisplay);
 
         }
 
