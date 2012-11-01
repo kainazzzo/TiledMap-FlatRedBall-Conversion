@@ -52,6 +52,9 @@ namespace TmxToTilb
                 using (BinaryWriter writer = new BinaryWriter(fileStream))
                 {
                     rtmi.WriteTo(writer);
+
+                    writer.Close();
+                    fileStream.Close();
                 }
 
                 

@@ -152,9 +152,13 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
         private void FillListBox()
         {
             mTilesetsListBox.Items.Clear();
-            foreach (var tileset in ProjectManager.Self.TiledMapSave.tileset)
+            // this could be an empty .tmx.  Support that.
+            if (ProjectManager.Self.TiledMapSave.tileset != null)
             {
-                mTilesetsListBox.Items.Add(tileset);
+                foreach (var tileset in ProjectManager.Self.TiledMapSave.tileset)
+                {
+                    mTilesetsListBox.Items.Add(tileset);
+                }
             }
         }
 
