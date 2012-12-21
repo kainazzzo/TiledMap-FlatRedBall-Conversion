@@ -3,14 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TiledMap;
+using FlatRedBall.IO;
 
 namespace TmxEditor
 {
     public class ProjectManager
     {
+        #region Fields
+
         static ProjectManager mSelf;
 
         TiledMapSave mTiledMapSave;
+
+        #endregion
+
+        #region Properties
 
         public static ProjectManager Self
         {
@@ -25,9 +32,30 @@ namespace TmxEditor
 
         }
 
+        public TiledMapSave TiledMapSave
+        {
+            get
+            {
+
+                return mTiledMapSave;
+            }
+        }
+
+        public string LastLoadedFile
+        {
+            get;
+            private set;
+        }
+        #endregion
+
+        public string MakeAbsolute(string fileName)
+        {
+            return FileManager.GetDirectory(LastLoadedFile) + fileName;
+        }
 
         public void LoadTiledMapSave(string fileName)
         {
+            LastLoadedFile = fileName;
             mTiledMapSave = TiledMapSave.FromFile(fileName);
 
 
@@ -53,11 +81,11 @@ namespace TmxEditor
 
                 if (tileset != null && copyTo != null)
                 {
+                    copyTo.RefreshTileDictionary();
 
                     stringBuilder.AppendLine("Modified " + tileset.name + " count before: " + copyTo.tile.Count + ", count after: " + tileset.tile.Count);
 
                     copyTo.tile = tileset.tile;
-
 
                 }
             }

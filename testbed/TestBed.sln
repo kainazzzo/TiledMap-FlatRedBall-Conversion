@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxEditor", "TmxEditor\TmxE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMXGlueLib", "TMXGlueLib\TMXGlueLib.csproj", "{8600173A-6281-45E1-8076-54366E42CBDE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToTilb", "TmxToTilb\TmxToTilb.csproj", "{8E4CB10A-D352-4562-8AC7-F92530A44AAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -208,6 +210,26 @@ Global
 		{8600173A-6281-45E1-8076-54366E42CBDE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{8600173A-6281-45E1-8076-54366E42CBDE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{8600173A-6281-45E1-8076-54366E42CBDE}.Release|x86.ActiveCfg = Release|Any CPU
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Debug|x86.ActiveCfg = Debug|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Debug|x86.Build.0 = Debug|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.DebugProfile|Any CPU.ActiveCfg = Debug|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.DebugProfile|Mixed Platforms.ActiveCfg = Debug|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.DebugProfile|Mixed Platforms.Build.0 = Debug|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.DebugProfile|x86.ActiveCfg = Debug|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.DebugProfile|x86.Build.0 = Debug|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Profile|Any CPU.ActiveCfg = Release|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Profile|Mixed Platforms.ActiveCfg = Release|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Profile|Mixed Platforms.Build.0 = Release|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Profile|x86.ActiveCfg = Release|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Profile|x86.Build.0 = Release|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Release|Any CPU.ActiveCfg = Release|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Release|Mixed Platforms.Build.0 = Release|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Release|x86.ActiveCfg = Release|x86
+		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
