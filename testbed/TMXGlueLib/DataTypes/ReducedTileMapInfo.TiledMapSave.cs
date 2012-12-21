@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
-using TmxEditor;
-using TiledMap;
 using FlatRedBall.Content;
 using FlatRedBall.Content.Scene;
 

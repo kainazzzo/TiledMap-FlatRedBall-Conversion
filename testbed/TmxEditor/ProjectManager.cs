@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TiledMap;
+using TMXGlueLib;
 using FlatRedBall.IO;
 
 namespace TmxEditor
@@ -77,15 +77,15 @@ namespace TmxEditor
             {
                 var tileset = toCopyFrom.tileset[i];
 
-                var copyTo = GetTilesetByName(mTiledMapSave, tileset.name);
+                var copyTo = GetTilesetByName(mTiledMapSave, tileset.Name);
 
                 if (tileset != null && copyTo != null)
                 {
                     copyTo.RefreshTileDictionary();
 
-                    stringBuilder.AppendLine("Modified " + tileset.name + " count before: " + copyTo.tile.Count + ", count after: " + tileset.tile.Count);
+                    stringBuilder.AppendLine("Modified " + tileset.Name + " count before: " + copyTo.Tile.Count + ", count after: " + tileset.Tile.Count);
 
-                    copyTo.tile = tileset.tile;
+                    copyTo.Tile = tileset.Tile;
 
                 }
             }
@@ -98,7 +98,7 @@ namespace TmxEditor
         {
             foreach (var tileset in tms.tileset)
             {
-                if (tileset != null && tileset.name == name)
+                if (tileset != null && tileset.Name == name)
                 {
                     return tileset;
                 }

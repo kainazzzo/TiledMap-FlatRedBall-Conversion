@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TiledMap;
-using FlatRedBall;
-using FlatRedBall.Content;
-using System.IO;
-using FlatRedBall.IO;
 using FlatRedBall.Content.AI.Pathfinding;
-using FlatRedBall.Math.Geometry;
-using FlatRedBall.AI.Pathfinding;
+using TMXGlueLib;
 
 namespace TmxToNntx
 {
@@ -28,13 +19,13 @@ namespace TmxToNntx
                 string sourceTmx = args[0];
                 string destinationNntx = args[1];
                 bool requiretile = true;
-                TiledMapSave.LayerVisibleBehavior layerVisibilityBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                var layerVisibilityBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
                 if (args.Length >= 3)
                 {
                     ParseOptionalCommandLineArgs(args, out requiretile, out layerVisibilityBehavior);
                 }
 
-                TiledMapSave.layerVisibleBehavior = layerVisibilityBehavior;
+                TiledMapSave.LayerVisibleBehaviorValue = layerVisibilityBehavior;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
                 NodeNetworkSave save = tms.ToNodeNetworkSave(requiretile);
@@ -55,7 +46,7 @@ namespace TmxToNntx
             {
                 string arg = args[x];
                 string[] tokens = arg.Split("=".ToCharArray());
-                if (tokens != null && tokens.Length == 2)
+                if (tokens.Length == 2)
                 {
                     string key = tokens[0];
                     string value = tokens[1];

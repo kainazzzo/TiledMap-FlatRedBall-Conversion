@@ -1,35 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TiledMap;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
-using FlatRedBall.IO;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using FlatRedBall.IO;
 
-namespace TiledMap
+namespace TMXGlueLib
 {
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class mapTileset
+    [XmlType(AnonymousType = true)]
+// ReSharper disable InconsistentNaming
+    public class mapTileset
+// ReSharper restore InconsistentNaming
     {
-        private mapTilesetTile[] tileField;
+        private mapTilesetImage[] _imageField;
 
-        private mapTilesetImage[] imageField;
+        private mapTilesetTileOffset[] _tileOffsetField;
 
-        private mapTilesetTileOffset[] tileOffsetField;
-
-        private string sourceField;
+        private string _sourceField;
 
         [XmlIgnore]
         public string SourceDirectory
         {
             get
             {
-                if (sourceField != null && sourceField.Contains("\\"))
+                if (_sourceField != null && _sourceField.Contains("\\"))
                 {
-                    return sourceField.Substring(0, sourceField.LastIndexOf('\\'));
+                    return _sourceField.Substring(0, _sourceField.LastIndexOf('\\'));
                 }
                 else
                 {
@@ -38,108 +34,79 @@ namespace TiledMap
             }
         }
 
-        [System.Xml.Serialization.XmlAttributeAttribute("source", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string source
+        [XmlAttribute("source", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string Source
         {
             get
             {
-                return sourceField;
+                return _sourceField;
             }
             set
             {
-                this.sourceField = value;
-                if (this.sourceField != null)
+                this._sourceField = value;
+                if (this._sourceField != null)
                 {
-                    sourceField = sourceField.Replace("/", "\\");
-                    tileset xts = FileManager.XmlDeserialize<tileset>(sourceField);
-                    image = new mapTilesetImage[xts.image.Length];
+                    _sourceField = _sourceField.Replace("/", "\\");
+                    var xts = FileManager.XmlDeserialize<tileset>(_sourceField);
+                    Image = new mapTilesetImage[xts.image.Length];
 
-                    try
-                    {
-                        Parallel.For(0, xts.image.Length, (count) =>
+                    Parallel.For(0, xts.image.Length, count =>
                         {
-                            tilesetImage ximage = xts.image[count];
-                            this.image[count] = new mapTilesetImage();
-                            this.image[count].source = xts.image[count].source;
-                            if (xts.image[count].height != 0)
-                            {
-                                this.image[count].height = xts.image[count].height;
-                            }
-                            else
-                            {
-                                this.image[count].height = xts.tileheight;
-                            }
-
-                            if (xts.image[count].width != 0)
-                            {
-                                this.image[count].width = xts.image[count].width;
-                            }
-                            else
-                            {
-                                this.image[count].width = xts.tilewidth;
-                            }
+                            this.Image[count] = new mapTilesetImage
+                                {
+                                    source = xts.image[count].source,
+                                    height = xts.image[count].height != 0 ? xts.image[count].height : xts.tileheight,
+                                    width = xts.image[count].width != 0 ? xts.image[count].width : xts.tilewidth
+                                };
                         });
-                    }
-                    catch (AggregateException)
-                    {
-                        throw;
-                    }
 
-                    this.name = xts.name;
-                    this.margin = xts.margin;
-                    this.spacing = xts.spacing;
-                    this.tileheight = xts.tileheight;
-                    this.tilewidth = xts.tilewidth;
-                    this.tile = xts.tile;
+                    this.Name = xts.name;
+                    this.Margin = xts.margin;
+                    this.Spacing = xts.spacing;
+                    this.Tileheight = xts.tileheight;
+                    this.Tilewidth = xts.tilewidth;
+                    this.Tile = xts.tile;
                 }
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("tileoffset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 1)]
-        public mapTilesetTileOffset[] tileoffset
+        [XmlElement("tileoffset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 1)]
+        public mapTilesetTileOffset[] Tileoffset
         {
             get
             {
-                return this.tileOffsetField;
+                return this._tileOffsetField;
             }
             set
             {
-                if (this.tileOffsetField != null && this.tileOffsetField.Length > 0)
+                if (this._tileOffsetField == null || this._tileOffsetField.Length == 0)
                 {
-                    return;
-                }
-                else
-                {
-                    this.tileOffsetField = value;
+                    this._tileOffsetField = value;
                 }
             }
         }
 
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("image", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 2)]
-        public mapTilesetImage[] image
+        [XmlElement("image", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 2)]
+        public mapTilesetImage[] Image
         {
             get
             {
-                return this.imageField;
+                return this._imageField;
             }
             set
             {
-                if (this.imageField != null && this.imageField.Length > 0)
+                if (this._imageField == null || this._imageField.Length == 0)
                 {
-                    return;
-                }
-                else
-                {
-                    this.imageField = value;
+                    this._imageField = value;
                 }
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute("tile", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 3)]
-        public List<mapTilesetTile> tile = new List<mapTilesetTile>();
+        [XmlElement("tile", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 3)]
+        public List<mapTilesetTile> Tile = new List<mapTilesetTile>();
         //{
         //    get
         //    {
@@ -160,60 +127,49 @@ namespace TiledMap
 
         public void RefreshTileDictionary()
         {
-            tileDictionaryField = null;
+            _tileDictionaryField = null;
         }
 
 
-        private IDictionary<uint, mapTilesetTile> tileDictionaryField = null;
+        private IDictionary<uint, mapTilesetTile> _tileDictionaryField;
 
         [XmlIgnore]
-        public IDictionary<uint, mapTilesetTile> tileDictionary
+        public IDictionary<uint, mapTilesetTile> TileDictionary
         {
             get
             {
                 lock (this)
                 {
-                    if (tileDictionaryField == null)
+                    if (_tileDictionaryField == null)
                     {
-                        tileDictionaryField = new ConcurrentDictionary<uint, mapTilesetTile>();
+                        _tileDictionaryField = new ConcurrentDictionary<uint, mapTilesetTile>();
 
-                        if (tile != null)
+                        if (Tile != null)
                         {
+                            //Parallel.ForEach(tile, (t) =>
+                            //            {
+                            //                if (t != null && !tileDictionaryField.ContainsKey((uint)t.id + 1))
+                            //                {
+                            //                    tileDictionaryField.Add((uint)t.id + 1, t);
+                            //                }
+                            //            });
 
-                            try
+                            foreach (var t in Tile)
                             {
-                                //Parallel.ForEach(tile, (t) =>
-                                //            {
-                                //                if (t != null && !tileDictionaryField.ContainsKey((uint)t.id + 1))
-                                //                {
-                                //                    tileDictionaryField.Add((uint)t.id + 1, t);
-                                //                }
-                                //            });
-
-                                foreach (var t in tile)
+                                uint key = (uint)t.id + 1;
+                                if (!_tileDictionaryField.ContainsKey(key))
                                 {
-                                    uint key = (uint)t.id + 1;
-                                    if (t != null && !tileDictionaryField.ContainsKey(key))
-                                    {
-                                        tileDictionaryField.Add(key, t);
-                                    }
+                                    _tileDictionaryField.Add(key, t);
                                 }
-
-
-                            }
-                            catch (AggregateException)
-                            {
-
-                                throw;
                             }
                         }
 
-                        return tileDictionaryField;
+                        return _tileDictionaryField;
 
                     }
                     else
                     {
-                        return tileDictionaryField;
+                        return _tileDictionaryField;
                     }
                 }
 
@@ -223,48 +179,48 @@ namespace TiledMap
 
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public uint firstgid
+        [XmlAttribute("firstgid")]
+        public uint Firstgid
         {
             get;
             set;
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string name
+        [XmlAttribute("name")]
+        public string Name
         {
             get;
             set;
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public int tilewidth
+        [XmlAttribute("tilewidth")]
+        public int Tilewidth
         {
             get;
             set;
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public int tileheight
+        [XmlAttribute("tileheight")]
+        public int Tileheight
         {
             get;
             set;
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public int spacing
+        [XmlAttribute("spacing")]
+        public int Spacing
         {
             get;
             set;
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public int margin
+        [XmlAttribute("margin")]
+        public int Margin
         {
             get;
             set;
@@ -272,7 +228,7 @@ namespace TiledMap
 
         public override string ToString()
         {
-            return this.name;
+            return this.Name;
         }
     }
 }

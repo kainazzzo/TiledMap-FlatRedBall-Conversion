@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TiledMap;
-using FlatRedBall;
 using FlatRedBall.Content;
-using System.IO;
-using FlatRedBall.IO;
+using TMXGlueLib;
 
 namespace TmxToScnx
 {
@@ -25,23 +19,25 @@ namespace TmxToScnx
                 string sourceTmx = args[0];
                 string destinationScnx = args[1];
                 float scale = 1.0f;
-                TiledMapSave.LayerVisibleBehavior layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                var layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
                 if (args.Length >= 3)
                 {
                     ParseOptionalCommandLineArgs(args, out scale, out layerVisibleBehavior);
                 }
-                TiledMapSave.layerVisibleBehavior = layerVisibleBehavior;
+                TiledMapSave.LayerVisibleBehaviorValue = layerVisibleBehavior;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
+// ReSharper disable UnusedVariable
                 SpriteEditorScene save = tms.ToSpriteEditorScene(scale);
+// ReSharper restore UnusedVariable
 
-                Console.WriteLine(string.Format("{0} converted successfully.", sourceTmx));
+                Console.WriteLine("{0} converted successfully.", sourceTmx);
                 TmxFileCopier.CopyTmxTilesetImagesToDestination(sourceTmx, destinationScnx, tms);
 
                 // Fix up the image sources to be relative to the newly copied ones.
                 TmxFileCopier.FixupImageSources(tms);
 
-                Console.WriteLine(string.Format("Saving \"{0}\".", destinationScnx));
+                Console.WriteLine("Saving \"{0}\".", destinationScnx);
                 SpriteEditorScene spriteEditorScene = tms.ToSpriteEditorScene(scale);
 
                 spriteEditorScene.Save(destinationScnx.Trim());
@@ -61,7 +57,7 @@ namespace TmxToScnx
             {
                 string arg = args[x];
                 string[] tokens = arg.Split("=".ToCharArray());
-                if (tokens != null && tokens.Length == 2)
+                if (tokens.Length == 2)
                 {
                     string key = tokens[0];
                     string value = tokens[1];

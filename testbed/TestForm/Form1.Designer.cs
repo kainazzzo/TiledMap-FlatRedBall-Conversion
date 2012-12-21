@@ -57,7 +57,7 @@
             this.tmxFileDialog.DefaultExt = "tmx";
             this.tmxFileDialog.Filter = "TMX File|*.tmx";
             this.tmxFileDialog.Title = "Choose a TMX File to Open";
-            this.tmxFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.tmxFiledialogOk);
+            this.tmxFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.TmxFiledialogOk);
             // 
             // tmxFilename
             // 

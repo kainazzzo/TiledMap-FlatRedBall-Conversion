@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.IO;
-using TiledMap;
 using FlatRedBall.Content;
 using FlatRedBall;
 using FlatRedBall.Content.Scene;
@@ -171,7 +171,7 @@ namespace TMXGlueLib.DataTypes
 
         public override string ToString()
         {
-            return this.Layers.Count.ToString();
+            return this.Layers.Count.ToString(CultureInfo.InvariantCulture);
         }
     }
 }

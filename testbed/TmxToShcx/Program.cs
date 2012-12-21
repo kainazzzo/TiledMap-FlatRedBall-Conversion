@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TiledMap;
-using FlatRedBall;
-using FlatRedBall.Content;
-using System.IO;
-using FlatRedBall.IO;
-using FlatRedBall.Content.AI.Pathfinding;
-using FlatRedBall.Math.Geometry;
-using FlatRedBall.AI.Pathfinding;
 using FlatRedBall.Content.Math.Geometry;
+using TMXGlueLib;
 
 namespace TmxToShcx
 {
@@ -29,13 +19,13 @@ namespace TmxToShcx
                 string sourceTmx = args[0];
                 string destinationShcx = args[1];
                 string layername = null;
-                TiledMapSave.LayerVisibleBehavior layerVisibilityBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                var layerVisibilityBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
 
                 if (args.Length >= 3)
                 {
                     ParseOptionalCommandLineArgs(args, out layername, out layerVisibilityBehavior);
                 }
-                TiledMapSave.layerVisibleBehavior = layerVisibilityBehavior;
+                TiledMapSave.LayerVisibleBehaviorValue = layerVisibilityBehavior;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
                 ShapeCollectionSave save = tms.ToShapeCollectionSave(layername);
@@ -57,7 +47,7 @@ namespace TmxToShcx
             {
                 string arg = args[x];
                 string[] tokens = arg.Split("=".ToCharArray());
-                if (tokens != null && tokens.Length == 2)
+                if (tokens.Length == 2)
                 {
                     string key = tokens[0];
                     string value = tokens[1];

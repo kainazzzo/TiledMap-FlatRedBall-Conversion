@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TiledMap;
+using TMXGlueLib;
 
 namespace TmxToCSV
 {
@@ -21,7 +18,7 @@ namespace TmxToCSV
                 string sourceTmx = args[0];
                 string destinationCSV = args[1];
 
-                TiledMapSave.CSVPropertyType type = TiledMapSave.CSVPropertyType.Tile;
+                var type = TiledMapSave.CSVPropertyType.Tile;
                 if (args.Length >= 3)
                 {
                     ParseOptionalCommandLineArgs(args, out type);
@@ -49,7 +46,7 @@ namespace TmxToCSV
                 {
                     string arg = args[x];
                     string[] tokens = arg.Split("=".ToCharArray());
-                    if (tokens != null && tokens.Length == 2)
+                    if (tokens.Length == 2)
                     {
                         string key = tokens[0];
                         string value = tokens[1];
@@ -58,7 +55,7 @@ namespace TmxToCSV
                         {
                             case "type":
                                 const bool ignoreCase = true;
-                                if (!Enum.TryParse<TiledMapSave.CSVPropertyType>(value, ignoreCase, out type))
+                                if (!Enum.TryParse(value, ignoreCase, out type))
                                 {
                                     type = TiledMapSave.CSVPropertyType.Tile;
                                 }

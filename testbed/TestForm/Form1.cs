@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using TiledMap;
 using FlatRedBall.Content;
 using FlatRedBall.Content.AI.Pathfinding;
 using FlatRedBall.Content.Math.Geometry;
+using TMXGlueLib;
 
 namespace TestForm
 {
@@ -25,7 +20,7 @@ namespace TestForm
             tmxFileDialog.ShowDialog();
         }
 
-        private void tmxFiledialogOk(object sender, CancelEventArgs e)
+        private void TmxFiledialogOk(object sender, CancelEventArgs e)
         {
             tmxFilename.Text = tmxFileDialog.FileName;
         }
@@ -35,7 +30,7 @@ namespace TestForm
         private void tmxDestinationButton_Click(object sender, EventArgs e)
         {
             DialogResult result = tmxFolderDialog.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK)
+            if (result == DialogResult.OK)
             {
                 tmxDestinationFolder.Text = tmxFolderDialog.SelectedPath;
             }
@@ -67,13 +62,13 @@ namespace TestForm
 
         private static string GetFilename(string filepath)
         {
-            return filepath.Substring(filepath.LastIndexOf("\\") + 1).Replace(".tmx", "");
+            return filepath.Substring(filepath.LastIndexOf("\\", StringComparison.Ordinal) + 1).Replace(".tmx", "");
         }
 
         private void tmxCSVButton_Click(object sender, EventArgs e)
         {
             TiledMapSave save = TiledMapSave.FromFile(tmxFilename.Text);
-            string csv = save.ToCSVString(TiledMapSave.CSVPropertyType.Tile);
+            string csv = save.ToCSVString();
             System.IO.File.WriteAllText(tmxDestinationFolder.Text + GetFilename(tmxFilename.Text) + "_tile.csv", csv);
         }
 

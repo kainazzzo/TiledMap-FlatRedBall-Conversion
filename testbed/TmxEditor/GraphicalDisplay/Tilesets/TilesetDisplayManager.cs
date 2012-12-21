@@ -8,6 +8,7 @@ using RenderingLibrary.Content;
 using System.Windows.Forms;
 using FlatRedBall.IO;
 using FlatRedBall.SpecializedXnaControls.Input;
+using TMXGlueLib;
 using XnaAndWinforms;
 using FlatRedBall.SpecializedXnaControls;
 using InputLibrary;
@@ -94,7 +95,7 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
                 if (x > highlight.X && x < highlight.X + highlight.Width &&
                     y > highlight.Y && y < highlight.Y + highlight.Height)
                 {
-                    TiledMap.mapTilesetTile tile = highlight.Tag as TiledMap.mapTilesetTile;
+                    mapTilesetTile tile = highlight.Tag as mapTilesetTile;
 
                     foreach (var kvp in tile.PropertyDictionary)
                     {
@@ -167,21 +168,21 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
             ClearAllHighlights();
 
 
-            var currentTileset = mTilesetsListBox.SelectedItem as TiledMap.mapTileset;
+            var currentTileset = mTilesetsListBox.SelectedItem as mapTileset;
 
-            var image = currentTileset.image[0];
+            var image = currentTileset.Image[0];
 
             string fileName = image.source;
             string absoluteFile = ProjectManager.Self.MakeAbsolute(fileName);
             mSprite.Visible = true;
             mSprite.Texture = LoaderManager.Self.Load(absoluteFile, mManagers);
 
-            int numberTilesWide = mSprite.Texture.Width / currentTileset.tilewidth;
-            int numberTilesTall = mSprite.Texture.Height / currentTileset.tileheight;
+            int numberTilesWide = mSprite.Texture.Width / currentTileset.Tilewidth;
+            int numberTilesTall = mSprite.Texture.Height / currentTileset.Tileheight;
 
-            foreach (var kvp in currentTileset.tileDictionary)
+            foreach (var kvp in currentTileset.TileDictionary)
             {
-                uint index = kvp.Key - currentTileset.firstgid;
+                uint index = kvp.Key - currentTileset.Firstgid;
                 int count = kvp.Value.properties.Count;
 
                 if (count != 0)
@@ -191,11 +192,11 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
                     long xIndex = index % numberTilesWide;
                     long yIndex = index / numberTilesWide;
 
-                    tph.X = xIndex * currentTileset.tilewidth;
-                    tph.Y = yIndex * currentTileset.tileheight;
+                    tph.X = xIndex * currentTileset.Tilewidth;
+                    tph.Y = yIndex * currentTileset.Tileheight;
                     
-                    tph.Width = currentTileset.tilewidth;
-                    tph.Height = currentTileset.tileheight;
+                    tph.Width = currentTileset.Tilewidth;
+                    tph.Height = currentTileset.Tileheight;
                     tph.Count = count;
                     tph.AddToManagers();
 

@@ -11,10 +11,9 @@ using Microsoft.Xna.Framework.Media;
 using FlatRedBall;
 using FlatRedBall.Graphics;
 using FlatRedBall.Utilities;
-
+using TMXGlueLib;
 using TestBed.Screens;
 using FlatRedBall.IO;
-using TiledMap;
 using FlatRedBall.AI.Pathfinding;
 using FlatRedBall.Math.Geometry;
 using FlatRedBall.Content;

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using TiledMap;
 using FlatRedBall.Content;
+using TMXGlueLib;
 using TMXGlueLib.DataTypes;
 using FlatRedBall.IO;
 using TmxToScnx;
@@ -27,12 +26,12 @@ namespace TmxToTilb
                 string sourceTmx = args[0];
                 string destinationFile = args[1];
                 float scale = 1.0f;
-                //TiledMapSave.LayerVisibleBehavior layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                //TiledMapSave.LayerVisibleBehavior LayerVisibleBehaviorValue = TiledMapSave.LayerVisibleBehavior.Ignore;
                 if (args.Length >= 3)
                 {
                     ParseOptionalCommandLineArgs(args, out scale);
                 }
-                //TiledMapSave.layerVisibleBehavior = layerVisibleBehavior;
+                //TiledMapSave.LayerVisibleBehaviorValue = LayerVisibleBehaviorValue;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
                 //SpriteEditorScene save = tms.ToSpriteEditorScene(scale);
@@ -75,7 +74,7 @@ namespace TmxToTilb
         private static void ParseOptionalCommandLineArgs(string[] args, out float scale)
         {
             scale = 1.0f;
-            //layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+            //LayerVisibleBehaviorValue = TiledMapSave.LayerVisibleBehavior.Ignore;
             for (int x = 2; x < args.Length; ++x)
             {
                 string arg = args[x];
@@ -94,9 +93,9 @@ namespace TmxToTilb
                             }
                             break;
                         case "layervisiblebehavior":
-                            //if (!Enum.TryParse(value, out layerVisibleBehavior))
+                            //if (!Enum.TryParse(value, out LayerVisibleBehaviorValue))
                             //{
-                            //    layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                            //    LayerVisibleBehaviorValue = TiledMapSave.LayerVisibleBehavior.Ignore;
                             //}
                             break;
                         default:

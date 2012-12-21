@@ -2,26 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using FlatRedBall.IO;
-using FlatRedBall.Content.Scene;
-using FlatRedBall.Content;
-using FlatRedBall.AI.Pathfinding;
-using FlatRedBall.Math.Geometry;
-using FlatRedBall.Content.AI.Pathfinding;
-using FlatRedBall.Content.Polygon;
-using FlatRedBall.Content.Math.Geometry;
-using FlatRedBall;
 using System.Xml.Serialization;
 using System.Threading.Tasks;
+using FlatRedBall;
+using FlatRedBall.AI.Pathfinding;
+using FlatRedBall.Content;
+using FlatRedBall.Content.AI.Pathfinding;
+using FlatRedBall.Content.Math.Geometry;
+using FlatRedBall.Content.Polygon;
+using FlatRedBall.Content.Scene;
+using FlatRedBall.IO;
+using FlatRedBall.Math.Geometry;
 
-namespace TiledMap
+namespace TMXGlueLib
 {
     public partial class TiledMapSave
     {
         public enum CSVPropertyType { Tile, Layer, Map };
         public enum LayerVisibleBehavior { Ignore, Match, Skip };
 
-        public static LayerVisibleBehavior layerVisibleBehavior = LayerVisibleBehavior.Ignore;
+        public static LayerVisibleBehavior LayerVisibleBehaviorValue = LayerVisibleBehavior.Ignore;
 
         enum LessOrGreaterDesired
         {
@@ -55,40 +55,41 @@ namespace TiledMap
 
         public string ToCSVString(CSVPropertyType type = CSVPropertyType.Tile)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             IEnumerable<string> columnNames = GetColumnNames(type);
-            WriteColumnHeader(sb, columnNames);
-            WriteColumnValues(sb, columnNames, type);
+            var enumerable = columnNames as IList<string> ?? columnNames.ToList();
+            WriteColumnHeader(sb, enumerable);
+            WriteColumnValues(sb, enumerable, type);
 
             return sb.ToString();
         }
 
-        private void WriteColumnValues(StringBuilder sb, IEnumerable<string> columnNames, CSVPropertyType type)
+        private void WriteColumnValues(StringBuilder sb, IList<string> columnNames, CSVPropertyType type)
         {
             // TODO: There is probably a good way to refactor this code
-            if (type == CSVPropertyType.Tile)
+            switch (type)
             {
-                foreach (mapTileset tileSet in this.tileset)
-                {
-                    if (tileSet.tile != null)
+                case CSVPropertyType.Tile:
+                    foreach (mapTileset tileSet in this.tileset)
                     {
-                        foreach (mapTilesetTile tile in tileSet.tile)
+                        if (tileSet.Tile != null)
                         {
-                            WriteValuesFromDictionary(sb, tile.PropertyDictionary, columnNames);
+                            foreach (mapTilesetTile tile in tileSet.Tile)
+                            {
+                                WriteValuesFromDictionary(sb, tile.PropertyDictionary, columnNames);
+                            }
                         }
                     }
-                }
-            }
-            else if (type == CSVPropertyType.Layer)
-            {
-                foreach (mapLayer layer in this.layer)
-                {
-                    WriteValuesFromDictionary(sb, layer.PropertyDictionary, columnNames);
-                }
-            }
-            else if (type == CSVPropertyType.Map)
-            {
-                WriteValuesFromDictionary(sb, PropertyDictionary, columnNames);
+                    break;
+                case CSVPropertyType.Layer:
+                    foreach (var mapLayer in this.layer)
+                    {
+                        WriteValuesFromDictionary(sb, mapLayer.PropertyDictionary, columnNames);
+                    }
+                    break;
+                case CSVPropertyType.Map:
+                    WriteValuesFromDictionary(sb, PropertyDictionary, columnNames);
+                    break;
             }
         }
 
@@ -96,7 +97,7 @@ namespace TiledMap
         {
             if (iDictionary.Any(p => p.Key.Equals("name", StringComparison.CurrentCultureIgnoreCase)))
             {
-                sb.Append(iDictionary.Where(p => p.Key.Equals("name", StringComparison.CurrentCultureIgnoreCase)).First().Value);
+                sb.Append(iDictionary.First(p => p.Key.Equals("name", StringComparison.CurrentCultureIgnoreCase)).Value);
 
                 foreach (string columnName in columnNames)
                 {
@@ -144,7 +145,7 @@ namespace TiledMap
             sb.AppendLine();
         }
 
-        public class CaseInsensitiveEqualityComparer<T> : IEqualityComparer<string>
+        public class CaseInsensitiveEqualityComparer : IEqualityComparer<string>
         {
             public bool Equals(string x, string y)
             {
@@ -159,33 +160,30 @@ namespace TiledMap
 
         private IEnumerable<string> GetColumnNames(CSVPropertyType type)
         {
-            HashSet<string> columnNames = new HashSet<string>();
+            var columnNames = new HashSet<string>();
 
-            if (type == CSVPropertyType.Tile)
+            switch (type)
             {
-                return this.tileset.SelectMany(t => t.tile).SelectMany(tile => tile.PropertyDictionary).Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer<string>());
-            }
-            else if (type == CSVPropertyType.Layer)
-            {
-                return this.layer.SelectMany(l => l.PropertyDictionary).Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer<string>());
-            }
-            else if (type == CSVPropertyType.Map)
-            {
-                return this.PropertyDictionary.Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer<string>());
+                case CSVPropertyType.Tile:
+                    return this.tileset.SelectMany(t => t.Tile).SelectMany(tile => tile.PropertyDictionary).Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer());
+                case CSVPropertyType.Layer:
+                    return this.layer.SelectMany(l => l.PropertyDictionary).Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer());
+                case CSVPropertyType.Map:
+                    return this.PropertyDictionary.Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer());
             }
             return columnNames;
         }
 
         public ShapeCollectionSave ToShapeCollectionSave(string layerName)
         {
-            mapLayer layer = null;
+            mapLayer mapLayer = null;
             if (!string.IsNullOrEmpty(layerName))
             {
-                layer = this.layer.FirstOrDefault(l => l.name.Equals(layerName));
+                mapLayer = this.layer.FirstOrDefault(l => l.name.Equals(layerName));
             }
-            ShapeCollectionSave shapes = new ShapeCollectionSave();
+            var shapes = new ShapeCollectionSave();
 
-            if ((layer != null && !layer.IsVisible && layer.VisibleBehavior == LayerVisibleBehavior.Skip) ||
+            if ((mapLayer != null && !mapLayer.IsVisible && mapLayer.VisibleBehavior == LayerVisibleBehavior.Skip) ||
                 this.objectgroup == null || this.objectgroup.Length == 0)
             {
                 return shapes;
@@ -202,7 +200,7 @@ namespace TiledMap
                             foreach (mapObjectgroupObjectPolygon polygon in @object.polygon)
                             {
                                 // TODO: Make this a rectangle object
-                                PolygonSave p = convertTMXObjectToFRBPolygonSave(group.width, group.height,
+                                PolygonSave p = ConvertTmxObjectToFrbPolygonSave(group.width, group.height,
                                     @object.x, @object.y, polygon.points, true);
                                 if (p != null)
                                 {
@@ -215,7 +213,7 @@ namespace TiledMap
                         {
                             foreach (mapObjectgroupObjectPolyline polyline in @object.polyline)
                             {
-                                PolygonSave p = convertTMXObjectToFRBPolygonSave(group.width, group.height,
+                                PolygonSave p = ConvertTmxObjectToFrbPolygonSave(group.width, group.height,
                                     @object.x, @object.y, polyline.points, false);
                                 if (p != null)
                                 {
@@ -226,7 +224,7 @@ namespace TiledMap
 
                         if (@object.polygon == null && @object.polyline == null)
                         {
-                            PolygonSave p = convertTMXObjectToFRBPolygonSave(group.width, group.height, @object.x, @object.y, @object.width, @object.height);
+                            PolygonSave p = ConvertTmxObjectToFrbPolygonSave(group.width, group.height, @object.x, @object.y, @object.width, @object.height);
                             if (p != null)
                             {
                                 shapes.PolygonSaves.Add(p);
@@ -238,27 +236,27 @@ namespace TiledMap
             return shapes;
         }
 
-        private PolygonSave convertTMXObjectToFRBPolygonSave(int groupWidth, int groupHeight, int x, int y, int width, int height)
+        private PolygonSave ConvertTmxObjectToFrbPolygonSave(int groupWidth, int groupHeight, int x, int y, int w, int h)
         {
-            StringBuilder pointsSB = new StringBuilder();
+            var pointsSb = new StringBuilder();
 
-            pointsSB.Append("0,0");
+            pointsSb.Append("0,0");
 
-            pointsSB.AppendFormat(" {0},{1}", width, 0);
-            pointsSB.AppendFormat(" {0},{1}", width, height);
-            pointsSB.AppendFormat(" {0},{1}", 0, height);
+            pointsSb.AppendFormat(" {0},{1}", w, 0);
+            pointsSb.AppendFormat(" {0},{1}", w, h);
+            pointsSb.AppendFormat(" {0},{1}", 0, h);
 
 
-            return convertTMXObjectToFRBPolygonSave(groupWidth, groupHeight, x, y, pointsSB.ToString(), true);
+            return ConvertTmxObjectToFrbPolygonSave(groupWidth, groupHeight, x, y, pointsSb.ToString(), true);
         }
 
-        private PolygonSave convertTMXObjectToFRBPolygonSave(int width, int height, int x, int y, string points, bool connectBackToStart)
+        private PolygonSave ConvertTmxObjectToFrbPolygonSave(int w, int h, int x, int y, string points, bool connectBackToStart)
         {
             if (string.IsNullOrEmpty(points))
             {
                 return null;
             }
-            PolygonSave polygon = new PolygonSave();
+            var polygon = new PolygonSave();
             string[] pointString = points.Split(" ".ToCharArray());
             float z;
             float newx;
@@ -277,10 +275,10 @@ namespace TiledMap
                 fy -= tileheight / 2.0f;
             }
 
-            calculateWorldCoordinates(0, fx / (float)tileheight, fy / (float)tileheight, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
+            CalculateWorldCoordinates(0, fx / tileheight, fy / tileheight, this.tilewidth, this.tileheight, w * tilewidth, out newx, out newy, out z);
             polygon.X = newx - tilewidth / 2.0f;
             polygon.Y = newy - tileheight / 2.0f;
-            Point[] pointsArr = new Point[pointString.Length + (connectBackToStart ? 1 : 0)];
+            var pointsArr = new Point[pointString.Length + (connectBackToStart ? 1 : 0)];
 
             int count = 0;
             foreach (string pointStr in pointString)
@@ -292,7 +290,7 @@ namespace TiledMap
                 float normalizedX = relativeX / (float)tileheight;
                 float normalizedY = relativeY / (float)tileheight;
 
-                calculateWorldCoordinates(0, normalizedX, normalizedY, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
+                CalculateWorldCoordinates(0, normalizedX, normalizedY, this.tilewidth, this.tileheight, w * tilewidth, out newx, out newy, out z);
 
                 pointsArr[count].X = newx;
                 pointsArr[count].Y = newy;
@@ -311,7 +309,7 @@ namespace TiledMap
                 float normalizedX = relativeX / (float)tileheight;
                 float normalizedY = relativeY / (float)tileheight;
 
-                calculateWorldCoordinates(0, normalizedX, normalizedY, this.tilewidth, this.tileheight, width * tilewidth, out newx, out newy, out z);
+                CalculateWorldCoordinates(0, normalizedX, normalizedY, this.tilewidth, this.tileheight, w * tilewidth, out newx, out newy, out z);
 
                 pointsArr[count].X = newx;
                 pointsArr[count].Y = newy;
@@ -339,15 +337,15 @@ namespace TiledMap
 
         public NodeNetwork ToNodeNetwork(bool linkHorizontally, bool linkVertically, bool linkDiagonally, bool requireTile)
         {
-            NodeNetwork toReturn = new NodeNetwork();
+            var toReturn = new NodeNetwork();
 
 
             int layercount = 0;
-            foreach (mapLayer layer in this.layer)
+            foreach (mapLayer mapLayer in this.layer)
             {
-                if (!layer.IsVisible)
+                if (!mapLayer.IsVisible)
                 {
-                    switch (layer.VisibleBehavior)
+                    switch (mapLayer.VisibleBehavior)
                     {
                         case LayerVisibleBehavior.Ignore:
                             break;
@@ -355,31 +353,31 @@ namespace TiledMap
                             continue;
                     }
                 }
-                Dictionary<int, Dictionary<int, Dictionary<int, PositionedNode>>> allNodes = new Dictionary<int, Dictionary<int, Dictionary<int, PositionedNode>>>();
+                var allNodes = new Dictionary<int, Dictionary<int, Dictionary<int, PositionedNode>>>();
                 allNodes[layercount] = new Dictionary<int, Dictionary<int, PositionedNode>>();
 
 
-                try
-                {
-                    Parallel.For(0, layer.data[0].tiles.Count, (count) =>
+                mapLayer mLayer = mapLayer;
+                int mLayerCount = layercount;
+                Parallel.For(0, mapLayer.data[0].tiles.Count, count =>
                     {
-                        uint gid = layer.data[0].tiles[(int)count];
+                        uint gid = mLayer.data[0].tiles[count];
 
                         mapTileset tileSet = GetTilesetForGid(gid);
                         if (tileSet != null || !requireTile)
                         {
-                            PositionedNode node = new PositionedNode();
+                            var node = new PositionedNode();
 
-                            int tileWidth = requireTile ? tileSet.tilewidth : tilewidth;
-                            int tileHeight = requireTile ? tileSet.tileheight : tileheight;
-                            int X = count % this.width;
-                            int Y = count / this.width;
+                            //int tileWidth = requireTile ? tileSet.tilewidth : tilewidth;
+                            //int tileHeight = requireTile ? tileSet.tileheight : tileheight;
+                            int x = count % this.width;
+                            int y = count / this.width;
 
                             float nodex;
                             float nodey;
                             float nodez;
 
-                            CalculateWorldCoordinates(layercount, count, tilewidth, tileheight, layer.width, out nodex, out nodey, out nodez);
+                            CalculateWorldCoordinates(mLayerCount, count, tilewidth, tileheight, mLayer.width, out nodex, out nodey, out nodez);
 
                             node.X = nodex;
                             node.Y = nodey;
@@ -387,12 +385,12 @@ namespace TiledMap
 
                             lock (allNodes)
                             {
-                                if (!allNodes[layercount].ContainsKey(X))
+                                if (!allNodes[mLayerCount].ContainsKey(x))
                                 {
-                                    allNodes[layercount][X] = new Dictionary<int, PositionedNode>();
+                                    allNodes[mLayerCount][x] = new Dictionary<int, PositionedNode>();
                                 }
 
-                                allNodes[layercount][X][Y] = node;
+                                allNodes[mLayerCount][x][y] = node;
                             }
                             node.Name = string.Format("Node {0}", count);
                             lock (toReturn)
@@ -401,18 +399,11 @@ namespace TiledMap
                             }
                         }
                     });
+                SetupNodeLinks(linkHorizontally, linkVertically, linkDiagonally, allNodes[layercount]);
 
-
-                }
-                catch (AggregateException)
-                {
-
-                    throw;
-                } setupNodeLinks(linkHorizontally, linkVertically, linkDiagonally, allNodes[layercount]);
-
-                removeExcludedNodesViaPolygonLayer(toReturn, layer, allNodes[layercount]);
-                lowerNodesInNodesDownShapeCollection(layer, allNodes[layercount]);
-                raiseNodesInNodesUpShapeCollection(layer, allNodes[layercount]);
+                RemoveExcludedNodesViaPolygonLayer(toReturn, mapLayer, allNodes[layercount]);
+                LowerNodesInNodesDownShapeCollection(mapLayer, allNodes[layercount]);
+                RaiseNodesInNodesUpShapeCollection(mapLayer, allNodes[layercount]);
 
                 ++layercount;
             }
@@ -421,42 +412,42 @@ namespace TiledMap
             return toReturn;
         }
 
-        private void raiseNodesInNodesUpShapeCollection(mapLayer layer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        private void RaiseNodesInNodesUpShapeCollection(mapLayer mapLayer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
         {
-            ShapeCollection sc = this.ToShapeCollection(layer.name + " nodesup");
-            List<PositionedNode> nodesToMoveUp = getNodesThatCollideWithShapeCollection(sc, allNodes);
+            ShapeCollection sc = this.ToShapeCollection(mapLayer.name + " nodesup");
+            List<PositionedNode> nodesToMoveUp = GetNodesThatCollideWithShapeCollection(sc, allNodes);
 
-            foreach (PositionedNode node in nodesToMoveUp)
+            foreach (var node in nodesToMoveUp)
             {
                 node.Z += .001f;
             }
         }
 
-        private void lowerNodesInNodesDownShapeCollection(mapLayer layer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        private void LowerNodesInNodesDownShapeCollection(mapLayer mapLayer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
         {
-            ShapeCollection sc = this.ToShapeCollection(layer.name + " nodesdown");
-            List<PositionedNode> nodesToMoveDown = getNodesThatCollideWithShapeCollection(sc, allNodes);
+            ShapeCollection sc = this.ToShapeCollection(mapLayer.name + " nodesdown");
+            List<PositionedNode> nodesToMoveDown = GetNodesThatCollideWithShapeCollection(sc, allNodes);
 
-            foreach (PositionedNode node in nodesToMoveDown)
+            foreach (var node in nodesToMoveDown)
             {
                 node.Z -= .001f;
             }
         }
 
-        private void removeExcludedNodesViaPolygonLayer(NodeNetwork nodeNetwork, mapLayer layer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        private void RemoveExcludedNodesViaPolygonLayer(NodeNetwork nodeNetwork, mapLayer mapLayer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
         {
-            ShapeCollection sc = this.ToShapeCollection(layer.name + " nonodes");
-            List<PositionedNode> nodesToRemove = getNodesThatCollideWithShapeCollection(sc, allNodes);
+            ShapeCollection sc = this.ToShapeCollection(mapLayer.name + " nonodes");
+            List<PositionedNode> nodesToRemove = GetNodesThatCollideWithShapeCollection(sc, allNodes);
 
-            foreach (PositionedNode node in nodesToRemove)
+            foreach (var node in nodesToRemove)
             {
                 nodeNetwork.Remove(node);
             }
         }
 
-        private List<PositionedNode> getNodesThatCollideWithShapeCollection(ShapeCollection sc, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        private List<PositionedNode> GetNodesThatCollideWithShapeCollection(ShapeCollection sc, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
         {
-            List<PositionedNode> returnValue = new List<PositionedNode>();
+            var returnValue = new List<PositionedNode>();
 
             if (sc != null && sc.Polygons != null)
             {
@@ -465,16 +456,12 @@ namespace TiledMap
                     polygon.ForceUpdateDependencies();
                 }
 
-                foreach (KeyValuePair<int, Dictionary<int, PositionedNode>> xpair in allNodes)
+                foreach (var xpair in allNodes)
                 {
-                    int x = xpair.Key;
-                    foreach (KeyValuePair<int, PositionedNode> ypair in xpair.Value)
+                    foreach (var ypair in xpair.Value)
                     {
                         PositionedNode node = ypair.Value;
-                        AxisAlignedRectangle rectangle = new AxisAlignedRectangle();
-                        rectangle.Position = node.Position;
-                        rectangle.ScaleX = 1;
-                        rectangle.ScaleY = 1;
+                        var rectangle = new AxisAlignedRectangle {Position = node.Position, ScaleX = 1, ScaleY = 1};
 
                         if (sc.CollideAgainst(rectangle))
                         {
@@ -486,12 +473,12 @@ namespace TiledMap
             return returnValue;
         }
 
-        private static void setupNodeLinks(bool linkHorizontally, bool linkVertically, bool linkDiagonally, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        private static void SetupNodeLinks(bool linkHorizontally, bool linkVertically, bool linkDiagonally, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
         {
-            foreach (KeyValuePair<int, Dictionary<int, PositionedNode>> xpair in allNodes)
+            foreach (var xpair in allNodes)
             {
                 int x = xpair.Key;
-                foreach (KeyValuePair<int, PositionedNode> ypair in xpair.Value)
+                foreach (var ypair in xpair.Value)
                 {
                     int y = ypair.Key;
 
@@ -521,17 +508,16 @@ namespace TiledMap
 
         public SpriteEditorScene ToSpriteEditorScene(float scale)
         {
-            SpriteEditorScene toReturn = new SpriteEditorScene();
-            toReturn.CoordinateSystem = FlatRedBall.Math.CoordinateSystem.RightHanded;
+            var toReturn = new SpriteEditorScene {CoordinateSystem = FlatRedBall.Math.CoordinateSystem.RightHanded};
 
             // TODO: Somehow add all layers separately
 
             int layercount = 0;
-            foreach (mapLayer layer in this.layer)
+            foreach (mapLayer mapLayer in this.layer)
             {
-                if (!layer.IsVisible)
+                if (!mapLayer.IsVisible)
                 {
-                    switch (layer.VisibleBehavior)
+                    switch (mapLayer.VisibleBehavior)
                     {
                         case LayerVisibleBehavior.Ignore:
                             break;
@@ -540,76 +526,70 @@ namespace TiledMap
                     }
                 }
 
-                try
-                {
-                    Parallel.For(0, layer.data[0].tiles.Count, (count) =>
+                mapLayer mLayer = mapLayer;
+                int mLayerCount = layercount;
+                Parallel.For(0, mapLayer.data[0].tiles.Count, count =>
                     {
-                        uint gid = layer.data[0].tiles[count];
+                        uint gid = mLayer.data[0].tiles[count];
                         mapTileset tileSet = GetTilesetForGid(gid);
                         if (tileSet != null)
                         {
-                            SpriteSave sprite = CreateSpriteSaveFromMapTileset(scale, layercount, layer, count, gid, tileSet);
+                            SpriteSave sprite = CreateSpriteSaveFromMapTileset(scale, mLayerCount, mLayer, count, gid, tileSet);
                             lock (toReturn)
                             {
                                 toReturn.SpriteList.Add(sprite);
                             }
                         }
                     });
-
-                }
-                catch (AggregateException)
-                {
-
-                    throw;
-                } ++layercount;
+                ++layercount;
             }
 
             return toReturn;
         }
 
-        private SpriteSave CreateSpriteSaveFromMapTileset(float scale, int layercount, mapLayer layer, int count, uint gid, mapTileset tileSet)
+        private SpriteSave CreateSpriteSaveFromMapTileset(float scale, int layercount, mapLayer mapLayer, int count, uint gid, mapTileset tileSet)
         {
-            SpriteSave sprite = new SpriteSave();
-            if (!layer.IsVisible && layer.VisibleBehavior == LayerVisibleBehavior.Match)
+            var sprite = new SpriteSave();
+            if (!mapLayer.IsVisible && mapLayer.VisibleBehavior == LayerVisibleBehavior.Match)
             {
                 sprite.Visible = false;
             }
 
-            int imageWidth = tileSet.image[0].width;
-            int imageHeight = tileSet.image[0].height;
-            int tileWidth = tileSet.tilewidth;
-            int spacing = tileSet.spacing;
-            int tileHeight = tileSet.tileheight;
-            int margin = tileSet.margin;
+            int imageWidth = tileSet.Image[0].width;
+            int imageHeight = tileSet.Image[0].height;
+            int tileWidth = tileSet.Tilewidth;
+            int spacing = tileSet.Spacing;
+            int tileHeight = tileSet.Tileheight;
+            int margin = tileSet.Margin;
 
             // TODO: only calculate these once per tileset. Perhaps it can be done in the deserialize method
-            int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
-            int tilesHigh = (imageHeight - margin) / (tileHeight + spacing);
+            //int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
+            //int tilesHigh = (imageHeight - margin) / (tileHeight + spacing);
 
 
-            sprite.Texture = tileSet.image[0].source;
-            if (tileSet.tileDictionary.ContainsKey(gid - tileSet.firstgid + 1))
+            sprite.Texture = tileSet.Image[0].source;
+            if (tileSet.TileDictionary.ContainsKey(gid - tileSet.Firstgid + 1))
             {
-                if (tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary.ContainsKey("name"))
+                if (tileSet.TileDictionary[gid - tileSet.Firstgid + 1].PropertyDictionary.ContainsKey("name"))
                 {
-                    sprite.Name = tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary["name"];
+                    sprite.Name = tileSet.TileDictionary[gid - tileSet.Firstgid + 1].PropertyDictionary["name"];
                 }
-                else if (tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary.ContainsKey("Name"))
+                else if (tileSet.TileDictionary[gid - tileSet.Firstgid + 1].PropertyDictionary.ContainsKey("Name"))
                 {
-                    sprite.Name = tileSet.tileDictionary[gid - tileSet.firstgid + 1].PropertyDictionary["Name"];
+                    sprite.Name = tileSet.TileDictionary[gid - tileSet.Firstgid + 1].PropertyDictionary["Name"];
                 }
             }
 
-            setSpriteTextureCoordinates(gid, sprite, tileSet, imageWidth, imageHeight, tileWidth, spacing, tileHeight, margin);
+            SetSpriteTextureCoordinates(gid, sprite, tileSet, imageWidth, imageHeight, tileWidth, spacing, tileHeight, margin);
             CalculateWorldCoordinates(layercount, count, tileWidth, tileHeight, this.width, out sprite.X, out sprite.Y, out sprite.Z);
 
-            sprite.ScaleX = tileWidth / 2;
-            sprite.ScaleY = tileHeight / 2;
+            sprite.ScaleX = tileWidth / 2.0f;
+            sprite.ScaleY = tileHeight / 2.0f;
 
-            if (tileSet.tileoffset != null && tileSet.tileoffset.Length == 1)
+            if (tileSet.Tileoffset != null && tileSet.Tileoffset.Length == 1)
             {
-                sprite.X += tileSet.tileoffset[0].x;
-                sprite.Y -= tileSet.tileoffset[0].y;
+                sprite.X += tileSet.Tileoffset[0].x;
+                sprite.Y -= tileSet.Tileoffset[0].y;
             }
 
 
@@ -632,10 +612,10 @@ namespace TiledMap
         {
             int normalizedX = count % this.width;
             int normalizedY = count / this.width;
-            calculateWorldCoordinates(layercount, normalizedX, normalizedY, tileWidth, tileHeight, layerWidth, out x, out y, out z);
+            CalculateWorldCoordinates(layercount, normalizedX, normalizedY, tileWidth, tileHeight, layerWidth, out x, out y, out z);
         }
 
-        private void calculateWorldCoordinates(int layercount, float normalizedX, float normalizedY, int tileWidth, int tileHeight, int layerWidth, out float x, out float y, out float z)
+        private void CalculateWorldCoordinates(int layercount, float normalizedX, float normalizedY, int tileWidth, int tileHeight, int layerWidth, out float x, out float y, out float z)
         {
             if (this.orientation == null || this.orientation.Equals("orthogonal"))
             {
@@ -648,9 +628,9 @@ namespace TiledMap
             }
             else if (this.orientation != null && this.orientation.Equals("isometric"))
             {
-                y = -(float)((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2;
+                y = -((normalizedX * this.tilewidth / 2.0f) + (normalizedY * this.tilewidth / 2.0f)) / 2;
                 y += tileHeight / 2.0f;
-                x = -(float)(((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2));
+                x = -((normalizedY * this.tilewidth / 2.0f) - (normalizedX * this.tileheight / 2.0f) * 2);
                 x += tileWidth / 2.0f;
                 z = ((normalizedY * layerWidth + normalizedX) * .000001f) + layercount;
             }
@@ -660,16 +640,16 @@ namespace TiledMap
             }
         }
 
-        private void setSpriteTextureCoordinates(uint gid, SpriteSave sprite, mapTileset tileSet, int imageWidth, int imageHeight, int tileWidth, int spacing, int tileHeight, int margin)
+        private void SetSpriteTextureCoordinates(uint gid, SpriteSave sprite, mapTileset tileSet, int imageWidth, int imageHeight, int tileWidth, int spacing, int tileHeight, int margin)
         {
             // Calculate pixel coordinates in the texture sheet
-            int leftPixelCoord = TiledMapSave.calculateXCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, spacing, margin);
-            int topPixelCoord = TiledMapSave.calculateYCoordinate(gid - tileSet.firstgid, imageWidth, tileWidth, tileHeight, spacing, margin);
+            int leftPixelCoord = CalculateXCoordinate(gid - tileSet.Firstgid, imageWidth, tileWidth, spacing, margin);
+            int topPixelCoord = CalculateYCoordinate(gid - tileSet.Firstgid, imageWidth, tileWidth, tileHeight, spacing, margin);
             int rightPixelCoord = leftPixelCoord + tileWidth;
             int bottomPixelCoord = topPixelCoord + tileHeight;
 
             // Calculate relative texture coordinates based on pixel coordinates
-            LessOrGreaterDesired changeVal = LessOrGreaterDesired.Greater;
+            var changeVal = LessOrGreaterDesired.Greater;
 
             if (this.orientation != null && this.orientation.Equals("isometric"))
             {
@@ -696,7 +676,7 @@ namespace TiledMap
             for (int i = tileset.Length - 1; i >= 0; --i)
             {
                 mapTileset tileSet = tileset[i];
-                if (gid >= tileSet.firstgid)
+                if (gid >= tileSet.Firstgid)
                 {
                     return tileSet;
                 }
@@ -711,21 +691,18 @@ namespace TiledMap
             //const float modValue = .000001f;
             const float modValue = .000002f;
             //const float modValue = .00001f;
-            if (lessOrGreaterDesired == LessOrGreaterDesired.Greater)
+            switch (lessOrGreaterDesired)
             {
-                return asFloat + modValue;
-            }
-            else if (lessOrGreaterDesired == LessOrGreaterDesired.Less)
-            {
-                return asFloat - modValue;
-            }
-            else
-            {
-                return asFloat;
+                case LessOrGreaterDesired.Greater:
+                    return asFloat + modValue;
+                case LessOrGreaterDesired.Less:
+                    return asFloat - modValue;
+                default:
+                    return asFloat;
             }
         }
 
-        private static int calculateYCoordinate(uint gid, int imageWidth, int tileWidth, int tileHeight, int spacing, int margin)
+        private static int CalculateYCoordinate(uint gid, int imageWidth, int tileWidth, int tileHeight, int spacing, int margin)
         {
             int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
             int normalizedy = (int)(gid / tilesWide);
@@ -734,7 +711,7 @@ namespace TiledMap
             return pixely;
         }
 
-        private static int calculateXCoordinate(uint gid, int imageWidth, int tileWidth, int spacing, int margin)
+        private static int CalculateXCoordinate(uint gid, int imageWidth, int tileWidth, int spacing, int margin)
         {
             int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
             int normalizedX = (int)(gid % tilesWide);
@@ -750,23 +727,23 @@ namespace TiledMap
             {
                 FileManager.RelativeDirectory = FileManager.GetDirectory(fileName);
             }
-            catch (Exception)
+            catch
             {
             }
-            TiledMapSave tms = FileManager.XmlDeserialize<TiledMapSave>(fileName);
+            var tms = FileManager.XmlDeserialize<TiledMapSave>(fileName);
             FileManager.RelativeDirectory = oldRelativeDirectory;
 
             foreach (mapLayer layer in tms.layer)
             {
                 if (!layer.PropertyDictionary.ContainsKey("VisibleBehavior"))
                 {
-                    layer.VisibleBehavior = layerVisibleBehavior;
+                    layer.VisibleBehavior = LayerVisibleBehaviorValue;
                 }
                 else
                 {
-                    if (!Enum.TryParse<LayerVisibleBehavior>(layer.PropertyDictionary["VisibleBehavior"], out layer.VisibleBehavior))
+                    if (!Enum.TryParse(layer.PropertyDictionary["VisibleBehavior"], out layer.VisibleBehavior))
                     {
-                        layer.VisibleBehavior = layerVisibleBehavior;
+                        layer.VisibleBehavior = LayerVisibleBehaviorValue;
                     }
                 }
             }
@@ -775,12 +752,14 @@ namespace TiledMap
 
         public void Save(string fileName)
         {
-            FileManager.XmlSerialize<TiledMapSave>(this, fileName);
+            FileManager.XmlSerialize(this, fileName);
 
         }
     }
 
+// ReSharper disable InconsistentNaming
     public partial class mapLayer
+// ReSharper restore InconsistentNaming
     {
         [XmlIgnore]
         public TiledMapSave.LayerVisibleBehavior VisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
