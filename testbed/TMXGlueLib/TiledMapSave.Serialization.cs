@@ -340,7 +340,7 @@ namespace TMXGlueLib
                     {
                         propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
                     }
-                    if (!propertyDictionaryField.Any(p => p.Key.Equals("name", StringComparison.OrdinalIgnoreCase))))
+                    if (!propertyDictionaryField.Any(p => p.Key.Equals("name", StringComparison.OrdinalIgnoreCase)))
                     {
                         propertyDictionaryField.Add("name", this.name);
                     }
@@ -727,7 +727,7 @@ namespace TMXGlueLib
                     {
                         propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
                     }
-                    if (!string.IsNullOrEmpty(this.Name) && !propertyDictionaryField.Any(p => p.Key.Equals("name", StringComparison.OrdinalIgnoreCase))))
+                    if (!string.IsNullOrEmpty(this.Name) && !propertyDictionaryField.Any(p => p.Key.Equals("name", StringComparison.OrdinalIgnoreCase)))
                     {
                         propertyDictionaryField.Add("name", this.Name);
                     }
