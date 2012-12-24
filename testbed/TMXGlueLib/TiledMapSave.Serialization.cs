@@ -340,6 +340,10 @@ namespace TMXGlueLib
                     {
                         propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
                     }
+                    if (!propertyDictionaryField.Any(p => p.Key.Equals("name", StringComparison.OrdinalIgnoreCase))))
+                    {
+                        propertyDictionaryField.Add("name", this.name);
+                    }
                     return propertyDictionaryField;
                 }
             }
@@ -701,7 +705,48 @@ namespace TMXGlueLib
 
         private int heightField;
 
-        /// <remarks/>
+        private string _name;
+
+        [XmlAttributeAttribute(AttributeName = "name")]
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        private IDictionary<string, string> propertyDictionaryField = null;
+
+        [XmlIgnore]
+        public IDictionary<string, string> PropertyDictionary
+        {
+            get
+            {
+                lock (this)
+                {
+                    if (propertyDictionaryField == null)
+                    {
+                        propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
+                    }
+                    if (!string.IsNullOrEmpty(this.Name) && !propertyDictionaryField.Any(p => p.Key.Equals("name", StringComparison.OrdinalIgnoreCase))))
+                    {
+                        propertyDictionaryField.Add("name", this.Name);
+                    }
+                    return propertyDictionaryField;
+                }
+            }
+        }
+
+        List<property> mProperties = new List<property>();
+
+        public List<property> properties
+        {
+            get { return mProperties; }
+            set
+            {
+                mProperties = value;
+            }
+        }
+            /// <remarks/>
         [XmlElement("polygon", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public mapObjectgroupObjectPolygon[] polygon
         {

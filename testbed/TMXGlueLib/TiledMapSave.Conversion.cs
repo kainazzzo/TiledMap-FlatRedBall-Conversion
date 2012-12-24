@@ -18,7 +18,7 @@ namespace TMXGlueLib
 {
     public partial class TiledMapSave
     {
-        public enum CSVPropertyType { Tile, Layer, Map };
+        public enum CSVPropertyType { Tile, Layer, Map, Object };
         public enum LayerVisibleBehavior { Ignore, Match, Skip };
 
         public static LayerVisibleBehavior LayerVisibleBehaviorValue = LayerVisibleBehavior.Ignore;
@@ -53,18 +53,18 @@ namespace TMXGlueLib
             return scs.ToShapeCollection();
         }
 
-        public string ToCSVString(CSVPropertyType type = CSVPropertyType.Tile)
+        public string ToCSVString(CSVPropertyType type = CSVPropertyType.Tile, string layerName = null)
         {
             var sb = new StringBuilder();
-            IEnumerable<string> columnNames = GetColumnNames(type);
+            IEnumerable<string> columnNames = GetColumnNames(type, layerName);
             var enumerable = columnNames as IList<string> ?? columnNames.ToList();
             WriteColumnHeader(sb, enumerable);
-            WriteColumnValues(sb, enumerable, type);
+            WriteColumnValues(sb, enumerable, type, layerName);
 
             return sb.ToString();
         }
 
-        private void WriteColumnValues(StringBuilder sb, IList<string> columnNames, CSVPropertyType type)
+        private void WriteColumnValues(StringBuilder sb, IList<string> columnNames, CSVPropertyType type, string layerName)
         {
             // TODO: There is probably a good way to refactor this code
             switch (type)
@@ -82,13 +82,24 @@ namespace TMXGlueLib
                     }
                     break;
                 case CSVPropertyType.Layer:
-                    foreach (var mapLayer in this.layer)
-                    {
-                        WriteValuesFromDictionary(sb, mapLayer.PropertyDictionary, columnNames);
-                    }
+
+                    this.layer.Where(
+                        l =>
+                        layerName == null ||
+                        (l.name != null && l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase))).ToList()
+                        .ForEach(l => WriteValuesFromDictionary(sb, l.PropertyDictionary, columnNames));
                     break;
                 case CSVPropertyType.Map:
                     WriteValuesFromDictionary(sb, PropertyDictionary, columnNames);
+                    break;
+                case CSVPropertyType.Object:
+                    this.objectgroup.Where(
+                        og =>
+                        layerName == null ||
+                        (og.name != null && og.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
+                        .SelectMany(o => o.@object)
+                        .ToList()
+                        .ForEach(o => WriteValuesFromDictionary(sb, o.PropertyDictionary, columnNames));
                     break;
             }
         }
@@ -158,18 +169,39 @@ namespace TMXGlueLib
             }
         }
 
-        private IEnumerable<string> GetColumnNames(CSVPropertyType type)
+        private IEnumerable<string> GetColumnNames(CSVPropertyType type, string layerName)
         {
             var columnNames = new HashSet<string>();
 
             switch (type)
             {
                 case CSVPropertyType.Tile:
-                    return this.tileset.SelectMany(t => t.Tile).SelectMany(tile => tile.PropertyDictionary).Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer());
+                    return
+                        this.tileset.SelectMany(t => t.Tile)
+                            .SelectMany(tile => tile.PropertyDictionary)
+                            .Select(d => d.Key)
+                            .Distinct(new CaseInsensitiveEqualityComparer());
                 case CSVPropertyType.Layer:
-                    return this.layer.SelectMany(l => l.PropertyDictionary).Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer());
+                    return
+                        this.layer.Where(
+                            l =>
+                            layerName == null ||
+                            (l.name != null && l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
+                            .SelectMany(l => l.PropertyDictionary)
+                            .Select(d => d.Key)
+                            .Distinct(new CaseInsensitiveEqualityComparer());
                 case CSVPropertyType.Map:
                     return this.PropertyDictionary.Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer());
+                case CSVPropertyType.Object:
+                    return
+                        this.objectgroup.Where(
+                            l =>
+                            layerName == null ||
+                            (l.name != null && l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
+                            .SelectMany(o => o.@object)
+                            .SelectMany(o => o.PropertyDictionary)
+                            .Select(d => d.Key)
+                            .Distinct(new CaseInsensitiveEqualityComparer());
             }
             return columnNames;
         }
@@ -461,7 +493,7 @@ namespace TMXGlueLib
                     foreach (var ypair in xpair.Value)
                     {
                         PositionedNode node = ypair.Value;
-                        var rectangle = new AxisAlignedRectangle {Position = node.Position, ScaleX = 1, ScaleY = 1};
+                        var rectangle = new AxisAlignedRectangle { Position = node.Position, ScaleX = 1, ScaleY = 1 };
 
                         if (sc.CollideAgainst(rectangle))
                         {
@@ -508,7 +540,7 @@ namespace TMXGlueLib
 
         public SpriteEditorScene ToSpriteEditorScene(float scale)
         {
-            var toReturn = new SpriteEditorScene {CoordinateSystem = FlatRedBall.Math.CoordinateSystem.RightHanded};
+            var toReturn = new SpriteEditorScene { CoordinateSystem = FlatRedBall.Math.CoordinateSystem.RightHanded };
 
             // TODO: Somehow add all layers separately
 
@@ -757,9 +789,9 @@ namespace TMXGlueLib
         }
     }
 
-// ReSharper disable InconsistentNaming
+    // ReSharper disable InconsistentNaming
     public partial class mapLayer
-// ReSharper restore InconsistentNaming
+    // ReSharper restore InconsistentNaming
     {
         [XmlIgnore]
         public TiledMapSave.LayerVisibleBehavior VisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;

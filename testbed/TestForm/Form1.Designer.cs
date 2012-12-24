@@ -41,6 +41,9 @@
             this.tmxFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.tmxCSVButton = new System.Windows.Forms.Button();
             this.tmxLayerCSVButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.tmxLayerName = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -87,7 +90,7 @@
             // 
             // tmxDestinationFolder
             // 
-            this.tmxDestinationFolder.Location = new System.Drawing.Point(124, 46);
+            this.tmxDestinationFolder.Location = new System.Drawing.Point(124, 45);
             this.tmxDestinationFolder.Name = "tmxDestinationFolder";
             this.tmxDestinationFolder.Size = new System.Drawing.Size(354, 20);
             this.tmxDestinationFolder.TabIndex = 4;
@@ -104,7 +107,7 @@
             // 
             // tmxConvertToScnx
             // 
-            this.tmxConvertToScnx.Location = new System.Drawing.Point(228, 103);
+            this.tmxConvertToScnx.Location = new System.Drawing.Point(170, 101);
             this.tmxConvertToScnx.Name = "tmxConvertToScnx";
             this.tmxConvertToScnx.Size = new System.Drawing.Size(75, 23);
             this.tmxConvertToScnx.TabIndex = 6;
@@ -114,7 +117,7 @@
             // 
             // tmxConvertToShcx
             // 
-            this.tmxConvertToShcx.Location = new System.Drawing.Point(390, 103);
+            this.tmxConvertToShcx.Location = new System.Drawing.Point(332, 101);
             this.tmxConvertToShcx.Name = "tmxConvertToShcx";
             this.tmxConvertToShcx.Size = new System.Drawing.Size(75, 23);
             this.tmxConvertToShcx.TabIndex = 7;
@@ -124,7 +127,7 @@
             // 
             // tmxConvertToNntx
             // 
-            this.tmxConvertToNntx.Location = new System.Drawing.Point(309, 103);
+            this.tmxConvertToNntx.Location = new System.Drawing.Point(251, 101);
             this.tmxConvertToNntx.Name = "tmxConvertToNntx";
             this.tmxConvertToNntx.Size = new System.Drawing.Size(75, 23);
             this.tmxConvertToNntx.TabIndex = 8;
@@ -138,7 +141,7 @@
             // 
             // tmxCSVButton
             // 
-            this.tmxCSVButton.Location = new System.Drawing.Point(147, 103);
+            this.tmxCSVButton.Location = new System.Drawing.Point(332, 130);
             this.tmxCSVButton.Name = "tmxCSVButton";
             this.tmxCSVButton.Size = new System.Drawing.Size(75, 23);
             this.tmxCSVButton.TabIndex = 9;
@@ -148,7 +151,7 @@
             // 
             // tmxLayerCSVButton
             // 
-            this.tmxLayerCSVButton.Location = new System.Drawing.Point(66, 103);
+            this.tmxLayerCSVButton.Location = new System.Drawing.Point(251, 130);
             this.tmxLayerCSVButton.Name = "tmxLayerCSVButton";
             this.tmxLayerCSVButton.Size = new System.Drawing.Size(75, 23);
             this.tmxLayerCSVButton.TabIndex = 10;
@@ -156,11 +159,40 @@
             this.tmxLayerCSVButton.UseVisualStyleBackColor = true;
             this.tmxLayerCSVButton.Click += new System.EventHandler(this.tmxLayerCSVButton_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(170, 130);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Object CSV";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // tmxLayerName
+            // 
+            this.tmxLayerName.Location = new System.Drawing.Point(124, 75);
+            this.tmxLayerName.Name = "tmxLayerName";
+            this.tmxLayerName.Size = new System.Drawing.Size(354, 20);
+            this.tmxLayerName.TabIndex = 13;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(51, 78);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(67, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Layer Name:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(530, 138);
+            this.ClientSize = new System.Drawing.Size(530, 165);
+            this.Controls.Add(this.tmxLayerName);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.tmxLayerCSVButton);
             this.Controls.Add(this.tmxCSVButton);
             this.Controls.Add(this.tmxConvertToNntx);
@@ -194,6 +226,9 @@
         private System.Windows.Forms.FolderBrowserDialog tmxFolderDialog;
         private System.Windows.Forms.Button tmxCSVButton;
         private System.Windows.Forms.Button tmxLayerCSVButton;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox tmxLayerName;
+        private System.Windows.Forms.Label label3;
     }
 }
 

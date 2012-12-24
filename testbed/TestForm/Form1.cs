@@ -68,15 +68,22 @@ namespace TestForm
         private void tmxCSVButton_Click(object sender, EventArgs e)
         {
             TiledMapSave save = TiledMapSave.FromFile(tmxFilename.Text);
-            string csv = save.ToCSVString();
+            string csv = save.ToCSVString(type: TiledMapSave.CSVPropertyType.Tile, layerName: tmxLayerName.Text);
             System.IO.File.WriteAllText(tmxDestinationFolder.Text + GetFilename(tmxFilename.Text) + "_tile.csv", csv);
         }
 
         private void tmxLayerCSVButton_Click(object sender, EventArgs e)
         {
             TiledMapSave save = TiledMapSave.FromFile(tmxFilename.Text);
-            string csv = save.ToCSVString(TiledMapSave.CSVPropertyType.Layer);
+            string csv = save.ToCSVString(type: TiledMapSave.CSVPropertyType.Layer, layerName: tmxLayerName.Text);
             System.IO.File.WriteAllText(tmxDestinationFolder.Text + GetFilename(tmxFilename.Text) + "_layer.csv", csv);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            TiledMapSave save = TiledMapSave.FromFile(tmxFilename.Text);
+            string csv = save.ToCSVString(type: TiledMapSave.CSVPropertyType.Object, layerName: tmxLayerName.Text);
+            System.IO.File.WriteAllText(tmxDestinationFolder.Text + GetFilename(tmxFilename.Text) + "_object.csv", csv);
         }
 
 
