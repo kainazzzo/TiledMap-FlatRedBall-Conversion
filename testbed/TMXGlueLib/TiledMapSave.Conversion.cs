@@ -232,7 +232,7 @@ namespace TMXGlueLib
                             foreach (mapObjectgroupObjectPolygon polygon in @object.polygon)
                             {
                                 // TODO: Make this a rectangle object
-                                PolygonSave p = ConvertTmxObjectToFrbPolygonSave(group.width, group.height,
+                                PolygonSave p = ConvertTmxObjectToFrbPolygonSave(@object.Name, @group.width, @group.height,
                                     @object.x, @object.y, polygon.points, true);
                                 if (p != null)
                                 {
@@ -245,7 +245,7 @@ namespace TMXGlueLib
                         {
                             foreach (mapObjectgroupObjectPolyline polyline in @object.polyline)
                             {
-                                PolygonSave p = ConvertTmxObjectToFrbPolygonSave(group.width, group.height,
+                                PolygonSave p = ConvertTmxObjectToFrbPolygonSave(@object.Name, @group.width, @group.height,
                                     @object.x, @object.y, polyline.points, false);
                                 if (p != null)
                                 {
@@ -256,7 +256,7 @@ namespace TMXGlueLib
 
                         if (@object.polygon == null && @object.polyline == null)
                         {
-                            PolygonSave p = ConvertTmxObjectToFrbPolygonSave(group.width, group.height, @object.x, @object.y, @object.width, @object.height);
+                            PolygonSave p = ConvertTmxObjectToFrbPolygonSave(@object.Name, @group.width, @group.height, @object.x, @object.y, @object.width, @object.height);
                             if (p != null)
                             {
                                 shapes.PolygonSaves.Add(p);
@@ -268,7 +268,7 @@ namespace TMXGlueLib
             return shapes;
         }
 
-        private PolygonSave ConvertTmxObjectToFrbPolygonSave(int groupWidth, int groupHeight, int x, int y, int w, int h)
+        private PolygonSave ConvertTmxObjectToFrbPolygonSave(string name, int groupWidth, int groupHeight, int x, int y, int w, int h)
         {
             var pointsSb = new StringBuilder();
 
@@ -279,10 +279,10 @@ namespace TMXGlueLib
             pointsSb.AppendFormat(" {0},{1}", 0, h);
 
 
-            return ConvertTmxObjectToFrbPolygonSave(groupWidth, groupHeight, x, y, pointsSb.ToString(), true);
+            return ConvertTmxObjectToFrbPolygonSave(name, groupWidth, groupHeight, x, y, pointsSb.ToString(), true);
         }
 
-        private PolygonSave ConvertTmxObjectToFrbPolygonSave(int w, int h, int x, int y, string points, bool connectBackToStart)
+        private PolygonSave ConvertTmxObjectToFrbPolygonSave(string name, int w, int h, int x, int y, string points, bool connectBackToStart)
         {
             if (string.IsNullOrEmpty(points))
             {
@@ -295,6 +295,8 @@ namespace TMXGlueLib
             float newy;
             float fx = x;
             float fy = y;
+
+            polygon.Name = name;
 
             if ("orthogonal".Equals(this.orientation))
             {

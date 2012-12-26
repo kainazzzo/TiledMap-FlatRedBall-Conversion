@@ -13,33 +13,16 @@ namespace TmxEditor
 
         static ProjectManager mSelf;
 
-        TiledMapSave mTiledMapSave;
-
         #endregion
 
         #region Properties
 
         public static ProjectManager Self
         {
-            get
-            {
-                if (mSelf == null)
-                {
-                    mSelf = new ProjectManager();
-                }
-                return mSelf;
-            }
-
+            get { return mSelf ?? (mSelf = new ProjectManager()); }
         }
 
-        public TiledMapSave TiledMapSave
-        {
-            get
-            {
-
-                return mTiledMapSave;
-            }
-        }
+        public TiledMapSave TiledMapSave { get; private set; }
 
         public string LastLoadedFile
         {
@@ -56,30 +39,28 @@ namespace TmxEditor
         public void LoadTiledMapSave(string fileName)
         {
             LastLoadedFile = fileName;
-            mTiledMapSave = TiledMapSave.FromFile(fileName);
+            TiledMapSave = TiledMapSave.FromFile(fileName);
 
 
         }
 
         public void SaveTiledMapSave(string fileName)
         {
-            mTiledMapSave.Save(fileName);
+            TiledMapSave.Save(fileName);
         }
 
         internal void LoadTilesetFrom(string fileName, out string output)
         {
             TiledMapSave toCopyFrom = TiledMapSave.FromFile(fileName);
 
-            StringBuilder stringBuilder = new StringBuilder();
+            var stringBuilder = new StringBuilder();
 
 
-            for(int i = 0; i < toCopyFrom.tileset.Length; i++)
+            foreach (var tileset in toCopyFrom.tileset)
             {
-                var tileset = toCopyFrom.tileset[i];
+                var copyTo = GetTilesetByName(TiledMapSave, tileset.Name);
 
-                var copyTo = GetTilesetByName(mTiledMapSave, tileset.Name);
-
-                if (tileset != null && copyTo != null)
+                if (copyTo != null)
                 {
                     copyTo.RefreshTileDictionary();
 
@@ -96,17 +77,7 @@ namespace TmxEditor
 
         internal mapTileset GetTilesetByName(TiledMapSave tms, string name)
         {
-            foreach (var tileset in tms.tileset)
-            {
-                if (tileset != null && tileset.Name == name)
-                {
-                    return tileset;
-                }
-            }
-
-            return null;
-
+            return tms.tileset.FirstOrDefault(tileset => tileset != null && tileset.Name == name);
         }
-
     }
 }
