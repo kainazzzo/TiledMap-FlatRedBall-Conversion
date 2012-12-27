@@ -38,6 +38,8 @@ namespace TestForm
 
         private void tmxConvertToScnx_Click(object sender, EventArgs e)
         {
+            TiledMapSave.Offset = new Tuple<float, float, float>(float.Parse(offsetX.Text), float.Parse(offsetY.Text),
+                                                                 float.Parse(offsetZ.Text));
             TiledMapSave save = TiledMapSave.FromFile(tmxFilename.Text);
             SpriteEditorScene ses = save.ToSpriteEditorScene(1.0f);
             string pathtosave = tmxDestinationFolder.Text + GetFilename(tmxFilename.Text) + ".scnx";
@@ -46,6 +48,8 @@ namespace TestForm
 
         private void tmxConvertToNntx_Click(object sender, EventArgs e)
         {
+            TiledMapSave.Offset = new Tuple<float, float, float>(float.Parse(offsetX.Text), float.Parse(offsetY.Text),
+                                                                 float.Parse(offsetZ.Text));
             TiledMapSave save = TiledMapSave.FromFile(tmxFilename.Text);
             NodeNetworkSave nns = save.ToNodeNetworkSave();
             string pathtosave = tmxDestinationFolder.Text + GetFilename(tmxFilename.Text) + ".nntx";
@@ -54,6 +58,8 @@ namespace TestForm
 
         private void tmxConvertToShcx_Click(object sender, EventArgs e)
         {
+            TiledMapSave.Offset = new Tuple<float, float, float>(float.Parse(offsetX.Text), float.Parse(offsetY.Text),
+                                                                 float.Parse(offsetZ.Text));
             TiledMapSave save = TiledMapSave.FromFile(tmxFilename.Text);
             ShapeCollectionSave scs = save.ToShapeCollectionSave();
             string pathtosave = tmxDestinationFolder.Text + GetFilename(tmxFilename.Text) + ".shcx";
@@ -84,6 +90,11 @@ namespace TestForm
             TiledMapSave save = TiledMapSave.FromFile(tmxFilename.Text);
             string csv = save.ToCSVString(type: TiledMapSave.CSVPropertyType.Object, layerName: tmxLayerName.Text);
             System.IO.File.WriteAllText(tmxDestinationFolder.Text + GetFilename(tmxFilename.Text) + "_object.csv", csv);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
 
 

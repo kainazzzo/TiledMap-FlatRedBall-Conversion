@@ -10,7 +10,7 @@ namespace TmxToShcx
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: tmxtoshcx.exe <input.tmx> <output.shcx> [layername=name] [layervisibilitybehavior=Ignore|Skip|Match]");
+                Console.WriteLine("Usage: tmxtoshcx.exe <input.tmx> <output.shcx> [layername=name] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
                 return;
             }
 
@@ -20,12 +20,15 @@ namespace TmxToShcx
                 string destinationShcx = args[1];
                 string layername = null;
                 var layerVisibilityBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                var offset = new Tuple<float, float, float>(0f, 0f, 0f);
 
                 if (args.Length >= 3)
                 {
-                    ParseOptionalCommandLineArgs(args, out layername, out layerVisibilityBehavior);
+                    
+                    ParseOptionalCommandLineArgs(args, out layername, out layerVisibilityBehavior, out offset);
                 }
                 TiledMapSave.LayerVisibleBehaviorValue = layerVisibilityBehavior;
+                TiledMapSave.Offset = offset;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
                 ShapeCollectionSave save = tms.ToShapeCollectionSave(layername);
@@ -38,11 +41,11 @@ namespace TmxToShcx
             }
         }
 
-        private static void ParseOptionalCommandLineArgs(string[] args, out string layername,
-            out TiledMapSave.LayerVisibleBehavior layerVisibilityBehavior)
+        private static void ParseOptionalCommandLineArgs(string[] args, out string layername, out TiledMapSave.LayerVisibleBehavior layerVisibilityBehavior, out Tuple<float, float, float> offset)
         {
             layername = "";
             layerVisibilityBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+            offset = new Tuple<float, float, float>(0f, 0f, 0f);
             for (int x = 2; x < args.Length; ++x)
             {
                 string arg = args[x];
@@ -61,6 +64,18 @@ namespace TmxToShcx
                             if (!Enum.TryParse(value, out layerVisibilityBehavior))
                             {
                                 layerVisibilityBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                            }
+                            break;
+                        case "offset":
+                            string[] tupleVals = value.Split(",".ToCharArray());
+                            if (tupleVals.Length == 3)
+                            {
+                                float xf, yf, zf;
+                                if (float.TryParse(tupleVals[0], out xf) && float.TryParse(tupleVals[1], out yf) &&
+                                    float.TryParse(tupleVals[2], out zf))
+                                {
+                                    offset = new Tuple<float, float, float>(xf, yf, zf);
+                                }
                             }
                             break;
                         default:

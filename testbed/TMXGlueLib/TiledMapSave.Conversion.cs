@@ -22,12 +22,20 @@ namespace TMXGlueLib
         public enum LayerVisibleBehavior { Ignore, Match, Skip };
 
         public static LayerVisibleBehavior LayerVisibleBehaviorValue = LayerVisibleBehavior.Ignore;
+        
 
         enum LessOrGreaterDesired
         {
             Less,
             Greater,
             NoChange
+        }
+
+        private static Tuple<float, float, float> _offset = new Tuple<float, float, float>(0f, 0f, 0f);
+        public static Tuple<float, float, float> Offset
+        {
+            get { return _offset; }
+            set { _offset = value; }
         }
 
         public Scene ToScene(string contentManagerName, float scale)
@@ -658,7 +666,6 @@ namespace TMXGlueLib
                 y = -(normalizedY * this.tileheight) - (this.tileheight / 2.0f);
                 y += (tileHeight - this.tileheight) / 2.0f;
                 z = layercount;
-
             }
             else if (this.orientation != null && this.orientation.Equals("isometric"))
             {
@@ -672,6 +679,10 @@ namespace TMXGlueLib
             {
                 throw new NotImplementedException("Unknown orientation type");
             }
+
+            x += Offset.Item1;
+            y += Offset.Item2;
+            z += Offset.Item3;
         }
 
         private void SetSpriteTextureCoordinates(uint gid, SpriteSave sprite, mapTileset tileSet, int imageWidth, int imageHeight, int tileWidth, int spacing, int tileHeight, int margin)

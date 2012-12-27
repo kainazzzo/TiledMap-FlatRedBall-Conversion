@@ -20,11 +20,14 @@ namespace TmxToScnx
                 string destinationScnx = args[1];
                 float scale = 1.0f;
                 var layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                var offset = new Tuple<float, float, float>(0, 0, 0);
+
                 if (args.Length >= 3)
                 {
-                    ParseOptionalCommandLineArgs(args, out scale, out layerVisibleBehavior);
+                    ParseOptionalCommandLineArgs(args, out scale, out layerVisibleBehavior, out offset);
                 }
                 TiledMapSave.LayerVisibleBehaviorValue = layerVisibleBehavior;
+                TiledMapSave.Offset = offset;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
 // ReSharper disable UnusedVariable
@@ -49,10 +52,11 @@ namespace TmxToScnx
             }
         }
 
-        private static void ParseOptionalCommandLineArgs(string[] args, out float scale, out TiledMapSave.LayerVisibleBehavior layerVisibleBehavior)
+        private static void ParseOptionalCommandLineArgs(string[] args, out float scale, out TiledMapSave.LayerVisibleBehavior layerVisibleBehavior, out Tuple<float, float, float> offset)
         {
             scale = 1.0f;
             layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+            offset = new Tuple<float, float, float>(0f, 0f, 0f);
             for (int x = 2; x < args.Length; ++x)
             {
                 string arg = args[x];
@@ -74,6 +78,18 @@ namespace TmxToScnx
                             if (!Enum.TryParse(value, out layerVisibleBehavior))
                             {
                                 layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                            }
+                            break;
+                        case "offset":
+                            string[] tupleVals = value.Split(",".ToCharArray());
+                            if (tupleVals.Length == 3)
+                            {
+                                float xf, yf, zf;
+                                if (float.TryParse(tupleVals[0], out xf) && float.TryParse(tupleVals[1], out yf) &&
+                                    float.TryParse(tupleVals[2], out zf))
+                                {
+                                    offset = new Tuple<float, float, float>(xf, yf, zf);
+                                }
                             }
                             break;
                         default:

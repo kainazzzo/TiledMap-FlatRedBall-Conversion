@@ -10,7 +10,7 @@ namespace TmxToNntx
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: tmxtonntx.exe <input.tmx> <output.csv> [requiretile=true|false] [layervisibilitybehavior=Ignore|Skip|Match]");
+                Console.WriteLine("Usage: tmxtonntx.exe <input.tmx> <output.csv> [requiretile=true|false] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
                 return;
             }
 
@@ -20,12 +20,15 @@ namespace TmxToNntx
                 string destinationNntx = args[1];
                 bool requiretile = true;
                 var layerVisibilityBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                var offset = new Tuple<float, float, float>(0f, 0f, 0f);
+
                 if (args.Length >= 3)
                 {
-                    ParseOptionalCommandLineArgs(args, out requiretile, out layerVisibilityBehavior);
+                    ParseOptionalCommandLineArgs(args, out requiretile, out layerVisibilityBehavior, out offset);
                 }
 
                 TiledMapSave.LayerVisibleBehaviorValue = layerVisibilityBehavior;
+                TiledMapSave.Offset = offset;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
                 NodeNetworkSave save = tms.ToNodeNetworkSave(requiretile);
@@ -38,10 +41,11 @@ namespace TmxToNntx
             }
         }
 
-        private static void ParseOptionalCommandLineArgs(string[] args, out bool requiretile, out TiledMapSave.LayerVisibleBehavior layerVisibleBehavior)
+        private static void ParseOptionalCommandLineArgs(string[] args, out bool requiretile, out TiledMapSave.LayerVisibleBehavior layerVisibleBehavior, out Tuple<float, float, float> offset)
         {
             requiretile = true;
             layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+            offset = new Tuple<float, float, float>(0f, 0f, 0f);
             for (int x = 2; x < args.Length; ++x)
             {
                 string arg = args[x];
@@ -63,6 +67,18 @@ namespace TmxToNntx
                             if (!Enum.TryParse(value, out layerVisibleBehavior))
                             {
                                 layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                            }
+                            break;
+                        case "offset":
+                            string[] tupleVals = value.Split(",".ToCharArray());
+                            if (tupleVals.Length == 3)
+                            {
+                                float xf, yf, zf;
+                                if (float.TryParse(tupleVals[0], out xf) && float.TryParse(tupleVals[1], out yf) &&
+                                    float.TryParse(tupleVals[2], out zf))
+                                {
+                                    offset = new Tuple<float, float, float>(xf, yf, zf);
+                                }
                             }
                             break;
                         default:
