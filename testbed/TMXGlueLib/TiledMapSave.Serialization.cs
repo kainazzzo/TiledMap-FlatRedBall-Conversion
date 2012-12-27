@@ -41,6 +41,10 @@ namespace TMXGlueLib
                     {
                         propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
                     }
+                    if (!propertyDictionaryField.Any(p => p.Key.Equals("name", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        propertyDictionaryField.Add("name", "map");
+                    }
                     return propertyDictionaryField;
                 }
             }

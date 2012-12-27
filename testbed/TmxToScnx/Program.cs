@@ -10,7 +10,7 @@ namespace TmxToScnx
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match]");
+                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
                 return;
             }
 
