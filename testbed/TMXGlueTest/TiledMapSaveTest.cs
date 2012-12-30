@@ -3,6 +3,9 @@ using TMXGlueLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using FlatRedBall.Content.Math.Geometry;
+using FlatRedBall.Content;
+using FlatRedBall.Content.AI.Pathfinding;
 
 namespace TMXGlueTest
 {
@@ -343,6 +346,167 @@ namespace TMXGlueTest
 
             CollectionAssert.AreEqual(properties.Select(p => p.name).OrderBy(n => n).ToList(), actual.Keys.OrderBy(k => k).ToList());
             CollectionAssert.AreEqual(properties.Select(p =>p.value).OrderBy(v => v).ToList(), actual.Values.OrderBy(v => v).ToList());
+        }
+
+        /// <summary>
+        ///A test for ToShapeCollectionSave
+        ///</summary>
+        [TestMethod()]
+        public void ToShapeCollectionSaveTest()
+        {
+            TiledMapSave target = new TiledMapSave(); // TODO: Initialize to an appropriate value
+            string layerName = string.Empty; // TODO: Initialize to an appropriate value
+            ShapeCollectionSave expected = null; // TODO: Initialize to an appropriate value
+            ShapeCollectionSave actual;
+            actual = target.ToShapeCollectionSave(layerName);
+            Assert.AreEqual(expected, actual);
+            Assert.Inconclusive("Verify the correctness of this test method.");
+        }
+
+        /// <summary>
+        ///A test for ToSpriteEditorScene
+        ///</summary>
+        [TestMethod()]
+        public void ToSpriteEditorSceneTest()
+        {
+            var target = new TiledMapSave()
+                {
+                    height = 64,
+                    width = 64,
+                    tileheight = 32,
+                    tilewidth = 32,
+                    tileset = new mapTileset[]
+                        {
+                            new mapTileset
+                                {
+                                    Firstgid = 1u,
+                                    Image = new mapTilesetImage[]
+                                        {
+                                            new mapTilesetImage
+                                                {
+                                                    height = 64,
+                                                    width = 64,
+                                                    source =
+                                                        "../../../../../Program Files (x86)/Tiled/examples/tmw_desert_spacing.png"
+                                                }
+                                        },
+                                    Name = "tileset1",
+                                    Tile = new List<mapTilesetTile>
+                                        {
+                                            new mapTilesetTile
+                                                {
+                                                    id = 1
+                                                },
+                                            new mapTilesetTile
+                                                {
+                                                    id = 2
+                                                },
+                                            new mapTilesetTile
+                                                {
+                                                    id = 3
+                                                }
+                                        },
+                                    Tileheight = 32,
+                                    Tilewidth = 32
+                                }
+                        },
+                    layer = new mapLayer[]
+                        {
+                            new mapLayer
+                                {
+                                    name = "layer1",
+                                    data = new mapLayerData[]
+                                        {
+                                            new mapLayerData()
+                                                {
+                                                    dataTiles = new mapLayerDataTile[]
+                                                        {
+                                                            new mapLayerDataTile
+                                                                {
+                                                                    gid = "1"
+                                                                },
+                                                            new mapLayerDataTile
+                                                                {
+                                                                    gid = "1"
+                                                                },
+                                                            new mapLayerDataTile
+                                                                {
+                                                                    gid = "2"
+                                                                },
+                                                            new mapLayerDataTile
+                                                                {
+                                                                    gid = "3"
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                };
+            const float scale = 1F;
+            SpriteEditorScene actual = target.ToSpriteEditorScene(scale);
+            
+
+
+            Assert.Inconclusive("Verify the correctness of this test method.");
+        }
+
+        /// <summary>
+        ///A test for ToNodeNetworkSave
+        ///</summary>
+        [TestMethod()]
+        public void ToNodeNetworkSaveTest()
+        {
+            TiledMapSave target = new TiledMapSave(); // TODO: Initialize to an appropriate value
+            bool linkHorizontally = false; // TODO: Initialize to an appropriate value
+            bool linkVertically = false; // TODO: Initialize to an appropriate value
+            bool linkDiagonally = false; // TODO: Initialize to an appropriate value
+            bool requireTile = false; // TODO: Initialize to an appropriate value
+            NodeNetworkSave expected = null; // TODO: Initialize to an appropriate value
+            NodeNetworkSave actual;
+            actual = target.ToNodeNetworkSave(linkHorizontally, linkVertically, linkDiagonally, requireTile);
+            Assert.AreEqual(expected, actual);
+            Assert.Inconclusive("Verify the correctness of this test method.");
+        }
+
+        /// <summary>
+        ///A test for ToNodeNetworkSave
+        ///</summary>
+        [TestMethod()]
+        public void ToNodeNetworkSaveTest1()
+        {
+            TiledMapSave target = new TiledMapSave(); // TODO: Initialize to an appropriate value
+            bool requireTile = false; // TODO: Initialize to an appropriate value
+            NodeNetworkSave expected = null; // TODO: Initialize to an appropriate value
+            NodeNetworkSave actual;
+            actual = target.ToNodeNetworkSave(requireTile);
+            Assert.AreEqual(expected, actual);
+            Assert.Inconclusive("Verify the correctness of this test method.");
+        }
+
+        /// <summary>
+        ///A test for CalculateWorldCoordinates
+        ///</summary>
+        [TestMethod()]
+        public void CalculateWorldCoordinatesTest()
+        {
+            TiledMapSave target = new TiledMapSave(); // TODO: Initialize to an appropriate value
+            int layercount = 0; // TODO: Initialize to an appropriate value
+            int count = 0; // TODO: Initialize to an appropriate value
+            int tileWidth = 0; // TODO: Initialize to an appropriate value
+            int tileHeight = 0; // TODO: Initialize to an appropriate value
+            int layerWidth = 0; // TODO: Initialize to an appropriate value
+            float x = 0F; // TODO: Initialize to an appropriate value
+            float xExpected = 0F; // TODO: Initialize to an appropriate value
+            float y = 0F; // TODO: Initialize to an appropriate value
+            float yExpected = 0F; // TODO: Initialize to an appropriate value
+            float z = 0F; // TODO: Initialize to an appropriate value
+            float zExpected = 0F; // TODO: Initialize to an appropriate value
+            target.CalculateWorldCoordinates(layercount, count, tileWidth, tileHeight, layerWidth, out x, out y, out z);
+            Assert.AreEqual(xExpected, x);
+            Assert.AreEqual(yExpected, y);
+            Assert.AreEqual(zExpected, z);
+            Assert.Inconclusive("A method that does not return a value cannot be verified.");
         }
     }
 }

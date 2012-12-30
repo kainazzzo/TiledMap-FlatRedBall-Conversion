@@ -44,17 +44,7 @@ namespace TMXGlueLib
             return scene.ToScene(contentManagerName);
         }
 
-        public ShapeCollectionSave ToShapeCollectionSave()
-        {
-            return ToShapeCollectionSave(null);
-        }
-
-        public ShapeCollection ToShapeCollection()
-        {
-            return ToShapeCollectionSave().ToShapeCollection();
-        }
-
-        public ShapeCollection ToShapeCollection(string layerName)
+        public ShapeCollection ToShapeCollection(string layerName=null)
         {
             ShapeCollectionSave scs = ToShapeCollectionSave(layerName);
 
