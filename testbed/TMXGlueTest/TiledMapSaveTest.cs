@@ -369,6 +369,7 @@ namespace TMXGlueTest
         [TestMethod()]
         public void ToSpriteEditorSceneTest()
         {
+            TiledMapSave.Offset = new Tuple<float, float, float>(0f, 0f, 0f);
             var target = new TiledMapSave()
                 {
                     height = 64,
@@ -395,16 +396,53 @@ namespace TMXGlueTest
                                         {
                                             new mapTilesetTile
                                                 {
-                                                    id = 1
+                                                    id = 1,
+                                                    properties = new List<property>
+                                                        {
+                                                            new property
+                                                                {
+                                                                    name = "name",
+                                                                    value = "tile1"
+                                                                }
+                                                        }
                                                 },
                                             new mapTilesetTile
                                                 {
-                                                    id = 2
+                                                    id = 2,
+                                                    properties = new List<property>
+                                                        {
+                                                            new property
+                                                                {
+                                                                    name = "name",
+                                                                    value = "tile2"
+                                                                }
+                                                        }
                                                 },
                                             new mapTilesetTile
                                                 {
-                                                    id = 3
+                                                    id = 3,
+                                                    properties = new List<property>
+                                                        {
+                                                            new property
+                                                                {
+                                                                    name = "name",
+                                                                    value = "tile3"
+                                                                }
+                                                        }
+                                                },
+                                                new mapTilesetTile
+                                                {
+                                                    id = 4,
+                                                    properties = new List<property>
+                                                        {
+                                                            new property
+                                                                {
+                                                                    name = "name",
+                                                                    value = "tile4"
+                                                                }
+                                                        }
                                                 }
+
                                         },
                                     Tileheight = 32,
                                     Tilewidth = 32
@@ -427,28 +465,47 @@ namespace TMXGlueTest
                                                                 },
                                                             new mapLayerDataTile
                                                                 {
-                                                                    gid = "1"
-                                                                },
-                                                            new mapLayerDataTile
-                                                                {
                                                                     gid = "2"
                                                                 },
                                                             new mapLayerDataTile
                                                                 {
                                                                     gid = "3"
+                                                                },
+                                                            new mapLayerDataTile
+                                                                {
+                                                                    gid = "4"
                                                                 }
                                                         }
                                                 }
                                         }
                                 }
-                        }
+                        },
+                        orientation = "orthogonal"
                 };
             const float scale = 1F;
             SpriteEditorScene actual = target.ToSpriteEditorScene(scale);
-            
 
+            Assert.AreEqual(4, actual.SpriteList.Count);
 
-            Assert.Inconclusive("Verify the correctness of this test method.");
+            var tile = actual.SpriteList.SingleOrDefault(s => s.Name == "tile1");
+            Assert.IsNotNull(tile);
+            Assert.AreEqual(48f, tile.X);
+            Assert.AreEqual(-16, tile.Y);
+
+            tile = actual.SpriteList.SingleOrDefault(s => s.Name == "tile2");
+            Assert.IsNotNull(tile);
+            Assert.AreEqual(80f, tile.X);
+            Assert.AreEqual(-16f, tile.Y);
+
+            tile = actual.SpriteList.SingleOrDefault(s => s.Name == "tile3");
+            Assert.IsNotNull(tile);
+            Assert.AreEqual(112f, tile.X);
+            Assert.AreEqual(-16f, tile.Y);
+
+            tile = actual.SpriteList.SingleOrDefault(s => s.Name == "tile4");
+            Assert.IsNotNull(tile);
+            Assert.AreEqual(0f, tile.X);
+            Assert.AreEqual(0f, tile.Y);
         }
 
         /// <summary>
@@ -490,23 +547,23 @@ namespace TMXGlueTest
         [TestMethod()]
         public void CalculateWorldCoordinatesTest()
         {
-            TiledMapSave target = new TiledMapSave(); // TODO: Initialize to an appropriate value
-            int layercount = 0; // TODO: Initialize to an appropriate value
-            int count = 0; // TODO: Initialize to an appropriate value
-            int tileWidth = 0; // TODO: Initialize to an appropriate value
-            int tileHeight = 0; // TODO: Initialize to an appropriate value
-            int layerWidth = 0; // TODO: Initialize to an appropriate value
-            float x = 0F; // TODO: Initialize to an appropriate value
-            float xExpected = 0F; // TODO: Initialize to an appropriate value
-            float y = 0F; // TODO: Initialize to an appropriate value
-            float yExpected = 0F; // TODO: Initialize to an appropriate value
-            float z = 0F; // TODO: Initialize to an appropriate value
-            float zExpected = 0F; // TODO: Initialize to an appropriate value
-            target.CalculateWorldCoordinates(layercount, count, tileWidth, tileHeight, layerWidth, out x, out y, out z);
-            Assert.AreEqual(xExpected, x);
-            Assert.AreEqual(yExpected, y);
-            Assert.AreEqual(zExpected, z);
-            Assert.Inconclusive("A method that does not return a value cannot be verified.");
+            //TiledMapSave target = new TiledMapSave(); // TODO: Initialize to an appropriate value
+            //int layercount = 0; // TODO: Initialize to an appropriate value
+            //int count = 0; // TODO: Initialize to an appropriate value
+            //int tileWidth = 0; // TODO: Initialize to an appropriate value
+            //int tileHeight = 0; // TODO: Initialize to an appropriate value
+            //int layerWidth = 0; // TODO: Initialize to an appropriate value
+            //float x = 0F; // TODO: Initialize to an appropriate value
+            //float xExpected = 0F; // TODO: Initialize to an appropriate value
+            //float y = 0F; // TODO: Initialize to an appropriate value
+            //float yExpected = 0F; // TODO: Initialize to an appropriate value
+            //float z = 0F; // TODO: Initialize to an appropriate value
+            //float zExpected = 0F; // TODO: Initialize to an appropriate value
+            //target.CalculateWorldCoordinates(layercount, count, tileWidth, tileHeight, layerWidth, out x, out y, out z);
+            //Assert.AreEqual(xExpected, x);
+            //Assert.AreEqual(yExpected, y);
+            //Assert.AreEqual(zExpected, z);
+            //Assert.Inconclusive("A method that does not return a value cannot be verified.");
         }
     }
 }

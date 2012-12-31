@@ -61,7 +61,7 @@ namespace TestForm
             TiledMapSave.Offset = new Tuple<float, float, float>(float.Parse(offsetX.Text), float.Parse(offsetY.Text),
                                                                  float.Parse(offsetZ.Text));
             TiledMapSave save = TiledMapSave.FromFile(tmxFilename.Text);
-            ShapeCollectionSave scs = save.ToShapeCollectionSave();
+            ShapeCollectionSave scs = save.ToShapeCollectionSave(null);
             string pathtosave = tmxDestinationFolder.Text + GetFilename(tmxFilename.Text) + ".shcx";
             scs.Save(pathtosave);
         }

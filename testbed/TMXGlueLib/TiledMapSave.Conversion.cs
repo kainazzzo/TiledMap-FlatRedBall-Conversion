@@ -22,7 +22,7 @@ namespace TMXGlueLib
         public enum LayerVisibleBehavior { Ignore, Match, Skip };
 
         public static LayerVisibleBehavior LayerVisibleBehaviorValue = LayerVisibleBehavior.Ignore;
-        
+        public static int MaxDegreeOfParallelism = 1;
 
         enum LessOrGreaterDesired
         {
