@@ -380,7 +380,7 @@ namespace TMXGlueTest
                         {
                             new mapTileset
                                 {
-                                    Firstgid = 1u,
+                                    Firstgid = 1,
                                     Image = new mapTilesetImage[]
                                         {
                                             new mapTilesetImage
@@ -396,7 +396,7 @@ namespace TMXGlueTest
                                         {
                                             new mapTilesetTile
                                                 {
-                                                    id = 1,
+                                                    id = 0,
                                                     properties = new List<property>
                                                         {
                                                             new property
@@ -408,7 +408,7 @@ namespace TMXGlueTest
                                                 },
                                             new mapTilesetTile
                                                 {
-                                                    id = 2,
+                                                    id = 1,
                                                     properties = new List<property>
                                                         {
                                                             new property
@@ -420,7 +420,7 @@ namespace TMXGlueTest
                                                 },
                                             new mapTilesetTile
                                                 {
-                                                    id = 3,
+                                                    id = 2,
                                                     properties = new List<property>
                                                         {
                                                             new property
@@ -432,7 +432,7 @@ namespace TMXGlueTest
                                                 },
                                                 new mapTilesetTile
                                                 {
-                                                    id = 4,
+                                                    id = 3,
                                                     properties = new List<property>
                                                         {
                                                             new property
@@ -489,23 +489,23 @@ namespace TMXGlueTest
 
             var tile = actual.SpriteList.SingleOrDefault(s => s.Name == "tile1");
             Assert.IsNotNull(tile);
-            Assert.AreEqual(48f, tile.X);
+            Assert.AreEqual(16f, tile.X);
             Assert.AreEqual(-16, tile.Y);
 
             tile = actual.SpriteList.SingleOrDefault(s => s.Name == "tile2");
             Assert.IsNotNull(tile);
-            Assert.AreEqual(80f, tile.X);
+            Assert.AreEqual(48f, tile.X);
             Assert.AreEqual(-16f, tile.Y);
 
             tile = actual.SpriteList.SingleOrDefault(s => s.Name == "tile3");
             Assert.IsNotNull(tile);
-            Assert.AreEqual(112f, tile.X);
+            Assert.AreEqual(80f, tile.X);
             Assert.AreEqual(-16f, tile.Y);
 
             tile = actual.SpriteList.SingleOrDefault(s => s.Name == "tile4");
             Assert.IsNotNull(tile);
-            Assert.AreEqual(0f, tile.X);
-            Assert.AreEqual(0f, tile.Y);
+            Assert.AreEqual(112f, tile.X);
+            Assert.AreEqual(-16f, tile.Y);
         }
 
         /// <summary>
