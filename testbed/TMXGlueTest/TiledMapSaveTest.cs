@@ -465,16 +465,16 @@ namespace TMXGlueTest
                                                                 },
                                                             new mapLayerDataTile
                                                                 {
-                                                                    gid = "2"
-                                                                },
-                                                            new mapLayerDataTile
-                                                                {
                                                                     gid = "3"
                                                                 },
                                                             new mapLayerDataTile
                                                                 {
                                                                     gid = "4"
-                                                                }
+                                                                },
+                                                            new mapLayerDataTile
+                                                                {
+                                                                    gid = "2"
+                                                                },
                                                         }
                                                 }
                                         }
@@ -494,17 +494,17 @@ namespace TMXGlueTest
 
             tile = actual.SpriteList.SingleOrDefault(s => s.Name == "tile2");
             Assert.IsNotNull(tile);
-            Assert.AreEqual(48f, tile.X);
+            Assert.AreEqual(112f, tile.X);
             Assert.AreEqual(-16f, tile.Y);
 
             tile = actual.SpriteList.SingleOrDefault(s => s.Name == "tile3");
             Assert.IsNotNull(tile);
-            Assert.AreEqual(80f, tile.X);
+            Assert.AreEqual(48f, tile.X);
             Assert.AreEqual(-16f, tile.Y);
 
             tile = actual.SpriteList.SingleOrDefault(s => s.Name == "tile4");
             Assert.IsNotNull(tile);
-            Assert.AreEqual(112f, tile.X);
+            Assert.AreEqual(80f, tile.X);
             Assert.AreEqual(-16f, tile.Y);
         }
 
