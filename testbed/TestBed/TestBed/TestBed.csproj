@@ -62,7 +62,7 @@
   <ItemGroup>
     <Reference Include="FlatRedBall, Version=2012.2.14.1112, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\x86\Debug\FlatRedBall.dll</HintPath>
+      <HintPath>..\..\TMXGlueLib\bin\Debug\FlatRedBall.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>

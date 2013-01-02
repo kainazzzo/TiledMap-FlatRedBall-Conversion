@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TiledMap;
-using FlatRedBall;
 using FlatRedBall.Content;
-using System.IO;
-using FlatRedBall.IO;
+using FlatRedBall.Content.Scene;
+using TMXGlueLib;
 
 namespace TmxToScnx
 {
@@ -16,7 +11,7 @@ namespace TmxToScnx
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match]");
+                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
                 return;
             }
 
@@ -25,24 +20,29 @@ namespace TmxToScnx
                 string sourceTmx = args[0];
                 string destinationScnx = args[1];
                 float scale = 1.0f;
-                TiledMapSave.LayerVisibleBehavior layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                var layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                var offset = new Tuple<float, float, float>(0, 0, 0);
+
                 if (args.Length >= 3)
                 {
-                    ParseOptionalCommandLineArgs(args, out scale, out layerVisibleBehavior);
+                    ParseOptionalCommandLineArgs(args, out scale, out layerVisibleBehavior, out offset);
                 }
-                TiledMapSave.layerVisibleBehavior = layerVisibleBehavior;
+                TiledMapSave.LayerVisibleBehaviorValue = layerVisibleBehavior;
+                TiledMapSave.Offset = offset;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
-                SpriteEditorScene save = tms.ToSpriteEditorScene(scale);
+// ReSharper disable UnusedVariable
+                SceneSave save = tms.ToSceneSave(scale);
+// ReSharper restore UnusedVariable
 
-                Console.WriteLine(string.Format("{0} converted successfully.", sourceTmx));
-                copyTmxTilesetImagesToDestination(sourceTmx, destinationScnx, tms);
+                Console.WriteLine("{0} converted successfully.", sourceTmx);
+                TmxFileCopier.CopyTmxTilesetImagesToDestination(sourceTmx, destinationScnx, tms);
 
                 // Fix up the image sources to be relative to the newly copied ones.
-                fixupImageSources(tms);
+                TmxFileCopier.FixupImageSources(tms);
 
-                Console.WriteLine(string.Format("Saving \"{0}\".", destinationScnx));
-                SpriteEditorScene spriteEditorScene = tms.ToSpriteEditorScene(scale);
+                Console.WriteLine("Saving \"{0}\".", destinationScnx);
+                SceneSave spriteEditorScene = tms.ToSceneSave(scale);
 
                 spriteEditorScene.Save(destinationScnx.Trim());
                 Console.WriteLine("Done.");
@@ -53,15 +53,16 @@ namespace TmxToScnx
             }
         }
 
-        private static void ParseOptionalCommandLineArgs(string[] args, out float scale, out TiledMapSave.LayerVisibleBehavior layerVisibleBehavior)
+        private static void ParseOptionalCommandLineArgs(string[] args, out float scale, out TiledMapSave.LayerVisibleBehavior layerVisibleBehavior, out Tuple<float, float, float> offset)
         {
             scale = 1.0f;
             layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+            offset = new Tuple<float, float, float>(0f, 0f, 0f);
             for (int x = 2; x < args.Length; ++x)
             {
                 string arg = args[x];
                 string[] tokens = arg.Split("=".ToCharArray());
-                if (tokens != null && tokens.Length == 2)
+                if (tokens.Length == 2)
                 {
                     string key = tokens[0];
                     string value = tokens[1];
@@ -80,6 +81,18 @@ namespace TmxToScnx
                                 layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
                             }
                             break;
+                        case "offset":
+                            string[] tupleVals = value.Split(",".ToCharArray());
+                            if (tupleVals.Length == 3)
+                            {
+                                float xf, yf, zf;
+                                if (float.TryParse(tupleVals[0], out xf) && float.TryParse(tupleVals[1], out yf) &&
+                                    float.TryParse(tupleVals[2], out zf))
+                                {
+                                    offset = new Tuple<float, float, float>(xf, yf, zf);
+                                }
+                            }
+                            break;
                         default:
                             Console.Error.WriteLine("Invalid command line argument: {0}", arg);
                             break;
@@ -87,58 +100,8 @@ namespace TmxToScnx
                 }
             }
         }
-        private static void fixupImageSources(TiledMapSave tms)
-        {
-            Console.WriteLine("Fixing up tileset relative paths");
-            foreach (TiledMap.mapTileset tileset in tms.tileset)
-            {
-                foreach (TiledMap.mapTilesetImage image in tileset.image)
-                {
-                    image.source = image.sourceFileName;
-                }
-            }
-        }
 
-        private static void copyTmxTilesetImagesToDestination(string sourceTmx, string destinationScnx, TiledMapSave tms)
-        {
-            string tmxPath = sourceTmx.Substring(0, sourceTmx.LastIndexOf('\\'));
-            string destinationPath;
-            if (destinationScnx.Contains("\\"))
-            {
-                destinationPath = destinationScnx.Substring(0, destinationScnx.LastIndexOf('\\'));
-            }
-            else
-            {
-                destinationPath = ".";
-            }
 
-            foreach (TiledMap.mapTileset tileset in tms.tileset)
-            {
-                foreach (TiledMap.mapTilesetImage image in tileset.image)
-                {
-                    string sourcepath = tmxPath + "\\" + image.source;
-                    if (tileset.source != null)
-                    {
-                        if (tileset.SourceDirectory != ".")
-                        {
-                            sourcepath = tmxPath + "\\" + tileset.SourceDirectory + "\\" + image.source;
-                        }
-                        else
-                        {
-                            sourcepath = tmxPath + "\\" + image.source;
 
-                        }
-                    }
-                    string destinationFullPath = destinationPath + "\\" + image.sourceFileName;
-                    if (!sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase) && 
-                        !FileManager.GetDirectory(destinationFullPath).Equals(FileManager.GetDirectory(sourcepath)))
-                    {
-                        Console.WriteLine(string.Format("Copying \"{0}\" to \"{1}\".", sourcepath, destinationFullPath));
-
-                        File.Copy(sourcepath, destinationFullPath, true);
-                    }
-                }
-            }
-        }
     }
 }

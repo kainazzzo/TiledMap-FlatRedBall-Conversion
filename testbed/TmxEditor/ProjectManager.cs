@@ -2,62 +2,71 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TiledMap;
+using TMXGlueLib;
+using FlatRedBall.IO;
 
 namespace TmxEditor
 {
     public class ProjectManager
     {
+        #region Fields
+
         static ProjectManager mSelf;
 
-        TiledMapSave mTiledMapSave;
+        #endregion
+
+        #region Properties
 
         public static ProjectManager Self
         {
-            get
-            {
-                if (mSelf == null)
-                {
-                    mSelf = new ProjectManager();
-                }
-                return mSelf;
-            }
-
+            get { return mSelf ?? (mSelf = new ProjectManager()); }
         }
 
+        public TiledMapSave TiledMapSave { get; private set; }
+
+        public string LastLoadedFile
+        {
+            get;
+            private set;
+        }
+        #endregion
+
+        public string MakeAbsolute(string fileName)
+        {
+            return FileManager.GetDirectory(LastLoadedFile) + fileName;
+        }
 
         public void LoadTiledMapSave(string fileName)
         {
-            mTiledMapSave = TiledMapSave.FromFile(fileName);
+            LastLoadedFile = fileName;
+            TiledMapSave = TiledMapSave.FromFile(fileName);
 
 
         }
 
         public void SaveTiledMapSave(string fileName)
         {
-            mTiledMapSave.Save(fileName);
+            TiledMapSave.Save(fileName);
         }
 
         internal void LoadTilesetFrom(string fileName, out string output)
         {
             TiledMapSave toCopyFrom = TiledMapSave.FromFile(fileName);
 
-            StringBuilder stringBuilder = new StringBuilder();
+            var stringBuilder = new StringBuilder();
 
 
-            for(int i = 0; i < toCopyFrom.tileset.Length; i++)
+            foreach (var tileset in toCopyFrom.tileset)
             {
-                var tileset = toCopyFrom.tileset[i];
+                var copyTo = GetTilesetByName(TiledMapSave, tileset.Name);
 
-                var copyTo = GetTilesetByName(mTiledMapSave, tileset.name);
-
-                if (tileset != null && copyTo != null)
+                if (copyTo != null)
                 {
+                    copyTo.RefreshTileDictionary();
 
-                    stringBuilder.AppendLine("Modified " + tileset.name + " count before: " + copyTo.tile.Count + ", count after: " + tileset.tile.Count);
+                    stringBuilder.AppendLine("Modified " + tileset.Name + " count before: " + copyTo.Tile.Count + ", count after: " + tileset.Tile.Count);
 
-                    copyTo.tile = tileset.tile;
-
+                    copyTo.Tile = tileset.Tile;
 
                 }
             }
@@ -68,17 +77,7 @@ namespace TmxEditor
 
         internal mapTileset GetTilesetByName(TiledMapSave tms, string name)
         {
-            foreach (var tileset in tms.tileset)
-            {
-                if (tileset != null && tileset.name == name)
-                {
-                    return tileset;
-                }
-            }
-
-            return null;
-
+            return tms.tileset.FirstOrDefault(tileset => tileset != null && tileset.Name == name);
         }
-
     }
 }
