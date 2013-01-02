@@ -299,7 +299,7 @@ namespace TMXGlueLib
             if ("orthogonal".Equals(this.orientation))
             {
                 fx -= tilewidth / 2.0f;
-                fy -= tileheight - (tileheight / 2.0f);
+                fy -= tileheight + (tileheight / 2.0f);
             }
             else if ("isometric".Equals(this.orientation))
             {

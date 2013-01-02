@@ -488,7 +488,7 @@ namespace TMXGlueTest
             Assert.AreEqual(5, shapeCollectionSave.PolygonSaves.Count);
 
             Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(0).X);
-            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(0).Y);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(0).Y);
             Assert.AreEqual(0, shapeCollectionSave.PolygonSaves.ElementAt(0).Z);
             Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.First().X);
             Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.First().Y);
@@ -502,7 +502,7 @@ namespace TMXGlueTest
             Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.ElementAt(4).Y);
 
             Assert.AreEqual(-7, shapeCollectionSave.PolygonSaves.ElementAt(1).X);
-            Assert.AreEqual(-61, shapeCollectionSave.PolygonSaves.ElementAt(1).Y);
+            Assert.AreEqual(-29, shapeCollectionSave.PolygonSaves.ElementAt(1).Y);
             Assert.AreEqual(0, shapeCollectionSave.PolygonSaves.ElementAt(1).Z);
             Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(1).Points.First().X);
             Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(1).Points.First().Y);
@@ -514,7 +514,7 @@ namespace TMXGlueTest
             Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(1).Points.ElementAt(3).Y);
 
             Assert.AreEqual(-10, shapeCollectionSave.PolygonSaves.ElementAt(2).X);
-            Assert.AreEqual(-82, shapeCollectionSave.PolygonSaves.ElementAt(2).Y);
+            Assert.AreEqual(-50, shapeCollectionSave.PolygonSaves.ElementAt(2).Y);
             Assert.AreEqual(0, shapeCollectionSave.PolygonSaves.ElementAt(2).Z);
             Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(2).Points.First().X);
             Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(2).Points.First().Y);
@@ -526,7 +526,7 @@ namespace TMXGlueTest
             Assert.AreEqual(-15, shapeCollectionSave.PolygonSaves.ElementAt(2).Points.ElementAt(3).Y);
 
             Assert.AreEqual(-8, shapeCollectionSave.PolygonSaves.ElementAt(3).X);
-            Assert.AreEqual(-29, shapeCollectionSave.PolygonSaves.ElementAt(3).Y);
+            Assert.AreEqual(3, shapeCollectionSave.PolygonSaves.ElementAt(3).Y);
             Assert.AreEqual(0, shapeCollectionSave.PolygonSaves.ElementAt(3).Z);
             Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(0).X);
             Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(0).Y);
@@ -540,7 +540,7 @@ namespace TMXGlueTest
             Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(4).Y);
 
             Assert.AreEqual(22, shapeCollectionSave.PolygonSaves.ElementAt(4).X);
-           Assert.AreEqual(-30, shapeCollectionSave.PolygonSaves.ElementAt(4).Y);
+           Assert.AreEqual(2, shapeCollectionSave.PolygonSaves.ElementAt(4).Y);
              Assert.AreEqual(0, shapeCollectionSave.PolygonSaves.ElementAt(4).Z);
             Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(4).Points.ElementAt(0).X);
            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(4).Points.ElementAt(0).Y);
