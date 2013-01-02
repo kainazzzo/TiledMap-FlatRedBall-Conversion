@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using FlatRedBall.Content;
 using FlatRedBall.Content.AI.Pathfinding;
 using FlatRedBall.Content.Math.Geometry;
+using FlatRedBall.Content.Scene;
 using TMXGlueLib;
 
 namespace TestForm
@@ -41,7 +42,7 @@ namespace TestForm
             TiledMapSave.Offset = new Tuple<float, float, float>(float.Parse(offsetX.Text), float.Parse(offsetY.Text),
                                                                  float.Parse(offsetZ.Text));
             TiledMapSave save = TiledMapSave.FromFile(tmxFilename.Text);
-            SpriteEditorScene ses = save.ToSpriteEditorScene(1.0f);
+            SceneSave ses = save.ToSceneSave(1.0f);
             string pathtosave = tmxDestinationFolder.Text + GetFilename(tmxFilename.Text) + ".scnx";
             ses.Save(pathtosave);
         }

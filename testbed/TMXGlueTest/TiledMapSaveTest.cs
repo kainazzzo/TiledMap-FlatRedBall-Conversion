@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using FlatRedBall.Content.Scene;
 using TMXGlueLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -105,7 +106,6 @@ namespace TMXGlueTest
         [TestMethod()]
         public void ToCSVStringTilesetPropertyTest()
         {
-            const TiledMapSave.CSVPropertyType type = TiledMapSave.CSVPropertyType.Tile;
             var target = new TiledMapSave
                 {
                     tileset = new mapTileset[2]
@@ -556,7 +556,7 @@ namespace TMXGlueTest
         }
 
         /// <summary>
-        ///A test for ToSpriteEditorScene
+        ///A test for ToSceneSave
         ///</summary>
         [TestMethod()]
         public void ToSpriteEditorSceneTest()
@@ -675,7 +675,7 @@ namespace TMXGlueTest
                     orientation = "orthogonal"
                 };
             const float scale = 1F;
-            SpriteEditorScene actual = target.ToSpriteEditorScene(scale);
+            SceneSave actual = target.ToSceneSave(scale);
 
             Assert.AreEqual(4, actual.SpriteList.Count);
 

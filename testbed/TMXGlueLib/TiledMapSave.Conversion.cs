@@ -40,13 +40,13 @@ namespace TMXGlueLib
 
         public Scene ToScene(string contentManagerName, float scale)
         {
-            SpriteEditorScene scene = ToSpriteEditorScene(scale);
+            var scene = ToSceneSave(scale);
             return scene.ToScene(contentManagerName);
         }
 
         public ShapeCollection ToShapeCollection(string layerName=null)
         {
-            ShapeCollectionSave scs = ToShapeCollectionSave(layerName);
+            var scs = ToShapeCollectionSave(layerName);
 
             return scs.ToShapeCollection();
         }
@@ -538,9 +538,9 @@ namespace TMXGlueLib
             }
         }
 
-        public SpriteEditorScene ToSpriteEditorScene(float scale)
+        public SceneSave ToSceneSave(float scale)
         {
-            var toReturn = new SpriteEditorScene { CoordinateSystem = FlatRedBall.Math.CoordinateSystem.RightHanded };
+            var toReturn = new SceneSave { CoordinateSystem = FlatRedBall.Math.CoordinateSystem.RightHanded };
 
             // TODO: Somehow add all layers separately
 

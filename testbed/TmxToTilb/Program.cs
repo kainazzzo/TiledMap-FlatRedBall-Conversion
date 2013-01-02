@@ -34,7 +34,7 @@ namespace TmxToTilb
                 //TiledMapSave.LayerVisibleBehaviorValue = LayerVisibleBehaviorValue;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
-                //SpriteEditorScene save = tms.ToSpriteEditorScene(scale);
+                //SpriteEditorScene save = tms.ToSceneSave(scale);
 
 
                 Console.WriteLine(string.Format("{0} converted successfully.", sourceTmx));

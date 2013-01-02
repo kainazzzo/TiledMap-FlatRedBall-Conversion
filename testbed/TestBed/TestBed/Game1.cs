@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FlatRedBall.Content.Scene;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -64,7 +65,7 @@ namespace TestBed
             //SpriteEditorScene sec = SpriteEditorScene.FromScene(s);
             //sec.Save("isometrictest.scnx");
 
-            SpriteEditorScene sec = tms.ToSpriteEditorScene(1.0f);
+            SceneSave sec = tms.ToSceneSave(1.0f);
 
             sec.Save("isometrictest.scnx");
 

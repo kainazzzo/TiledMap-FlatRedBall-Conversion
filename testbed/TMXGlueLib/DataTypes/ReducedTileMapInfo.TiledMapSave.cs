@@ -57,14 +57,11 @@ namespace TMXGlueLib.DataTypes
 
         public static ReducedTileMapInfo FromTiledMapSave(TiledMapSave tiledMapSave, float scale, string directory)
         {
-            ReducedTileMapInfo toReturn = new ReducedTileMapInfo();
+            var toReturn = new ReducedTileMapInfo();
 
-            SpriteEditorScene ses = tiledMapSave.ToSpriteEditorScene(1);
+            var ses = tiledMapSave.ToSceneSave(1);
 
-            ses.SpriteList.Sort(delegate(SpriteSave first, SpriteSave second)
-            {
-                return first.Z.CompareTo(second.Z);
-            });
+            ses.SpriteList.Sort((first, second) => first.Z.CompareTo(second.Z));
 
             float z = float.NaN;
             ReducedLayerInfo reducedLayerInfo = null;

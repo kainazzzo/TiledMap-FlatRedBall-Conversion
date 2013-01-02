@@ -1,5 +1,6 @@
 ﻿using System;
 using FlatRedBall.Content;
+using FlatRedBall.Content.Scene;
 using TMXGlueLib;
 
 namespace TmxToScnx
@@ -31,7 +32,7 @@ namespace TmxToScnx
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
 // ReSharper disable UnusedVariable
-                SpriteEditorScene save = tms.ToSpriteEditorScene(scale);
+                SceneSave save = tms.ToSceneSave(scale);
 // ReSharper restore UnusedVariable
 
                 Console.WriteLine("{0} converted successfully.", sourceTmx);
@@ -41,7 +42,7 @@ namespace TmxToScnx
                 TmxFileCopier.FixupImageSources(tms);
 
                 Console.WriteLine("Saving \"{0}\".", destinationScnx);
-                SpriteEditorScene spriteEditorScene = tms.ToSpriteEditorScene(scale);
+                SceneSave spriteEditorScene = tms.ToSceneSave(scale);
 
                 spriteEditorScene.Save(destinationScnx.Trim());
                 Console.WriteLine("Done.");

@@ -40,7 +40,7 @@
       <HintPath>Libraries\Gum\ContentLibrary.dll</HintPath>
     </Reference>
     <Reference Include="FlatRedBall">
-      <HintPath>..\TestBed\TestBed\Libraries\Xna4Pc\FlatRedBall.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\FlatRedBallProjects\ZCom\ZCom\ZCom\Libraries\Xna4Pc\FlatRedBall.dll</HintPath>
     </Reference>
     <Reference Include="InputLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>

@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FlatRedBall">
-      <HintPath>..\TestBed\TestBed\Libraries\Xna4Pc\FlatRedBall.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\FlatRedBallProjects\ZCom\ZCom\ZCom\Libraries\Xna4Pc\FlatRedBall.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />

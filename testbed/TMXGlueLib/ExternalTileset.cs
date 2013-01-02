@@ -22,8 +22,6 @@ using TMXGlueLib;
 [System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
 public partial class tileset {
 
-    private mapTilesetTile[] tileField;
-
     private tilesetImage[] imageField;
     
     private string nameField;
