@@ -64,7 +64,9 @@ namespace TMXGlueTest
         public void ToCSVStringLayerPropertyTest()
         {
             const TiledMapSave.CSVPropertyType type = TiledMapSave.CSVPropertyType.Layer;
-            var target = new TiledMapSave {layer = new mapLayer[] {new mapLayer()
+            var target = new TiledMapSave
+            {
+                layer = new mapLayer[] {new mapLayer()
                 {
                     properties = new List<property>
                     {
@@ -80,11 +82,12 @@ namespace TMXGlueTest
                             new property() {name = "name3", value = "val3"}
                         },
                         name="layer2"
-                    }}};
+                    }}
+            };
 
             var expected =
                 "Name (required),name2,name1,name3\r\nlayer1,\"val2\",\"val\",\r\nlayer2,,\"val\",\"val3\"\r\n";
-                // TODO: Initialize to an appropriate value
+            // TODO: Initialize to an appropriate value
             var actual = target.ToCSVString(type, null);
             Assert.AreEqual(expected, actual);
 
@@ -265,7 +268,7 @@ namespace TMXGlueTest
         {
             var target = new TiledMapSave
             {
-                objectgroup= new mapObjectgroup[2]
+                objectgroup = new mapObjectgroup[2]
                     {
                         new mapObjectgroup
                             {
@@ -322,15 +325,15 @@ namespace TMXGlueTest
 
             Assert.AreEqual(expected, actual);
         }
-    
-        
-            /// <summary>
+
+
+        /// <summary>
         ///A test for BuildPropertyDictionaryConcurrently
         ///</summary>
         [TestMethod()]
         public void BuildPropertyDictionaryConcurrentlyTest()
         {
-            
+
 
             var properties = new List<property>();
 
@@ -338,14 +341,14 @@ namespace TMXGlueTest
             {
                 properties.Add(new property
                     {
-                        name=string.Format("name{0}", x),
+                        name = string.Format("name{0}", x),
                         value = string.Format("val{0}", x)
                     });
             }
             IDictionary<string, string> actual = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
 
             CollectionAssert.AreEqual(properties.Select(p => p.name).OrderBy(n => n).ToList(), actual.Keys.OrderBy(k => k).ToList());
-            CollectionAssert.AreEqual(properties.Select(p =>p.value).OrderBy(v => v).ToList(), actual.Values.OrderBy(v => v).ToList());
+            CollectionAssert.AreEqual(properties.Select(p => p.value).OrderBy(v => v).ToList(), actual.Values.OrderBy(v => v).ToList());
         }
 
         /// <summary>
@@ -354,13 +357,202 @@ namespace TMXGlueTest
         [TestMethod()]
         public void ToShapeCollectionSaveTest()
         {
-            TiledMapSave target = new TiledMapSave(); // TODO: Initialize to an appropriate value
-            string layerName = string.Empty; // TODO: Initialize to an appropriate value
-            ShapeCollectionSave expected = null; // TODO: Initialize to an appropriate value
-            ShapeCollectionSave actual;
-            actual = target.ToShapeCollectionSave(layerName);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
+            var map = new TiledMapSave
+                {
+                    height = 3,
+                    width = 2,
+                    tileheight = 32,
+                    tilewidth = 32,
+                    orientation = "orthogonal",
+                    tileset = new mapTileset[]
+                        {
+                            new mapTileset
+                                {
+                                    Firstgid = 1u,
+                                    Name = "test",
+                                    Tilewidth = 32,
+                                    Tileheight = 32,
+                                    Spacing = 1,
+                                    Margin = 1,
+                                    Image = new mapTilesetImage[]
+                                        {
+                                            new mapTilesetImage
+                                                {
+                                                    height = 199,
+                                                    width = 199,
+                                                    source = "nothing"
+                                                }
+                                        },
+                                }
+                        },
+                    layer = new mapLayer[]
+                        {
+                            new mapLayer
+                                {
+                                    name = "Layer1",
+                                    width = 2,
+                                    height = 3,
+                                    data = new mapLayerData[]
+                                        {
+                                            new mapLayerData
+                                                {
+                                                    dataTiles = new mapLayerDataTile[]
+                                                        {
+                                                            new mapLayerDataTile
+                                                                {
+                                                                    gid = "1"
+                                                                },
+                                                            new mapLayerDataTile
+                                                                {
+                                                                    gid = "3"
+                                                                },
+                                                            new mapLayerDataTile
+                                                                {
+                                                                    gid = "9"
+                                                                },
+                                                            new mapLayerDataTile
+                                                                {
+                                                                    gid = "11"
+                                                                },
+                                                            new mapLayerDataTile
+                                                                {
+                                                                    gid = "17"
+                                                                },
+                                                            new mapLayerDataTile
+                                                                {
+                                                                    gid = "19"
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        },
+                    objectgroup = new mapObjectgroup[]
+                        {
+                            new mapObjectgroup
+                                {
+                                    name = "Objects",
+                                    @object = new mapObjectgroupObject[]
+                                        {
+                                            new mapObjectgroupObject
+                                                {
+                                                    x = 0,
+                                                    y = 0,
+                                                    width = 64,
+                                                    height = 32
+                                                },
+                                            new mapObjectgroupObject
+                                                {
+                                                    x = 9,
+                                                    y = 45,
+                                                    polygon = new mapObjectgroupObjectPolygon[]
+                                                        {
+                                                            new mapObjectgroupObjectPolygon
+                                                                {
+                                                                    points = "0,0 42,0 23,23"
+                                                                }
+                                                        }
+                                                },
+                                            new mapObjectgroupObject
+                                                {
+                                                    x = 6,
+                                                    y = 66,
+                                                    polyline = new mapObjectgroupObjectPolyline[]
+                                                        {
+                                                            new mapObjectgroupObjectPolyline
+                                                                {
+                                                                    points = "0,0 7,19 42,19 52,-1"
+                                                                }
+                                                        }
+                                                },
+                                            new mapObjectgroupObject
+                                                {
+                                                    x = 8,
+                                                    y = 13,
+                                                    width = 14,
+                                                    height = 12
+                                                },
+                                            new mapObjectgroupObject
+                                                {
+                                                    x = 38,
+                                                    y = 14,
+                                                    width = 17,
+                                                    height = 12
+                                                }
+                                        }
+                                }
+                        }
+                };
+            var shapeCollectionSave = map.ToShapeCollectionSave(null);
+
+            Assert.AreEqual(5, shapeCollectionSave.PolygonSaves.Count);
+
+            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(0).X);
+            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(0).Y);
+            Assert.AreEqual(0, shapeCollectionSave.PolygonSaves.ElementAt(0).Z);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.First().X);
+            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.First().Y);
+            Assert.AreEqual(80, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.ElementAt(1).X);
+            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.ElementAt(1).Y);
+            Assert.AreEqual(80, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.ElementAt(2).X);
+            Assert.AreEqual(-48, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.ElementAt(2).Y);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.ElementAt(3).X);
+            Assert.AreEqual(-48, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.ElementAt(3).Y);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.ElementAt(4).X);
+            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.ElementAt(4).Y);
+
+            Assert.AreEqual(-7, shapeCollectionSave.PolygonSaves.ElementAt(1).X);
+            Assert.AreEqual(-61, shapeCollectionSave.PolygonSaves.ElementAt(1).Y);
+            Assert.AreEqual(0, shapeCollectionSave.PolygonSaves.ElementAt(1).Z);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(1).Points.First().X);
+            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(1).Points.First().Y);
+            Assert.AreEqual(58, shapeCollectionSave.PolygonSaves.ElementAt(1).Points.ElementAt(1).X);
+            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(1).Points.ElementAt(1).Y);
+            Assert.AreEqual(39, shapeCollectionSave.PolygonSaves.ElementAt(1).Points.ElementAt(2).X);
+            Assert.AreEqual(-39, shapeCollectionSave.PolygonSaves.ElementAt(1).Points.ElementAt(2).Y);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(1).Points.ElementAt(3).X);
+            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(1).Points.ElementAt(3).Y);
+
+            Assert.AreEqual(-10, shapeCollectionSave.PolygonSaves.ElementAt(2).X);
+            Assert.AreEqual(-82, shapeCollectionSave.PolygonSaves.ElementAt(2).Y);
+            Assert.AreEqual(0, shapeCollectionSave.PolygonSaves.ElementAt(2).Z);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(2).Points.First().X);
+            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(2).Points.First().Y);
+            Assert.AreEqual(23, shapeCollectionSave.PolygonSaves.ElementAt(2).Points.ElementAt(1).X);
+            Assert.AreEqual(-35, shapeCollectionSave.PolygonSaves.ElementAt(2).Points.ElementAt(1).Y);
+            Assert.AreEqual(58, shapeCollectionSave.PolygonSaves.ElementAt(2).Points.ElementAt(2).X);
+            Assert.AreEqual(-35, shapeCollectionSave.PolygonSaves.ElementAt(2).Points.ElementAt(2).Y);
+            Assert.AreEqual(68, shapeCollectionSave.PolygonSaves.ElementAt(2).Points.ElementAt(3).X);
+            Assert.AreEqual(-15, shapeCollectionSave.PolygonSaves.ElementAt(2).Points.ElementAt(3).Y);
+
+            Assert.AreEqual(-8, shapeCollectionSave.PolygonSaves.ElementAt(3).X);
+            Assert.AreEqual(-29, shapeCollectionSave.PolygonSaves.ElementAt(3).Y);
+            Assert.AreEqual(0, shapeCollectionSave.PolygonSaves.ElementAt(3).Z);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(0).X);
+            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(0).Y);
+            Assert.AreEqual(30, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(1).X);
+            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(1).Y);
+            Assert.AreEqual(30, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(2).X);
+            Assert.AreEqual(-28, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(2).Y);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(3).X);
+            Assert.AreEqual(-28, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(3).Y);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(4).X);
+            Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(3).Points.ElementAt(4).Y);
+
+            Assert.AreEqual(22, shapeCollectionSave.PolygonSaves.ElementAt(4).X);
+           Assert.AreEqual(-30, shapeCollectionSave.PolygonSaves.ElementAt(4).Y);
+             Assert.AreEqual(0, shapeCollectionSave.PolygonSaves.ElementAt(4).Z);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(4).Points.ElementAt(0).X);
+           Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(4).Points.ElementAt(0).Y);
+            Assert.AreEqual(33, shapeCollectionSave.PolygonSaves.ElementAt(4).Points.ElementAt(1).X);
+           Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(4).Points.ElementAt(1).Y);
+            Assert.AreEqual(33, shapeCollectionSave.PolygonSaves.ElementAt(4).Points.ElementAt(2).X);
+           Assert.AreEqual(-28, shapeCollectionSave.PolygonSaves.ElementAt(4).Points.ElementAt(2).Y);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(4).Points.ElementAt(3).X);
+           Assert.AreEqual(-28, shapeCollectionSave.PolygonSaves.ElementAt(4).Points.ElementAt(3).Y);
+            Assert.AreEqual(16, shapeCollectionSave.PolygonSaves.ElementAt(4).Points.ElementAt(4).X);
+           Assert.AreEqual(-16, shapeCollectionSave.PolygonSaves.ElementAt(4).Points.ElementAt(4).Y);
+
         }
 
         /// <summary>
@@ -480,7 +672,7 @@ namespace TMXGlueTest
                                         }
                                 }
                         },
-                        orientation = "orthogonal"
+                    orientation = "orthogonal"
                 };
             const float scale = 1F;
             SpriteEditorScene actual = target.ToSpriteEditorScene(scale);
