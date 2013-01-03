@@ -355,7 +355,7 @@ namespace TMXGlueTest
         ///A test for ToShapeCollectionSave
         ///</summary>
         [TestMethod()]
-        public void ToShapeCollectionSaveTest()
+        public void ToShapeCollectionSaveOrthogonalTest()
         {
             var map = new TiledMapSave
                 {
@@ -559,7 +559,7 @@ namespace TMXGlueTest
         ///A test for ToSceneSave
         ///</summary>
         [TestMethod()]
-        public void ToSpriteEditorSceneTest()
+        public void ToSceneSaveOrthogonalTest()
         {
             TiledMapSave.Offset = new Tuple<float, float, float>(0f, 0f, 0f);
             var target = new TiledMapSave()
@@ -718,44 +718,5 @@ namespace TMXGlueTest
             Assert.Inconclusive("Verify the correctness of this test method.");
         }
 
-        /// <summary>
-        ///A test for ToNodeNetworkSave
-        ///</summary>
-        [TestMethod()]
-        public void ToNodeNetworkSaveTest1()
-        {
-            TiledMapSave target = new TiledMapSave(); // TODO: Initialize to an appropriate value
-            bool requireTile = false; // TODO: Initialize to an appropriate value
-            NodeNetworkSave expected = null; // TODO: Initialize to an appropriate value
-            NodeNetworkSave actual;
-            actual = target.ToNodeNetworkSave(requireTile);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for CalculateWorldCoordinates
-        ///</summary>
-        [TestMethod()]
-        public void CalculateWorldCoordinatesTest()
-        {
-            //TiledMapSave target = new TiledMapSave(); // TODO: Initialize to an appropriate value
-            //int layercount = 0; // TODO: Initialize to an appropriate value
-            //int count = 0; // TODO: Initialize to an appropriate value
-            //int tileWidth = 0; // TODO: Initialize to an appropriate value
-            //int tileHeight = 0; // TODO: Initialize to an appropriate value
-            //int layerWidth = 0; // TODO: Initialize to an appropriate value
-            //float x = 0F; // TODO: Initialize to an appropriate value
-            //float xExpected = 0F; // TODO: Initialize to an appropriate value
-            //float y = 0F; // TODO: Initialize to an appropriate value
-            //float yExpected = 0F; // TODO: Initialize to an appropriate value
-            //float z = 0F; // TODO: Initialize to an appropriate value
-            //float zExpected = 0F; // TODO: Initialize to an appropriate value
-            //target.CalculateWorldCoordinates(layercount, count, tileWidth, tileHeight, layerWidth, out x, out y, out z);
-            //Assert.AreEqual(xExpected, x);
-            //Assert.AreEqual(yExpected, y);
-            //Assert.AreEqual(zExpected, z);
-            //Assert.Inconclusive("A method that does not return a value cannot be verified.");
-        }
     }
 }
