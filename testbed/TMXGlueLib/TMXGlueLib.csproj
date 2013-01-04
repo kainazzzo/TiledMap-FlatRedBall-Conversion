@@ -32,9 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FlatRedBall, Version=2012.2.14.1112, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="FlatRedBall, Version=2013.1.1.187, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\FlatRedBallProjects\ZCom\ZCom\ZCom\Libraries\Xna4Pc\FlatRedBall.dll</HintPath>
+      <HintPath>..\..\dependencies\FlatRedBall.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="System" />

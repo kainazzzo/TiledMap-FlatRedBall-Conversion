@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FlatRedBall">
-      <HintPath>..\..\..\..\..\..\..\..\FlatRedBallProjects\ZCom\ZCom\ZCom\Libraries\Xna4Pc\FlatRedBall.dll</HintPath>
+      <HintPath>..\..\dependencies\FlatRedBall.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
