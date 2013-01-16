@@ -84,6 +84,12 @@
     <Compile Include="GraphicalDisplay\Tilesets\TilePropertyHighlight.cs" />
     <Compile Include="GraphicalDisplay\Tilesets\TilesetDisplayManager.cs" />
     <Compile Include="TimeManager.cs" />
+    <Compile Include="TmxEditorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TmxEditorControl.Designer.cs">
+      <DependentUpon>TmxEditorControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ToolComponent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectManager.cs" />
@@ -102,6 +108,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="TmxEditorControl.resx">
+      <DependentUpon>TmxEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
