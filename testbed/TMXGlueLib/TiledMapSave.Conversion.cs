@@ -18,11 +18,10 @@ namespace TMXGlueLib
 {
     public partial class TiledMapSave
     {
+        #region Enums
+
         public enum CSVPropertyType { Tile, Layer, Map, Object };
         public enum LayerVisibleBehavior { Ignore, Match, Skip };
-
-        public static LayerVisibleBehavior LayerVisibleBehaviorValue = LayerVisibleBehavior.Ignore;
-        public static int MaxDegreeOfParallelism = 1;
 
         enum LessOrGreaterDesired
         {
@@ -30,6 +29,12 @@ namespace TMXGlueLib
             Greater,
             NoChange
         }
+        #endregion
+
+        public static LayerVisibleBehavior LayerVisibleBehaviorValue = LayerVisibleBehavior.Ignore;
+        public static int MaxDegreeOfParallelism = 1;
+
+
 
         private static Tuple<float, float, float> _offset = new Tuple<float, float, float>(0f, 0f, 0f);
         public static Tuple<float, float, float> Offset
@@ -81,10 +86,10 @@ namespace TMXGlueLib
                     break;
                 case CSVPropertyType.Layer:
 
-                    this.layer.Where(
+                    this.Layers.Where(
                         l =>
                         layerName == null ||
-                        (l.name != null && l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase))).ToList()
+                        (l.Name != null && l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase))).ToList()
                         .ForEach(l => WriteValuesFromDictionary(sb, l.PropertyDictionary, columnNames));
                     break;
                 case CSVPropertyType.Map:
@@ -181,10 +186,10 @@ namespace TMXGlueLib
                             .Distinct(new CaseInsensitiveEqualityComparer());
                 case CSVPropertyType.Layer:
                     return
-                        this.layer.Where(
+                        this.Layers.Where(
                             l =>
                             layerName == null ||
-                            (l.name != null && l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
+                            (l.Name != null && l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
                             .SelectMany(l => l.PropertyDictionary)
                             .Select(d => d.Key)
                             .Distinct(new CaseInsensitiveEqualityComparer());
@@ -206,10 +211,10 @@ namespace TMXGlueLib
 
         public ShapeCollectionSave ToShapeCollectionSave(string layerName)
         {
-            mapLayer mapLayer = null;
+            MapLayer mapLayer = null;
             if (!string.IsNullOrEmpty(layerName))
             {
-                mapLayer = this.layer.FirstOrDefault(l => l.name.Equals(layerName));
+                mapLayer = this.Layers.FirstOrDefault(l => l.Name.Equals(layerName));
             }
             var shapes = new ShapeCollectionSave();
 
@@ -373,7 +378,7 @@ namespace TMXGlueLib
 
 
             int layercount = 0;
-            foreach (mapLayer mapLayer in this.layer)
+            foreach (MapLayer mapLayer in this.Layers)
             {
                 if (!mapLayer.IsVisible)
                 {
@@ -389,7 +394,7 @@ namespace TMXGlueLib
                 allNodes[layercount] = new Dictionary<int, Dictionary<int, PositionedNode>>();
 
 
-                mapLayer mLayer = mapLayer;
+                MapLayer mLayer = mapLayer;
                 int mLayerCount = layercount;
                 Parallel.For(0, mapLayer.data[0].tiles.Count, count =>
                     {
@@ -444,9 +449,9 @@ namespace TMXGlueLib
             return toReturn;
         }
 
-        private void RaiseNodesInNodesUpShapeCollection(mapLayer mapLayer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        private void RaiseNodesInNodesUpShapeCollection(MapLayer mapLayer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
         {
-            ShapeCollection sc = this.ToShapeCollection(mapLayer.name + " nodesup");
+            ShapeCollection sc = this.ToShapeCollection(mapLayer.Name + " nodesup");
             List<PositionedNode> nodesToMoveUp = GetNodesThatCollideWithShapeCollection(sc, allNodes);
 
             foreach (var node in nodesToMoveUp)
@@ -455,9 +460,9 @@ namespace TMXGlueLib
             }
         }
 
-        private void LowerNodesInNodesDownShapeCollection(mapLayer mapLayer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        private void LowerNodesInNodesDownShapeCollection(MapLayer mapLayer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
         {
-            ShapeCollection sc = this.ToShapeCollection(mapLayer.name + " nodesdown");
+            ShapeCollection sc = this.ToShapeCollection(mapLayer.Name + " nodesdown");
             List<PositionedNode> nodesToMoveDown = GetNodesThatCollideWithShapeCollection(sc, allNodes);
 
             foreach (var node in nodesToMoveDown)
@@ -466,9 +471,9 @@ namespace TMXGlueLib
             }
         }
 
-        private void RemoveExcludedNodesViaPolygonLayer(NodeNetwork nodeNetwork, mapLayer mapLayer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
+        private void RemoveExcludedNodesViaPolygonLayer(NodeNetwork nodeNetwork, MapLayer mapLayer, Dictionary<int, Dictionary<int, PositionedNode>> allNodes)
         {
-            ShapeCollection sc = this.ToShapeCollection(mapLayer.name + " nonodes");
+            ShapeCollection sc = this.ToShapeCollection(mapLayer.Name + " nonodes");
             List<PositionedNode> nodesToRemove = GetNodesThatCollideWithShapeCollection(sc, allNodes);
 
             foreach (var node in nodesToRemove)
@@ -545,7 +550,7 @@ namespace TMXGlueLib
             // TODO: Somehow add all layers separately
 
             int layercount = 0;
-            foreach (mapLayer mapLayer in this.layer)
+            foreach (MapLayer mapLayer in this.Layers)
             {
                 if (!mapLayer.IsVisible)
                 {
@@ -558,7 +563,7 @@ namespace TMXGlueLib
                     }
                 }
 
-                mapLayer mLayer = mapLayer;
+                MapLayer mLayer = mapLayer;
                 int mLayerCount = layercount;
                 Parallel.For(0, mapLayer.data[0].tiles.Count, count =>
                     {
@@ -579,7 +584,7 @@ namespace TMXGlueLib
             return toReturn;
         }
 
-        private SpriteSave CreateSpriteSaveFromMapTileset(float scale, int layercount, mapLayer mapLayer, int count, uint gid, mapTileset tileSet)
+        private SpriteSave CreateSpriteSaveFromMapTileset(float scale, int layercount, MapLayer mapLayer, int count, uint gid, mapTileset tileSet)
         {
             var sprite = new SpriteSave();
             if (!mapLayer.IsVisible && mapLayer.VisibleBehavior == LayerVisibleBehavior.Match)
@@ -768,7 +773,7 @@ namespace TMXGlueLib
             var tms = FileManager.XmlDeserialize<TiledMapSave>(fileName);
             FileManager.RelativeDirectory = oldRelativeDirectory;
 
-            foreach (mapLayer layer in tms.layer)
+            foreach (MapLayer layer in tms.Layers)
             {
                 if (!layer.PropertyDictionary.ContainsKey("VisibleBehavior"))
                 {
@@ -792,11 +797,4 @@ namespace TMXGlueLib
         }
     }
 
-    // ReSharper disable InconsistentNaming
-    public partial class mapLayer
-    // ReSharper restore InconsistentNaming
-    {
-        [XmlIgnore]
-        public TiledMapSave.LayerVisibleBehavior VisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
-    }
 }

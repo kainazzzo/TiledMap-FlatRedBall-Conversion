@@ -14,6 +14,7 @@ using FlatRedBall.SpecializedXnaControls;
 using System.IO;
 using TMXGlueLib.DataTypes;
 using FlatRedBall.IO;
+using TmxEditor.Controllers;
 
 namespace TmxEditor
 {
@@ -38,6 +39,7 @@ namespace TmxEditor
 
             this.Controls.Add(this.tmxEditorControl1);
             this.tmxEditorControl1.BringToFront();
+
         }
 
         

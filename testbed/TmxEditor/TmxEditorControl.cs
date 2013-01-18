@@ -11,23 +11,47 @@ using System.Reflection;
 using RenderingLibrary.Content;
 using RenderingLibrary;
 using FlatRedBall.SpecializedXnaControls;
+using TmxEditor.Controllers;
+using TmxEditor.UI;
 
 namespace TmxEditor
 {
     public partial class TmxEditorControl : UserControl
     {
+        #region Fields
+
         SystemManagers mManagers;
 
+        #endregion
+
+        #region Events
+
+        public event EventHandler AnyTileMapChange;
+
+        #endregion
 
         public TmxEditorControl()
         {
             InitializeComponent();
 
-            TilesetDisplayManager.Self.Initialize(this.XnaControl, ListBox, this.StatusLabel);
+            TilesetDisplayManager.Self.Initialize(this.XnaControl, TilesetsListBox, this.StatusLabel);
             XnaControl.XnaInitialize += new Action(HandleXnaInitialize);
             XnaControl.XnaUpdate += new Action(HandleXnaUpdate);
             XnaControl.XnaDraw += new Action(HandleXnaDraw);
+
+            LayersController.Self.Initialize(this.LayersListBox, LayerPropertyGrid);
+            LayersController.Self.AnyTileMapChange += HandleChangeInternal;
+
         }
+
+        void HandleChangeInternal(object sender, EventArgs args)
+        {
+            if (AnyTileMapChange != null)
+            {
+                AnyTileMapChange(this, null);
+            }
+        }
+
 
 
         public void LoadFile(string fileName)
@@ -38,7 +62,7 @@ namespace TmxEditor
 
                 ProjectManager.Self.LoadTiledMapSave(fileName);
                 ToolComponentManager.Self.ReactToLoadedFile(fileName);
-
+                LayersController.Self.TiledMapSave = ProjectManager.Self.TiledMapSave;
                 this.LoadedTmxLabel.Text = fileName;
             }
 
@@ -106,6 +130,17 @@ namespace TmxEditor
                 }
 
             }
+        }
+
+        private void AddLayerPropertyButton_Click(object sender, EventArgs e)
+        {
+            LayersController.Self.HandleAddPropertyClick();
+
+        }
+
+        private void RemovePropertyButton_Click(object sender, EventArgs e)
+        {
+            LayersController.Self.HandleRemovePropertyClick();
         }
     }
 }
