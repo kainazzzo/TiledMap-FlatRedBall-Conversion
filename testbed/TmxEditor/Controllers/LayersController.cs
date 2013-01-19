@@ -24,6 +24,14 @@ namespace TmxEditor.Controllers
 
         #region Properties
 
+        PropertyGrid PropertyGrid
+        {
+            get
+            {
+                return mDisplayer.PropertyGrid;
+            }
+        }
+
         public TiledMapSave TiledMapSave
         {
             set
@@ -129,15 +137,7 @@ namespace TmxEditor.Controllers
                     string name = window.ResultName;
                     string type = window.ResultType;
                     var newProperty = new TMXGlueLib.property();
-                    if (!string.IsNullOrEmpty(type))
-                    {
-                        newProperty.name = name + " (" + type + ")";
-
-                    }
-                    else
-                    {
-                        newProperty.name = name;
-                    }
+                    SetPropertyNameFromNameAndType(name, type, newProperty);
                     layer.properties.Add(newProperty);
                     mDisplayer.UpdateDisplayedProperties();
                     mDisplayer.PropertyGrid.Refresh();
@@ -148,6 +148,19 @@ namespace TmxEditor.Controllers
                     }
                 }
 
+            }
+        }
+
+        private static void SetPropertyNameFromNameAndType(string name, string type, property propertyToSet)
+        {
+            if (!string.IsNullOrEmpty(type))
+            {
+                propertyToSet.name = name + " (" + type + ")";
+
+            }
+            else
+            {
+                propertyToSet.name = name;
             }
         }
 
@@ -169,6 +182,71 @@ namespace TmxEditor.Controllers
                     {
                         AnyTileMapChange(this, null);
                     }
+                }
+            }
+        }
+
+        internal void HandleListRightClick(MouseEventArgs e)
+        {
+            mLayerTreeView.ContextMenuStrip.Items.Clear();
+            TreeNode node = this.mLayerTreeView.GetNodeAt(e.X, e.Y);
+            this.mLayerTreeView.SelectedNode = node;
+
+            if (node != null)
+            {
+                object tag = node.Tag;
+
+
+
+            }
+
+        }
+
+        internal void HandlePropertyGridRightClick(EventArgs e)
+        {
+
+        }
+
+        private void HandleEditVariableClick(object sender, EventArgs e)
+        {
+
+            var property = CurrentLayerProperty;
+            if (property != null)
+            {
+                NewPropertyWindow npw = new NewPropertyWindow();
+                npw.FromCombinedPropertyName(property.name);
+
+                var dialogResult = npw.ShowDialog();
+
+                if (dialogResult == DialogResult.OK)
+                {
+                    SetPropertyNameFromNameAndType(npw.ResultName, npw.ResultType, property);
+
+                    mDisplayer.UpdateDisplayedProperties();
+                    mDisplayer.PropertyGrid.Refresh();
+
+                    if (AnyTileMapChange != null)
+                    {
+                        AnyTileMapChange(this, null);
+                    }
+                }
+            }
+        }
+
+        internal void UpdatePropertyGridContextMenu(SelectedGridItemChangedEventArgs e)
+        {
+
+            var menu = PropertyGrid.ContextMenuStrip;
+
+            PropertyGrid.ContextMenuStrip.Items.Clear();
+
+            if (PropertyGrid.SelectedGridItem != null)
+            {
+                string label = PropertyGrid.SelectedGridItem.Label;
+
+                if (!string.IsNullOrEmpty(label))
+                {
+                    menu.Items.Add("Edit Variable", null, HandleEditVariableClick);
                 }
             }
         }

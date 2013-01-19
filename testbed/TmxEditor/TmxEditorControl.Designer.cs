@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.TilesetsListBox = new System.Windows.Forms.ListBox();
             this.XnaControl = new XnaAndWinforms.GraphicsDeviceControl();
             this.LoadedTmxLabel = new System.Windows.Forms.Label();
@@ -40,6 +41,8 @@
             this.RemovePropertyButton = new System.Windows.Forms.Button();
             this.AddLayerPropertyButton = new System.Windows.Forms.Button();
             this.LayerPropertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.LayerListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.LayerPropertyGridContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tabControl1.SuspendLayout();
             this.TilesetsTab.SuspendLayout();
             this.LayersTab.SuspendLayout();
@@ -146,6 +149,7 @@
             // 
             // LayersListBox
             // 
+            this.LayersListBox.ContextMenuStrip = this.LayerListContextMenu;
             this.LayersListBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LayersListBox.HideSelection = false;
             this.LayersListBox.Location = new System.Drawing.Point(0, 0);
@@ -153,6 +157,7 @@
             this.LayersListBox.ShowRootLines = false;
             this.LayersListBox.Size = new System.Drawing.Size(271, 477);
             this.LayersListBox.TabIndex = 7;
+            this.LayersListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LayersListBox_MouseClick);
             // 
             // RemovePropertyButton
             // 
@@ -181,12 +186,25 @@
             this.LayerPropertyGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.LayerPropertyGrid.ContextMenuStrip = this.LayerPropertyGridContextMenu;
             this.LayerPropertyGrid.HelpVisible = false;
             this.LayerPropertyGrid.Location = new System.Drawing.Point(0, 0);
             this.LayerPropertyGrid.Name = "LayerPropertyGrid";
             this.LayerPropertyGrid.Size = new System.Drawing.Size(535, 449);
             this.LayerPropertyGrid.TabIndex = 0;
             this.LayerPropertyGrid.ToolbarVisible = false;
+            this.LayerPropertyGrid.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.LayerPropertyGrid_SelectedGridItemChanged);
+            this.LayerPropertyGrid.Click += new System.EventHandler(this.LayerPropertyGrid_Click);
+            // 
+            // LayerListContextMenu
+            // 
+            this.LayerListContextMenu.Name = "LayerListContextMenu";
+            this.LayerListContextMenu.Size = new System.Drawing.Size(61, 4);
+            // 
+            // LayerPropertyGridContextMenu
+            // 
+            this.LayerPropertyGridContextMenu.Name = "LayerListContextMenu";
+            this.LayerPropertyGridContextMenu.Size = new System.Drawing.Size(61, 4);
             // 
             // TmxEditorControl
             // 
@@ -223,5 +241,7 @@
         private System.Windows.Forms.PropertyGrid LayerPropertyGrid;
         private System.Windows.Forms.Button RemovePropertyButton;
         private System.Windows.Forms.Button AddLayerPropertyButton;
+        private System.Windows.Forms.ContextMenuStrip LayerListContextMenu;
+        private System.Windows.Forms.ContextMenuStrip LayerPropertyGridContextMenu;
     }
 }

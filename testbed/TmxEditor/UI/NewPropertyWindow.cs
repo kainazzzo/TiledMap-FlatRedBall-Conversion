@@ -58,5 +58,27 @@ namespace TmxEditor.UI
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
         }
+
+        public void FromCombinedPropertyName(string name)
+        {
+            string nameWithoutType;
+            string type = "string";
+            if (name.Contains('(') && name.Contains(')'))
+            {
+                int open = name.IndexOf('(');
+                int close = name.IndexOf(')');
+
+                nameWithoutType = name.Substring(0, open).Trim();
+
+                type = name.Substring(open + 1, close - (open + 1));
+            }
+            else
+            {
+                nameWithoutType = name;
+            }
+
+            this.NameTextBox.Text = nameWithoutType;
+            this.TypeComboBox.Text = type;
+        }
     }
 }

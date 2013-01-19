@@ -38,6 +38,8 @@ namespace TmxEditor.PropertyGridDisplayers
 
         #endregion
 
+        #region Properties
+
         public property CurrentLayerProperty
         {
             get
@@ -55,11 +57,13 @@ namespace TmxEditor.PropertyGridDisplayers
             }
         }
 
+        #endregion
 
         public void UpdateDisplayedProperties()
         {
             ExcludeAllMembers();
 
+            this.RefreshOnTimer = false;
             
             if(MapLayerInstance != null)
             {

@@ -142,5 +142,20 @@ namespace TmxEditor
         {
             LayersController.Self.HandleRemovePropertyClick();
         }
+
+        private void LayersListBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            LayersController.Self.HandleListRightClick(e);
+        }
+
+        private void LayerPropertyGrid_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void LayerPropertyGrid_SelectedGridItemChanged(object sender, SelectedGridItemChangedEventArgs e)
+        {
+            LayersController.Self.UpdatePropertyGridContextMenu(e);
+
+        }
     }
 }
