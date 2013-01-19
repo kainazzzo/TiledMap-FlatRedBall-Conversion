@@ -713,12 +713,15 @@ namespace TMXGlueLib
         {
             // Assuming tilesets are sorted by the firstgid value...
             // Resort with LINQ if not
-            for (int i = tileset.Length - 1; i >= 0; --i)
+            if (tileset != null)
             {
-                mapTileset tileSet = tileset[i];
-                if (gid >= tileSet.Firstgid)
+                for (int i = tileset.Count - 1; i >= 0; --i)
                 {
-                    return tileSet;
+                    mapTileset tileSet = tileset[i];
+                    if (gid >= tileSet.Firstgid)
+                    {
+                        return tileSet;
+                    }
                 }
             }
             return null;

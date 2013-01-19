@@ -84,7 +84,7 @@ namespace TMXGlueLib
 
         /// <remarks/>
         [XmlElement("tileset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public mapTileset[] tileset
+        public List<mapTileset> tileset
         {
             get;
             set;
@@ -157,6 +157,7 @@ namespace TMXGlueLib
         public TiledMapSave()
         {
             Layers = new List<MapLayer>();
+            tileset = new List<mapTileset>();
         }
     }
 

@@ -21,7 +21,7 @@ namespace TmxEditor
         #region Fields
 
         SystemManagers mManagers;
-
+        string mCurrentFileName;
         #endregion
 
         #region Events
@@ -59,16 +59,23 @@ namespace TmxEditor
 
             if (!string.IsNullOrEmpty(fileName))
             {
+                mCurrentFileName = fileName;
 
                 ProjectManager.Self.LoadTiledMapSave(fileName);
                 ToolComponentManager.Self.ReactToLoadedFile(fileName);
                 LayersController.Self.TiledMapSave = ProjectManager.Self.TiledMapSave;
                 this.LoadedTmxLabel.Text = fileName;
             }
-
-
         }
 
+        public void SaveCurrentTileMap()
+        {
+            if (!string.IsNullOrEmpty(mCurrentFileName) && ProjectManager.Self.TiledMapSave != null)
+            {
+                ProjectManager.Self.TiledMapSave.Save(mCurrentFileName);
+
+            }
+        }
 
         void HandleXnaInitialize()
         {

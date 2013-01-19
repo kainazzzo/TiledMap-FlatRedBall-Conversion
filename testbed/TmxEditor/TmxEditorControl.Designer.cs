@@ -38,10 +38,10 @@
             this.LayersTab = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.LayersListBox = new System.Windows.Forms.TreeView();
+            this.LayerListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.RemovePropertyButton = new System.Windows.Forms.Button();
             this.AddLayerPropertyButton = new System.Windows.Forms.Button();
             this.LayerPropertyGrid = new System.Windows.Forms.PropertyGrid();
-            this.LayerListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.LayerPropertyGridContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tabControl1.SuspendLayout();
             this.TilesetsTab.SuspendLayout();
@@ -159,6 +159,11 @@
             this.LayersListBox.TabIndex = 7;
             this.LayersListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LayersListBox_MouseClick);
             // 
+            // LayerListContextMenu
+            // 
+            this.LayerListContextMenu.Name = "LayerListContextMenu";
+            this.LayerListContextMenu.Size = new System.Drawing.Size(61, 4);
+            // 
             // RemovePropertyButton
             // 
             this.RemovePropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -195,11 +200,6 @@
             this.LayerPropertyGrid.ToolbarVisible = false;
             this.LayerPropertyGrid.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.LayerPropertyGrid_SelectedGridItemChanged);
             this.LayerPropertyGrid.Click += new System.EventHandler(this.LayerPropertyGrid_Click);
-            // 
-            // LayerListContextMenu
-            // 
-            this.LayerListContextMenu.Name = "LayerListContextMenu";
-            this.LayerListContextMenu.Size = new System.Drawing.Size(61, 4);
             // 
             // LayerPropertyGridContextMenu
             // 
