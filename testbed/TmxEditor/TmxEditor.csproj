@@ -91,6 +91,7 @@
     <Compile Include="GraphicalDisplay\Tilesets\TilePropertyHighlight.cs" />
     <Compile Include="GraphicalDisplay\Tilesets\TilesetDisplayManager.cs" />
     <Compile Include="PropertyGridDisplayers\MapLayerDisplayer.cs" />
+    <Compile Include="PropertyGridDisplayers\TilesetTileDisplayer.cs" />
     <Compile Include="TimeManager.cs" />
     <Compile Include="TmxEditorControl.cs">
       <SubType>UserControl</SubType>

@@ -32,6 +32,7 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
         InputLibrary.Cursor mCursor;
         InputLibrary.Keyboard mKeyboard;
         GraphicsDeviceControl mControl;
+        PropertyGrid mPropertyGrid;
 
         Label mInfoLabel;
         #endregion
@@ -60,8 +61,9 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
 
         #endregion
 
-        public void Initialize(GraphicsDeviceControl control, ListBox tilesetsListBox, Label infoLabel)
+        public void Initialize(GraphicsDeviceControl control, ListBox tilesetsListBox, Label infoLabel, PropertyGrid propertyGrid)
         {
+            mPropertyGrid = propertyGrid;
             mControl = control;
             ToolComponentManager.Self.Register(this);
 

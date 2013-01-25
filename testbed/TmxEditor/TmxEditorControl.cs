@@ -34,7 +34,7 @@ namespace TmxEditor
         {
             InitializeComponent();
 
-            TilesetDisplayManager.Self.Initialize(this.XnaControl, TilesetsListBox, this.StatusLabel);
+            TilesetDisplayManager.Self.Initialize(this.XnaControl, TilesetsListBox, this.StatusLabel, this.TilesetTilePropertyGrid);
             XnaControl.XnaInitialize += new Action(HandleXnaInitialize);
             XnaControl.XnaUpdate += new Action(HandleXnaUpdate);
             XnaControl.XnaDraw += new Action(HandleXnaDraw);
@@ -162,6 +162,16 @@ namespace TmxEditor
         private void LayerPropertyGrid_SelectedGridItemChanged(object sender, SelectedGridItemChangedEventArgs e)
         {
             LayersController.Self.UpdatePropertyGridContextMenu(e);
+
+        }
+
+        private void TilesetsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
+        {
 
         }
     }
