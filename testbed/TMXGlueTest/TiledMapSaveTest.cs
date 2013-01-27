@@ -114,7 +114,7 @@ namespace TMXGlueTest
                                 {
                                     Firstgid = 1,
                                     Name = "tileset1",
-                                    Tile = new List<mapTilesetTile>
+                                    Tiles = new List<mapTilesetTile>
                                         {
                                             new mapTilesetTile
                                                 {
@@ -166,7 +166,7 @@ namespace TMXGlueTest
                                 {
                                     Firstgid = 3,
                                     Name = "tileset2",
-                                    Tile = new List<mapTilesetTile>
+                                    Tiles = new List<mapTilesetTile>
                                         {
                                             new mapTilesetTile
                                                 {
@@ -584,7 +584,7 @@ namespace TMXGlueTest
                                                 }
                                         },
                                     Name = "tileset1",
-                                    Tile = new List<mapTilesetTile>
+                                    Tiles = new List<mapTilesetTile>
                                         {
                                             new mapTilesetTile
                                                 {

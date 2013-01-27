@@ -75,9 +75,9 @@ namespace TMXGlueLib
                 case CSVPropertyType.Tile:
                     foreach (mapTileset tileSet in this.tileset)
                     {
-                        if (tileSet.Tile != null)
+                        if (tileSet.Tiles != null)
                         {
-                            foreach (mapTilesetTile tile in tileSet.Tile)
+                            foreach (mapTilesetTile tile in tileSet.Tiles)
                             {
                                 WriteValuesFromDictionary(sb, tile.PropertyDictionary, columnNames);
                             }
@@ -180,7 +180,7 @@ namespace TMXGlueLib
             {
                 case CSVPropertyType.Tile:
                     return
-                        this.tileset.SelectMany(t => t.Tile)
+                        this.tileset.SelectMany(t => t.Tiles)
                             .SelectMany(tile => tile.PropertyDictionary)
                             .Select(d => d.Key)
                             .Distinct(new CaseInsensitiveEqualityComparer());

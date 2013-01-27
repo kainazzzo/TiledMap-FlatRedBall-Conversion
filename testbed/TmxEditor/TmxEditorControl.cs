@@ -34,7 +34,7 @@ namespace TmxEditor
         {
             InitializeComponent();
 
-            TilesetDisplayManager.Self.Initialize(this.XnaControl, TilesetsListBox, this.StatusLabel, this.TilesetTilePropertyGrid);
+            TilesetController.Self.Initialize(this.XnaControl, TilesetsListBox, this.StatusLabel, this.TilesetTilePropertyGrid);
             XnaControl.XnaInitialize += new Action(HandleXnaInitialize);
             XnaControl.XnaUpdate += new Action(HandleXnaUpdate);
             XnaControl.XnaDraw += new Action(HandleXnaDraw);

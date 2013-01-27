@@ -103,6 +103,9 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
             mLineRectangle.Z = 1;
             mLineRectangle.Parent = this;
 
+            mLineRectangle.Color = new Microsoft.Xna.Framework.Color(1, 1, 1, .3f);
+
+
             mCountDisplay = new Text(mManagers, "99");
             mCountDisplay.HorizontalAlignment = HorizontalAlignment.Left;
             mCountDisplay.VerticalAlignment = VerticalAlignment.Top;

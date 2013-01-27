@@ -80,6 +80,7 @@
     <Compile Include="AppState.cs" />
     <Compile Include="Controllers\LayersController.cs" />
     <Compile Include="Controllers\Singleton.cs" />
+    <Compile Include="Controllers\TilesetController.XnaDisplay.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,7 +90,8 @@
     <Compile Include="GraphicalDisplay\CameraPanningLogic.cs" />
     <Compile Include="GraphicalDisplay\CursorExtensionMethods.cs" />
     <Compile Include="GraphicalDisplay\Tilesets\TilePropertyHighlight.cs" />
-    <Compile Include="GraphicalDisplay\Tilesets\TilesetDisplayManager.cs" />
+    <Compile Include="Controllers\TilesetController.cs" />
+    <Compile Include="PropertyGridDisplayers\DisplayerExtensionMethods.cs" />
     <Compile Include="PropertyGridDisplayers\MapLayerDisplayer.cs" />
     <Compile Include="PropertyGridDisplayers\TilesetTileDisplayer.cs" />
     <Compile Include="TimeManager.cs" />
