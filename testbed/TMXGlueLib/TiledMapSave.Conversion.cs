@@ -79,7 +79,7 @@ namespace TMXGlueLib
                         {
                             foreach (mapTilesetTile tile in tileSet.Tiles)
                             {
-                                WriteValuesFromDictionary(sb, tile.PropertyDictionary, columnNames);
+                                WriteValuesFromDictionary(sb, null, tile.PropertyDictionary, 0, 0, columnNames);
                             }
                         }
                     }
@@ -90,24 +90,24 @@ namespace TMXGlueLib
                         l =>
                         layerName == null ||
                         (l.Name != null && l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase))).ToList()
-                        .ForEach(l => WriteValuesFromDictionary(sb, l.PropertyDictionary, columnNames));
+                        .ForEach(l => WriteValuesFromDictionary(sb, null, l.PropertyDictionary, 0, 0, columnNames));
                     break;
                 case CSVPropertyType.Map:
-                    WriteValuesFromDictionary(sb, PropertyDictionary, columnNames);
+                    WriteValuesFromDictionary(sb, null, PropertyDictionary, 0, 0, columnNames);
                     break;
                 case CSVPropertyType.Object:
                     this.objectgroup.Where(
                         og =>
                         layerName == null ||
                         (og.name != null && og.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
-                        .SelectMany(o => o.@object)
+                        .SelectMany(o => o.@object, (o, c) => new { group = o, obj = c, X = c.x, Y = c.y })
                         .ToList()
-                        .ForEach(o => WriteValuesFromDictionary(sb, o.PropertyDictionary, columnNames));
+                        .ForEach(o => WriteValuesFromDictionary(sb, o.group.PropertyDictionary, o.obj.PropertyDictionary, o.X, o.Y, columnNames));
                     break;
             }
         }
 
-        private void WriteValuesFromDictionary(StringBuilder sb, IDictionary<string, string> iDictionary, IEnumerable<string> columnNames)
+        private void WriteValuesFromDictionary(StringBuilder sb, IDictionary<string, string> pDictionary, IDictionary<string, string> iDictionary, int x, int y, IEnumerable<string> columnNames)
         {
             if (iDictionary.Any(p => p.Key.Equals("name", StringComparison.CurrentCultureIgnoreCase)))
             {
@@ -115,11 +115,22 @@ namespace TMXGlueLib
 
                 foreach (string columnName in columnNames)
                 {
-                    if (!columnName.Equals("name", StringComparison.CurrentCultureIgnoreCase))
+                    if (columnName.Equals("X (int)", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        sb.AppendFormat(",{0}", x);
+                    }
+                    else if (columnName.Equals("Y (int)", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        sb.AppendFormat(",{0}", y);
+                    }else if (!columnName.Equals("name", StringComparison.CurrentCultureIgnoreCase))
                     {
                         if (iDictionary.Any(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
                         {
                             sb.AppendFormat(",\"{0}\"", iDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value.Replace("\"", "\"\""));
+                        }
+                        else if (pDictionary != null && pDictionary.Any(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
+                        {
+                            sb.AppendFormat(",\"{0}\"", pDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value.Replace("\"", "\"\""));
                         }
                         else
                         {
@@ -196,15 +207,20 @@ namespace TMXGlueLib
                 case CSVPropertyType.Map:
                     return this.PropertyDictionary.Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer());
                 case CSVPropertyType.Object:
-                    return
-                        this.objectgroup.Where(
-                            l =>
-                            layerName == null ||
-                            (l.name != null && l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
-                            .SelectMany(o => o.@object)
-                            .SelectMany(o => o.PropertyDictionary)
-                            .Select(d => d.Key)
-                            .Distinct(new CaseInsensitiveEqualityComparer());
+                    return ((new[] {"X (int)", "Y (int)"}.Select(d => d)
+                        .Union(objectgroup.Where(l =>
+                                                 layerName == null ||
+                                                 (l.name != null &&
+                                                  l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
+                                   .SelectMany(o => o.@object)
+                                   .SelectMany(o => o.PropertyDictionary)
+                                   .Select(d => d.Key), new CaseInsensitiveEqualityComparer())
+                        .Union(objectgroup.Where(l =>
+                                                 layerName == null ||
+                                                 (l.name != null &&
+                                                  l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
+                                   .SelectMany(o => o.PropertyDictionary)
+                                   .Select(d => d.Key), new CaseInsensitiveEqualityComparer())));
             }
             return columnNames;
         }
