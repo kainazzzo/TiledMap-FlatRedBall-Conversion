@@ -65,7 +65,7 @@ namespace TMXGlueLib
                     this.Spacing = xts.spacing;
                     this.Tileheight = xts.tileheight;
                     this.Tilewidth = xts.tilewidth;
-                    this.Tile = xts.tile;
+                    this.Tiles = xts.tile;
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace TMXGlueLib
         }
 
         [XmlElement("tile", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 3)]
-        public List<mapTilesetTile> Tile = new List<mapTilesetTile>();
+        public List<mapTilesetTile> Tiles = new List<mapTilesetTile>();
         //{
         //    get
         //    {
@@ -144,7 +144,7 @@ namespace TMXGlueLib
                     {
                         _tileDictionaryField = new ConcurrentDictionary<uint, mapTilesetTile>();
 
-                        if (Tile != null)
+                        if (Tiles != null)
                         {
                             //Parallel.ForEach(tile, (t) =>
                             //            {
@@ -154,7 +154,7 @@ namespace TMXGlueLib
                             //                }
                             //            });
 
-                            foreach (var t in Tile)
+                            foreach (var t in Tiles)
                             {
                                 uint key = (uint)t.id + 1;
                                 if (!_tileDictionaryField.ContainsKey(key))

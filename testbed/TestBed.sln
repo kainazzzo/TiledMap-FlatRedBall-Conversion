@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToScnx", "TmxToScnx\TmxToScnx.csproj", "{EAA9B407-D6C9-46AC-82D4-F1861D235883}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToNntx", "TmxToNntx\TmxToNntx.csproj", "{6C27074B-84C2-495D-87AE-A66C1346680B}"

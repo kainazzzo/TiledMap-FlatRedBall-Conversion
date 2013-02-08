@@ -9,6 +9,13 @@ namespace TmxToScnx
     {
         public static void CopyTmxTilesetImagesToDestination(string sourceTmx, string destinationScnx, TiledMapSave tms)
         {
+            //////////Early Out///////////////////
+            if (tms.tileset == null)
+            {
+                return;
+            }
+            ////////End Early Out////////////////
+
             var oldDir = FileManager.RelativeDirectory;
 
             FileManager.RelativeDirectory = FileManager.GetDirectory(sourceTmx);
@@ -47,11 +54,14 @@ namespace TmxToScnx
         public static void FixupImageSources(TiledMapSave tms)
         {
             Console.WriteLine("Fixing up tileset relative paths");
-            foreach (mapTileset tileset in tms.tileset)
+            if (tms.tileset != null)
             {
-                foreach (mapTilesetImage image in tileset.Image)
+                foreach (mapTileset tileset in tms.tileset)
                 {
-                    image.source = image.sourceFileName;
+                    foreach (mapTilesetImage image in tileset.Image)
+                    {
+                        image.source = image.sourceFileName;
+                    }
                 }
             }
         }

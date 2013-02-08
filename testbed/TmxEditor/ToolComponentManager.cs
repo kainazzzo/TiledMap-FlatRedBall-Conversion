@@ -12,7 +12,7 @@ namespace TmxEditor
 
         static ToolComponentManager mSelf;
 
-        List<ToolComponent> mComponents = new List<ToolComponent>();
+        List<ToolComponentBase> mComponents = new List<ToolComponentBase>();
         #endregion
 
         #region Properties
@@ -32,7 +32,7 @@ namespace TmxEditor
 
         #region Register
 
-        public void Register(ToolComponent component)
+        public void Register(ToolComponentBase component)
         {
             mComponents.Add(component);
         }

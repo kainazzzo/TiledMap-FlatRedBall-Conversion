@@ -28,7 +28,12 @@ namespace TMXGlueLib
     [XmlRoot(ElementName = "map", Namespace = "", IsNullable = false)]
     public partial class TiledMapSave
     {
+        #region Fields
+
         private IDictionary<string, string> propertyDictionaryField = null;
+
+        List<property> mProperties = new List<property>();
+        #endregion
 
         [XmlIgnore]
         public IDictionary<string, string> PropertyDictionary
@@ -67,7 +72,6 @@ namespace TMXGlueLib
         }
         
 
-        List<property> mProperties = new List<property>();
 
         public List<property> properties
         {
@@ -80,7 +84,7 @@ namespace TMXGlueLib
 
         /// <remarks/>
         [XmlElement("tileset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public mapTileset[] tileset
+        public List<mapTileset> tileset
         {
             get;
             set;
@@ -88,7 +92,7 @@ namespace TMXGlueLib
 
         /// <remarks/>
         [XmlElement("layer", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public mapLayer[] layer
+        public List<MapLayer> Layers
         {
             get;
             set;
@@ -149,49 +153,11 @@ namespace TMXGlueLib
             get;
             set;
         }
-    }
 
-
-
-    /// <remarks/>
-    [XmlType(AnonymousType = true)]
-    public partial class mapTilesetTile
-    {
-        private IDictionary<string, string> propertyDictionaryField = null;
-
-        [XmlIgnore]
-        public IDictionary<string, string> PropertyDictionary
+        public TiledMapSave()
         {
-            get
-            {
-                lock (this)
-                {
-                    if (propertyDictionaryField == null)
-                    {
-                        propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
-                    }
-                    return propertyDictionaryField;
-                }
-            }
-        }
-
-        List<property> mProperties = new List<property>();
-
-        public List<property> properties
-        {
-            get { return mProperties; }
-            set
-            {
-                mProperties = value;
-            }
-        }
-
-        /// <remarks/>
-        [XmlAttribute()]
-        public int id
-        {
-            get;
-            set;
+            Layers = new List<MapLayer>();
+            tileset = new List<mapTileset>();
         }
     }
 
@@ -327,155 +293,6 @@ namespace TMXGlueLib
     }
 
 
-    /// <remarks/>
-    [XmlType(AnonymousType = true)]
-    public partial class mapLayer
-    {
-        private IDictionary<string, string> propertyDictionaryField = null;
-
-        [XmlIgnore]
-        public IDictionary<string, string> PropertyDictionary
-        {
-            get
-            {
-                lock (this)
-                {
-                    if (propertyDictionaryField == null)
-                    {
-                        propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
-                    }
-                    if (!propertyDictionaryField.Any(p => p.Key.Equals("name", StringComparison.OrdinalIgnoreCase)))
-                    {
-                        propertyDictionaryField.Add("name", this.name);
-                    }
-                    return propertyDictionaryField;
-                }
-            }
-        }
-
-
-        List<property> mProperties = new List<property>();
-
-        public List<property> properties
-        {
-            get { return mProperties; }
-            set
-            {
-                mProperties = value;
-            }
-        }
-
-
-        private mapLayerData[] dataField;
-
-        private string nameField;
-
-        private int widthField;
-
-        private int heightField;
-
-        /// <remarks/>
-        [XmlElement("data", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = true)]
-        public mapLayerData[] data
-        {
-            get
-            {
-                return this.dataField;
-            }
-            set
-            {
-                this.dataField = value;
-                if (dataField != null)
-                {
-                    foreach (mapLayerData layerData in dataField)
-                    {
-                        layerData.length = width * height;
-                    }
-                }
-            }
-        }
-
-        /// <remarks/>
-        [XmlAttribute()]
-        public string name
-        {
-            get
-            {
-                return this.nameField;
-            }
-            set
-            {
-                this.nameField = value;
-            }
-        }
-
-        /// <remarks/>
-        [XmlAttribute()]
-        public int width
-        {
-            get
-            {
-                return this.widthField;
-            }
-            set
-            {
-                this.widthField = value;
-                if (this.data != null)
-                {
-                    foreach (mapLayerData layerData in data)
-                    {
-                        layerData.length = width * height;
-                    }
-                }
-            }
-        }
-
-        /// <remarks/>
-        [XmlAttribute()]
-        public int height
-        {
-            get
-            {
-                return this.heightField;
-            }
-            set
-            {
-                this.heightField = value;
-                if (this.data != null)
-                {
-                    foreach (mapLayerData layerData in data)
-                    {
-                        layerData.length = width * height;
-                    }
-                }
-            }
-        }
-
-        private int? visibleField;
-        [XmlAttribute()]
-        public int visible
-        {
-            get
-            {
-                return this.visibleField.HasValue ? this.visibleField.Value : 1;
-            }
-            set
-            {
-                this.visibleField = value;
-            }
-        }
-
-        [XmlIgnore]
-        public bool IsVisible
-        {
-            get
-            {
-                return visible != 0;
-            }
-        }
-
-       
-    }
 
     public partial class mapLayerDataTile
     {

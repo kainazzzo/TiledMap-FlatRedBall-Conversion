@@ -43,6 +43,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\dependencies\FlatRedBall.dll</HintPath>
     </Reference>
+    <Reference Include="FlatRedBall.PropertyGrid, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\FlatRedBall\FlatRedBall.PropertyGrid.dll</HintPath>
+    </Reference>
     <Reference Include="InputLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\Gum\InputLibrary.dll</HintPath>
@@ -73,6 +77,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppState.cs" />
+    <Compile Include="Controllers\LayersController.cs" />
+    <Compile Include="Controllers\Singleton.cs" />
+    <Compile Include="Controllers\TilesetController.XnaDisplay.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,13 +90,28 @@
     <Compile Include="GraphicalDisplay\CameraPanningLogic.cs" />
     <Compile Include="GraphicalDisplay\CursorExtensionMethods.cs" />
     <Compile Include="GraphicalDisplay\Tilesets\TilePropertyHighlight.cs" />
-    <Compile Include="GraphicalDisplay\Tilesets\TilesetDisplayManager.cs" />
+    <Compile Include="Controllers\TilesetController.cs" />
+    <Compile Include="PropertyGridDisplayers\DisplayerExtensionMethods.cs" />
+    <Compile Include="PropertyGridDisplayers\MapLayerDisplayer.cs" />
+    <Compile Include="PropertyGridDisplayers\TilesetTileDisplayer.cs" />
     <Compile Include="TimeManager.cs" />
+    <Compile Include="TmxEditorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TmxEditorControl.Designer.cs">
+      <DependentUpon>TmxEditorControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ToolComponent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToolComponentManager.cs" />
+    <Compile Include="UI\NewPropertyWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\NewPropertyWindow.Designer.cs">
+      <DependentUpon>NewPropertyWindow.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -102,6 +125,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="TmxEditorControl.resx">
+      <DependentUpon>TmxEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\NewPropertyWindow.resx">
+      <DependentUpon>NewPropertyWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -120,6 +149,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Libraries\FlatRedBall\FlatRedBall.PropertyGrid.dll" />
+    <Content Include="Libraries\FlatRedBall\FlatRedBall.PropertyGrid.pdb" />
     <Content Include="Libraries\Gum\ContentLibrary.dll" />
     <Content Include="Libraries\Gum\InputLibrary.dll" />
     <Content Include="Libraries\Gum\RenderingLibrary.dll" />
