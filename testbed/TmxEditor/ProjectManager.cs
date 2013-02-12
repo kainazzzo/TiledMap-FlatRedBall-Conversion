@@ -64,9 +64,9 @@ namespace TmxEditor
                 {
                     copyTo.RefreshTileDictionary();
 
-                    stringBuilder.AppendLine("Modified " + tileset.Name + " count before: " + copyTo.Tile.Count + ", count after: " + tileset.Tile.Count);
+                    stringBuilder.AppendLine("Modified " + tileset.Name + " count before: " + copyTo.Tiles.Count + ", count after: " + tileset.Tiles.Count);
 
-                    copyTo.Tile = tileset.Tile;
+                    copyTo.Tiles = tileset.Tiles;
 
                 }
             }

@@ -67,22 +67,22 @@ namespace TMXGlueTest
             const TiledMapSave.CSVPropertyType type = TiledMapSave.CSVPropertyType.Layer;
             var target = new TiledMapSave
             {
-                layer = new mapLayer[] {new mapLayer()
+                Layers = new List<MapLayer> {new MapLayer()
                 {
                     properties = new List<property>
                     {
                         new property() {name = "name1", value = "val"},
                         new property() {name = "name2", value = "val2"}
                     },
-                    name="layer1"
-                }, new mapLayer()
+                    Name="layer1"
+                }, new MapLayer()
                     {
                         properties = new List<property>
                         {
                             new property() {name = "name1", value = "val"},
                             new property() {name = "name3", value = "val3"}
                         },
-                        name="layer2"
+                        Name="layer2"
                     }}
             };
 
@@ -108,13 +108,13 @@ namespace TMXGlueTest
         {
             var target = new TiledMapSave
                 {
-                    tileset = new mapTileset[2]
+                    tileset = new List<mapTileset>()
                         {
                             new mapTileset
                                 {
                                     Firstgid = 1,
                                     Name = "tileset1",
-                                    Tile = new List<mapTilesetTile>
+                                    Tiles = new List<mapTilesetTile>
                                         {
                                             new mapTilesetTile
                                                 {
@@ -166,7 +166,7 @@ namespace TMXGlueTest
                                 {
                                     Firstgid = 3,
                                     Name = "tileset2",
-                                    Tile = new List<mapTilesetTile>
+                                    Tiles = new List<mapTilesetTile>
                                         {
                                             new mapTilesetTile
                                                 {
@@ -193,13 +193,13 @@ namespace TMXGlueTest
                                         }
                                 }
                         },
-                    layer = new mapLayer[1]
+                    Layers = new List<MapLayer>()
                         {
-                            new mapLayer
+                            new MapLayer
                                 {
                                     height = 32,
                                     width = 96,
-                                    name = "layer1",
+                                    Name = "layer1",
                                     visible = 1,
                                     data = new mapLayerData[1]
                                         {
@@ -364,7 +364,7 @@ namespace TMXGlueTest
                     tileheight = 32,
                     tilewidth = 32,
                     orientation = "orthogonal",
-                    tileset = new mapTileset[]
+                    tileset = new List<mapTileset>
                         {
                             new mapTileset
                                 {
@@ -385,11 +385,11 @@ namespace TMXGlueTest
                                         },
                                 }
                         },
-                    layer = new mapLayer[]
+                    Layers = new List<MapLayer>()
                         {
-                            new mapLayer
+                            new MapLayer
                                 {
-                                    name = "Layer1",
+                                    Name = "Layer1",
                                     width = 2,
                                     height = 3,
                                     data = new mapLayerData[]
@@ -568,7 +568,7 @@ namespace TMXGlueTest
                     width = 64,
                     tileheight = 32,
                     tilewidth = 32,
-                    tileset = new mapTileset[]
+                    tileset = new List<mapTileset>()
                         {
                             new mapTileset
                                 {
@@ -584,7 +584,7 @@ namespace TMXGlueTest
                                                 }
                                         },
                                     Name = "tileset1",
-                                    Tile = new List<mapTilesetTile>
+                                    Tiles = new List<mapTilesetTile>
                                         {
                                             new mapTilesetTile
                                                 {
@@ -640,11 +640,11 @@ namespace TMXGlueTest
                                     Tilewidth = 32
                                 }
                         },
-                    layer = new mapLayer[]
+                    Layers = new List<MapLayer>()
                         {
-                            new mapLayer
+                            new MapLayer
                                 {
-                                    name = "layer1",
+                                    Name = "layer1",
                                     data = new mapLayerData[]
                                         {
                                             new mapLayerData()
