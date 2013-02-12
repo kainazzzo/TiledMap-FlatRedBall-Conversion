@@ -76,6 +76,7 @@ namespace TmxToScnx
                             }
                             break;
                         case "layervisiblebehavior":
+                        case "layervisibilitybehavior":
                             if (!Enum.TryParse(value, out layerVisibleBehavior))
                             {
                                 layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;

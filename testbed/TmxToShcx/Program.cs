@@ -19,15 +19,15 @@ namespace TmxToShcx
                 string sourceTmx = args[0];
                 string destinationShcx = args[1];
                 string layername = null;
-                var layerVisibilityBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
+                var layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
                 var offset = new Tuple<float, float, float>(0f, 0f, 0f);
 
                 if (args.Length >= 3)
                 {
                     
-                    ParseOptionalCommandLineArgs(args, out layername, out layerVisibilityBehavior, out offset);
+                    ParseOptionalCommandLineArgs(args, out layername, out layerVisibleBehavior, out offset);
                 }
-                TiledMapSave.LayerVisibleBehaviorValue = layerVisibilityBehavior;
+                TiledMapSave.LayerVisibleBehaviorValue = layerVisibleBehavior;
                 TiledMapSave.Offset = offset;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
@@ -60,6 +60,7 @@ namespace TmxToShcx
                         case "layername":
                             layername = value;
                             break;
+                        case "layervisiblebehavior":
                         case "layervisibilitybehavior":
                             if (!Enum.TryParse(value, out layerVisibilityBehavior))
                             {
