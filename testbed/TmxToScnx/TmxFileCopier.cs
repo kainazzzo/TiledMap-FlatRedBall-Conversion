@@ -1,4 +1,5 @@
 ﻿using System;
+using SimpleLogging;
 using TMXGlueLib;
 using FlatRedBall.IO;
 using System.IO;
@@ -26,14 +27,18 @@ namespace TmxToScnx
             {
                 foreach (mapTilesetImage image in tileset.Image)
                 {
-                    Console.WriteLine("Image source: {0}", image.source);
+                    Logger.Log("Image source: {0}", image.source);
                     string sourcepath = tmxPath + image.source;
                     if (tileset.Source != null)
                     {
-                        if (tileset.SourceDirectory != ".")
+                        if (tileset.SourceDirectory != "." && !tileset.SourceDirectory.Contains(":"))
                         {
                             sourcepath = tmxPath +  tileset.SourceDirectory.Replace("\\", "/") + "/" + image.source;
                             sourcepath = FileManager.GetDirectory(sourcepath) + image.source;
+                        }
+                        else if (tileset.SourceDirectory.Contains(":"))
+                        {
+                            sourcepath = tileset.SourceDirectory + "/" + image.source;
                         }
                         else
                         {
@@ -44,7 +49,7 @@ namespace TmxToScnx
                     if (!sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase) && 
                         !FileManager.GetDirectory(destinationFullPath).Equals(FileManager.GetDirectory(sourcepath)))
                     {
-                        Console.WriteLine("Copying \"{0}\" to \"{1}\".", sourcepath, destinationFullPath);
+                        Logger.Log("Copying \"{0}\" to \"{1}\".", sourcepath, destinationFullPath);
 
                         File.Copy(sourcepath, destinationFullPath, true);
                     }
@@ -54,7 +59,7 @@ namespace TmxToScnx
 
         public static void FixupImageSources(TiledMapSave tms)
         {
-            Console.WriteLine("Fixing up tileset relative paths");
+            Logger.Log("Fixing up tileset relative paths");
             if (tms.tileset != null)
             {
                 foreach (mapTileset tileset in tms.tileset)

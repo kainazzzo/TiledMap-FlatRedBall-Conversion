@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using FlatRedBall.Content;
+using SimpleLogging;
 using TMXGlueLib;
 using TMXGlueLib.DataTypes;
 using FlatRedBall.IO;
@@ -16,7 +17,7 @@ namespace TmxToTilb
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: tmxtotilb.exe <input.tmx> <output.tilb> [scale=##.#]");
+                Logger.Log("Usage: tmxtotilb.exe <input.tmx> <output.tilb> [scale=##.#]");
                 return;
             }
 
@@ -37,13 +38,13 @@ namespace TmxToTilb
                 //SpriteEditorScene save = tms.ToSceneSave(scale);
 
 
-                Console.WriteLine(string.Format("{0} converted successfully.", sourceTmx));
+                Logger.Log(string.Format("{0} converted successfully.", sourceTmx));
                 TmxFileCopier.CopyTmxTilesetImagesToDestination(sourceTmx, destinationFile, tms);
 
                 // Fix up the image sources to be relative to the newly copied ones.
                 TmxFileCopier.FixupImageSources(tms);
 
-                Console.WriteLine(string.Format("Saving \"{0}\".", destinationFile));
+                Logger.Log(string.Format("Saving \"{0}\".", destinationFile));
                 ReducedTileMapInfo rtmi = ReducedTileMapInfo.FromTiledMapSave(tms, scale,
                     FileManager.GetDirectory(sourceTmx));
 
@@ -57,7 +58,7 @@ namespace TmxToTilb
                 }
 
                 
-                Console.WriteLine("Done.");
+                Logger.Log("Done.");
             }
             catch (Exception ex)
             {

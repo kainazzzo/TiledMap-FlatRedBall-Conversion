@@ -758,8 +758,8 @@ namespace Ionic.Zlib
             if (_disposed) throw new ObjectDisposedException("GZipStream");
             int n = _baseStream.Read(buffer, offset, count);
 
-            // Console.WriteLine("GZipStream::Read(buffer, off({0}), c({1}) = {2}", offset, count, n);
-            // Console.WriteLine( Util.FormatByteArray(buffer, offset, n) );
+            // Logger.Log("GZipStream::Read(buffer, off({0}), c({1}) = {2}", offset, count, n);
+            // Logger.Log( Util.FormatByteArray(buffer, offset, n) );
 
             if (!_firstReadDone)
             {
@@ -819,7 +819,7 @@ namespace Ionic.Zlib
             if (_disposed) throw new ObjectDisposedException("GZipStream");
             if (_baseStream._streamMode == Ionic.Zlib.ZlibBaseStream.StreamMode.Undefined)
             {
-                //Console.WriteLine("GZipStream: First write");
+                //Logger.Log("GZipStream: First write");
                 if (_baseStream._wantCompress)
                 {
                     // first write in compression, therefore, emit the GZIP header

@@ -45,6 +45,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SimpleLogging\SimpleLogging.csproj">
+      <Project>{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}</Project>
+      <Name>SimpleLogging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TMXGlueLib\TMXGlueLib.csproj">
       <Project>{8600173A-6281-45E1-8076-54366E42CBDE}</Project>
       <Name>TMXGlueLib</Name>

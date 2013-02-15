@@ -303,8 +303,8 @@ namespace Ionic.Zlib
         ///     byte[] buffer = new byte[bufferSize];
         ///     ZlibCodec decompressor = new ZlibCodec();
         /// 
-        ///     Console.WriteLine("\n============================================");
-        ///     Console.WriteLine("Size of Buffer to Inflate: {0} bytes.", CompressedBytes.Length);
+        ///     Logger.Log("\n============================================");
+        ///     Logger.Log("Size of Buffer to Inflate: {0} bytes.", CompressedBytes.Length);
         ///     MemoryStream ms = new MemoryStream(DecompressedBytes);
         /// 
         ///     int rc = decompressor.InitializeInflate();
@@ -527,8 +527,8 @@ namespace Ionic.Zlib
         ///     byte[] buffer = new byte[bufferSize];
         ///     ZlibCodec compressor = new ZlibCodec();
         /// 
-        ///     Console.WriteLine("\n============================================");
-        ///     Console.WriteLine("Size of Buffer to Deflate: {0} bytes.", UncompressedBytes.Length);
+        ///     Logger.Log("\n============================================");
+        ///     Logger.Log("Size of Buffer to Deflate: {0} bytes.", UncompressedBytes.Length);
         ///     MemoryStream ms = new MemoryStream();
         /// 
         ///     int rc = compressor.InitializeDeflate(level);

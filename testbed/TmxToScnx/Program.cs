@@ -1,6 +1,7 @@
 ﻿using System;
 using FlatRedBall.Content;
 using FlatRedBall.Content.Scene;
+using SimpleLogging;
 using TMXGlueLib;
 
 namespace TmxToScnx
@@ -11,7 +12,7 @@ namespace TmxToScnx
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
+                Logger.Log("Usage: tmxtoscnx.exe <input.tmx> <output.scnx> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
                 return;
             }
 
@@ -20,6 +21,7 @@ namespace TmxToScnx
                 string sourceTmx = args[0];
                 string destinationScnx = args[1];
                 float scale = 1.0f;
+
                 var layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
                 var offset = new Tuple<float, float, float>(0, 0, 0);
 
@@ -35,21 +37,21 @@ namespace TmxToScnx
                 SceneSave save = tms.ToSceneSave(scale);
 // ReSharper restore UnusedVariable
 
-                Console.WriteLine("{0} converted successfully.", sourceTmx);
+                Logger.Log("{0} converted successfully.", sourceTmx);
                 TmxFileCopier.CopyTmxTilesetImagesToDestination(sourceTmx, destinationScnx, tms);
 
                 // Fix up the image sources to be relative to the newly copied ones.
                 TmxFileCopier.FixupImageSources(tms);
 
-                Console.WriteLine("Saving \"{0}\".", destinationScnx);
+                Logger.Log("Saving \"{0}\".", destinationScnx);
                 SceneSave spriteEditorScene = tms.ToSceneSave(scale);
 
                 spriteEditorScene.Save(destinationScnx.Trim());
-                Console.WriteLine("Done.");
+                Logger.Log("Done.");
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
+                Logger.Log("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
             }
         }
 
