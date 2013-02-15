@@ -26,18 +26,19 @@ namespace TmxToScnx
             {
                 foreach (mapTilesetImage image in tileset.Image)
                 {
+                    Console.WriteLine("Image source: {0}", image.source);
                     string sourcepath = tmxPath + image.source;
                     if (tileset.Source != null)
                     {
                         if (tileset.SourceDirectory != ".")
                         {
-                            sourcepath = tmxPath +  tileset.SourceDirectory + "/" + image.source;
+                            sourcepath = tmxPath +  tileset.SourceDirectory.Replace("\\", "/") + "/" + image.source;
+                            sourcepath = FileManager.GetDirectory(sourcepath) + image.source;
                         }
                         else
                         {
                             sourcepath = tmxPath + image.source;
                         }
-                        sourcepath = FileManager.GetDirectory(sourcepath);
                     }
                     string destinationFullPath = destinationPath + image.sourceFileName;
                     if (!sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase) && 
