@@ -258,7 +258,7 @@ namespace TMXGlueTest
                         }
                 };
             string actual = target.ToCSVString(TiledMapSave.CSVPropertyType.Map);
-            const string expected = "Name (required),mapProperty2,mapProperty1\r\nmap,\"mapValue2\",\"mapValue1\"\r\n";
+            const string expected = "Name (required),mapProperty1,mapProperty2\r\nmap,\"mapValue1\",\"mapValue2\"\r\n";
 
             Assert.AreEqual(expected, actual);
         }
@@ -321,7 +321,7 @@ namespace TMXGlueTest
             };
             string actual = target.ToCSVString(TiledMapSave.CSVPropertyType.Object);
             const string expected =
-                "Name (required),prop1,prop2,prop3\r\nobject1,\"val1\",\"val2\",\r\nobject2,,\"val4\",\"val3\"\r\n";
+                "Name (required),X (int),Y (int),prop1,prop2,prop3\r\nobject1,0,0,\"val1\",\"val2\",\r\nobject2,0,0,,\"val4\",\"val3\"\r\n";
 
             Assert.AreEqual(expected, actual);
         }

@@ -452,6 +452,35 @@ namespace TMXGlueLib
 
         private int heightField;
 
+        List<property> mProperties = new List<property>();
+
+        public List<property> properties
+        {
+            get { return mProperties; }
+            set
+            {
+                mProperties = value;
+            }
+        }
+
+        private IDictionary<string, string> propertyDictionaryField = null;
+
+        [XmlIgnore]
+        public IDictionary<string, string> PropertyDictionary
+        {
+            get
+            {
+                lock (this)
+                {
+                    if (propertyDictionaryField == null)
+                    {
+                        propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
+                    }
+                    return propertyDictionaryField;
+                }
+            }
+        }
+
         /// <remarks/>
         [XmlElement("object", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public mapObjectgroupObject[] @object
