@@ -1,5 +1,4 @@
 ﻿using System;
-using SimpleLogging;
 using TMXGlueLib;
 
 namespace TmxToCSV
@@ -10,7 +9,7 @@ namespace TmxToCSV
         {
             if (args.Length < 2)
             {
-                Logger.Log("Usage: tmxtocsv.exe <input.tmx> <output.csv> [type=Tile|Layer|Map|Object] [layername=name]");
+                System.Console.WriteLine("Usage: tmxtocsv.exe <input.tmx> <output.csv> [type=Tile|Layer|Map|Object] [layername=name]");
                 return;
             }
 

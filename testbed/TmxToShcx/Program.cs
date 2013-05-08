@@ -1,8 +1,6 @@
 ﻿using System;
 using FlatRedBall.Content.Math.Geometry;
-using SimpleLogging;
 using TMXGlueLib;
-
 namespace TmxToShcx
 {
     class Program
@@ -11,7 +9,7 @@ namespace TmxToShcx
         {
             if (args.Length < 2)
             {
-                Logger.Log("Usage: tmxtoshcx.exe <input.tmx> <output.shcx> [layername=name] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
+                System.Console.WriteLine("Usage: tmxtoshcx.exe <input.tmx> <output.shcx> [layername=name] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
                 return;
             }
 

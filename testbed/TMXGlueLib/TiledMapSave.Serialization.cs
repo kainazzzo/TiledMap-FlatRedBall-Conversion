@@ -28,6 +28,9 @@ namespace TMXGlueLib
     [XmlRoot(ElementName = "map", Namespace = "", IsNullable = false)]
     public partial class TiledMapSave
     {
+
+        public enum LayerVisibleBehavior { Ignore, Match, Skip };
+
         #region Fields
 
         private IDictionary<string, string> propertyDictionaryField = null;

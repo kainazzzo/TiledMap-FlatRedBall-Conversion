@@ -28,8 +28,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Console Apps", "Console Apps", "{5D587683-F894-4627-93C9-3F13EC005A86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleLogging", "SimpleLogging\SimpleLogging.csproj", "{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}"
-EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = TestBed.vsmdi
@@ -231,26 +229,6 @@ Global
 		{0682CA8A-5359-4237-AA0D-0305C9C527FB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0682CA8A-5359-4237-AA0D-0305C9C527FB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{0682CA8A-5359-4237-AA0D-0305C9C527FB}.Release|x86.ActiveCfg = Release|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.DebugProfile|Any CPU.ActiveCfg = Debug|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.DebugProfile|Any CPU.Build.0 = Debug|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.DebugProfile|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.DebugProfile|Mixed Platforms.Build.0 = Debug|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.DebugProfile|x86.ActiveCfg = Debug|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Profile|Any CPU.ActiveCfg = Release|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Profile|Any CPU.Build.0 = Release|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Profile|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Profile|Mixed Platforms.Build.0 = Release|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Profile|x86.ActiveCfg = Release|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

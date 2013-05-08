@@ -1,6 +1,5 @@
 ﻿using System;
 using FlatRedBall.Content.AI.Pathfinding;
-using SimpleLogging;
 using TMXGlueLib;
 
 namespace TmxToNntx
@@ -11,7 +10,7 @@ namespace TmxToNntx
         {
             if (args.Length < 2)
             {
-                Logger.Log("Usage: tmxtonntx.exe <input.tmx> <output.csv> [requiretile=true|false] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
+                System.Console.WriteLine("Usage: tmxtonntx.exe <input.tmx> <output.csv> [requiretile=true|false] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
                 return;
             }
 

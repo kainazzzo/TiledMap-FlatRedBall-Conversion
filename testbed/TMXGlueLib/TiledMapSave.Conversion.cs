@@ -21,7 +21,6 @@ namespace TMXGlueLib
         #region Enums
 
         public enum CSVPropertyType { Tile, Layer, Map, Object };
-        public enum LayerVisibleBehavior { Ignore, Match, Skip };
 
         enum LessOrGreaterDesired
         {
@@ -31,17 +30,26 @@ namespace TMXGlueLib
         }
         #endregion
 
+        #region Fields
+
         public static LayerVisibleBehavior LayerVisibleBehaviorValue = LayerVisibleBehavior.Ignore;
         public static int MaxDegreeOfParallelism = 1;
 
 
 
         private static Tuple<float, float, float> _offset = new Tuple<float, float, float>(0f, 0f, 0f);
+
+        #endregion
+
+        #region Properties
+
         public static Tuple<float, float, float> Offset
         {
             get { return _offset; }
             set { _offset = value; }
         }
+
+        #endregion
 
         public Scene ToScene(string contentManagerName, float scale)
         {
@@ -620,7 +628,7 @@ namespace TMXGlueLib
             //int tilesHigh = (imageHeight - margin) / (tileHeight + spacing);
 
 
-            sprite.Texture = tileSet.Image[0].source;
+            sprite.Texture = tileSet.Image[0].sourceFileName;
             if (tileSet.TileDictionary.ContainsKey(gid - tileSet.Firstgid + 1))
             {
                 if (tileSet.TileDictionary[gid - tileSet.Firstgid + 1].PropertyDictionary.ContainsKey("name"))
