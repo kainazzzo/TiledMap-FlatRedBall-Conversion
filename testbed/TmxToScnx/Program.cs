@@ -56,8 +56,17 @@ namespace TmxToScnx
             {
 
                 System.Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
+
                 SceneSave spriteEditorScene = tms.ToSceneSave(parsedArgs.Scale);
 
+                spriteEditorScene.FileName = parsedArgs.DestinationFile;
+                spriteEditorScene.ScenePath = FileManager.GetDirectory(parsedArgs.DestinationFile);
+                spriteEditorScene.AssetsRelativeToSceneFile = true;
+                var result = spriteEditorScene.GetMissingFiles();
+                foreach(var missing in result)
+                {
+                    System.Console.Error.WriteLine("Missing file: " + spriteEditorScene.ScenePath + missing);
+                }
                 spriteEditorScene.Save(parsedArgs.DestinationFile.Trim());
             }
             else if (extension == "tilb")

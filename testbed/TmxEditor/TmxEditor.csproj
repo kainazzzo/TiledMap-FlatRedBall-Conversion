@@ -53,10 +53,6 @@
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="RenderingLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\Gum\RenderingLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -67,9 +63,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WahooToolsUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="ToolsUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\Gum\WahooToolsUtilities.dll</HintPath>
+      <HintPath>Libraries\Gum\ToolsUtilities.dll</HintPath>
     </Reference>
     <Reference Include="XnaAndWinforms, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -143,6 +139,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Gum\RenderingLibrary\RenderingLibrary.csproj">
+      <Project>{a86ee399-7c93-42e1-80ed-ca4cbf4ca573}</Project>
+      <Name>RenderingLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TMXGlueLib\TMXGlueLib.csproj">
       <Project>{8600173A-6281-45E1-8076-54366E42CBDE}</Project>
       <Name>TMXGlueLib</Name>
@@ -153,8 +153,7 @@
     <Content Include="Libraries\FlatRedBall\FlatRedBall.PropertyGrid.pdb" />
     <Content Include="Libraries\Gum\ContentLibrary.dll" />
     <Content Include="Libraries\Gum\InputLibrary.dll" />
-    <Content Include="Libraries\Gum\RenderingLibrary.dll" />
-    <Content Include="Libraries\Gum\WahooToolsUtilities.dll" />
+    <Content Include="Libraries\Gum\ToolsUtilities.dll" />
     <Content Include="Libraries\Gum\XnaAndWinforms.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

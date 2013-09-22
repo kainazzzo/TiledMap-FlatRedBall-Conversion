@@ -83,6 +83,12 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
             set;
         }
 
+        public float Z
+        {
+            get;
+            set;
+        }
+
         public int Count
         {
             set

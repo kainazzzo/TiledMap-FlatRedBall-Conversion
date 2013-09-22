@@ -122,7 +122,11 @@ namespace TmxEditor.Controllers
             string fileName = image.source;
             string absoluteFile = ProjectManager.Self.MakeAbsolute(fileName);
             mSprite.Visible = true;
-            mSprite.Texture = LoaderManager.Self.Load(absoluteFile, mManagers);
+
+            if (System.IO.File.Exists(absoluteFile))
+            {
+                mSprite.Texture = LoaderManager.Self.Load(absoluteFile, mManagers);
+            }
 
             mOutlineRectangle.Visible = true;
             mOutlineRectangle.X = mSprite.X - 15;
