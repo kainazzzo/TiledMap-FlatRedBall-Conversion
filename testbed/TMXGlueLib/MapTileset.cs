@@ -105,7 +105,10 @@ namespace TMXGlueLib
             }
         }
 
-        [XmlElement("tile", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 3)]
+        [XmlArray("terraintypes", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 3)]
+        public List<mapTilesetTerrain> terraintypes = new List<mapTilesetTerrain>();
+
+        [XmlElement("tile", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 4)]
         public List<mapTilesetTile> Tiles = new List<mapTilesetTile>();
         //{
         //    get
@@ -230,5 +233,11 @@ namespace TMXGlueLib
         {
             return this.Name;
         }
+    }
+
+    public class mapTilesetTerrain
+    {
+        public string name { get; set; }
+        public int tile { get; set; }
     }
 }
