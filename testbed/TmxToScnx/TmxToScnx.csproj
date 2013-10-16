@@ -11,7 +11,8 @@
     <RootNamespace>TmxToScnx</RootNamespace>
     <AssemblyName>TmxToScnx</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -45,16 +46,16 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TmxFileCopier.cs" />
+    <Compile Include="TmxToScnxCommandLineArgs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SimpleLogging\SimpleLogging.csproj">
-      <Project>{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}</Project>
-      <Name>SimpleLogging</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TMXGlueLib\TMXGlueLib.csproj">
       <Project>{8600173A-6281-45E1-8076-54366E42CBDE}</Project>
       <Name>TMXGlueLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

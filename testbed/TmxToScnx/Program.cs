@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using FlatRedBall.Content;
 using FlatRedBall.Content.Scene;
-using SimpleLogging;
+using FlatRedBall.IO;
 using TMXGlueLib;
+using TMXGlueLib.DataTypes;
 
 namespace TmxToScnx
 {
@@ -12,99 +14,87 @@ namespace TmxToScnx
         {
             if (args.Length < 2)
             {
-                Logger.Log("Usage: tmxtoscnx.exe <input.tmx> <output.scnx> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
+                System.Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx or output.tilb> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
                 return;
             }
 
             try
             {
-                string sourceTmx = args[0];
-                string destinationScnx = args[1];
-                float scale = 1.0f;
 
-                var layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
-                var offset = new Tuple<float, float, float>(0, 0, 0);
 
-                if (args.Length >= 3)
-                {
-                    ParseOptionalCommandLineArgs(args, out scale, out layerVisibleBehavior, out offset);
-                }
-                TiledMapSave.LayerVisibleBehaviorValue = layerVisibleBehavior;
-                TiledMapSave.Offset = offset;
-                TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
+                TmxToScnxCommandLineArgs parsedArgs = new TmxToScnxCommandLineArgs();
+                parsedArgs.ParseOptionalCommandLineArgs(args);
+
+                TiledMapSave.LayerVisibleBehaviorValue = parsedArgs.LayerVisibleBehavior;
+                TiledMapSave.Offset = parsedArgs.Offset;
+                TiledMapSave tms = TiledMapSave.FromFile(parsedArgs.SourceFile);
                 // Convert once in case of any exceptions
-// ReSharper disable UnusedVariable
-                SceneSave save = tms.ToSceneSave(scale);
-// ReSharper restore UnusedVariable
 
-                Logger.Log("{0} converted successfully.", sourceTmx);
-                TmxFileCopier.CopyTmxTilesetImagesToDestination(sourceTmx, destinationScnx, tms);
+                System.Console.WriteLine("{0} converted successfully.", parsedArgs.SourceFile);
+                TmxFileCopier.CopyTmxTilesetImagesToDestination(parsedArgs.SourceFile, parsedArgs.DestinationFile, tms);
 
                 // Fix up the image sources to be relative to the newly copied ones.
-                TmxFileCopier.FixupImageSources(tms);
+                // I don't know why we're doing this, but it wipes out the old relative 
+                // directory structure.  We should not do this...
+                //TmxFileCopier.FixupImageSources(tms);
 
-                Logger.Log("Saving \"{0}\".", destinationScnx);
-                SceneSave spriteEditorScene = tms.ToSceneSave(scale);
+                PerformSave(parsedArgs, tms);
 
-                spriteEditorScene.Save(destinationScnx.Trim());
-                Logger.Log("Done.");
+                System.Console.WriteLine("Done.");
             }
             catch (Exception ex)
             {
-                Logger.Log("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
+                System.Console.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
             }
         }
 
-        private static void ParseOptionalCommandLineArgs(string[] args, out float scale, out TiledMapSave.LayerVisibleBehavior layerVisibleBehavior, out Tuple<float, float, float> offset)
+        private static void PerformSave(TmxToScnxCommandLineArgs parsedArgs, TiledMapSave tms)
         {
-            scale = 1.0f;
-            layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
-            offset = new Tuple<float, float, float>(0f, 0f, 0f);
-            for (int x = 2; x < args.Length; ++x)
-            {
-                string arg = args[x];
-                string[] tokens = arg.Split("=".ToCharArray());
-                if (tokens.Length == 2)
-                {
-                    string key = tokens[0];
-                    string value = tokens[1];
+            string extension = FileManager.GetExtension(parsedArgs.DestinationFile);
 
-                    switch (key.ToLowerInvariant())
-                    {
-                        case "scale":
-                            if (!float.TryParse(value, out scale))
-                            {
-                                scale = 1.0f;
-                            }
-                            break;
-                        case "layervisiblebehavior":
-                        case "layervisibilitybehavior":
-                            if (!Enum.TryParse(value, out layerVisibleBehavior))
-                            {
-                                layerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
-                            }
-                            break;
-                        case "offset":
-                            string[] tupleVals = value.Split(",".ToCharArray());
-                            if (tupleVals.Length == 3)
-                            {
-                                float xf, yf, zf;
-                                if (float.TryParse(tupleVals[0], out xf) && float.TryParse(tupleVals[1], out yf) &&
-                                    float.TryParse(tupleVals[2], out zf))
-                                {
-                                    offset = new Tuple<float, float, float>(xf, yf, zf);
-                                }
-                            }
-                            break;
-                        default:
-                            Console.Error.WriteLine("Invalid command line argument: {0}", arg);
-                            break;
-                    }
+            if (extension == "scnx")
+            {
+
+                System.Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
+
+                SceneSave spriteEditorScene = tms.ToSceneSave(parsedArgs.Scale);
+
+                spriteEditorScene.FileName = parsedArgs.DestinationFile;
+                spriteEditorScene.ScenePath = FileManager.GetDirectory(parsedArgs.DestinationFile);
+                spriteEditorScene.AssetsRelativeToSceneFile = true;
+                var result = spriteEditorScene.GetMissingFiles();
+                foreach(var missing in result)
+                {
+                    System.Console.Error.WriteLine("Missing file: " + spriteEditorScene.ScenePath + missing);
                 }
+                spriteEditorScene.Save(parsedArgs.DestinationFile.Trim());
+            }
+            else if (extension == "tilb")
+            {
+                System.Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
+                // all files should have been copied over, and since we're using the .scnx files,
+                // we are going to use the destination instead of the source.
+                ReducedTileMapInfo rtmi = 
+                    ReducedTileMapInfo.FromTiledMapSave(tms, parsedArgs.Scale, FileManager.GetDirectory(parsedArgs.DestinationFile));
+
+                if (System.IO.File.Exists(parsedArgs.DestinationFile))
+                {
+                    System.IO.File.Delete(parsedArgs.DestinationFile);
+                }
+
+                using (Stream outputStream =System.IO.File.OpenWrite(parsedArgs.DestinationFile))
+                using (BinaryWriter binaryWriter = new BinaryWriter(outputStream))
+                {
+                    rtmi.WriteTo(binaryWriter);
+                    System.Console.WriteLine("Saved \"{0}\".", parsedArgs.DestinationFile);
+
+                }
+
+            }
+            else
+            {
+                System.Console.WriteLine("The following extension is not understood: " + extension);
             }
         }
-
-
-
     }
 }

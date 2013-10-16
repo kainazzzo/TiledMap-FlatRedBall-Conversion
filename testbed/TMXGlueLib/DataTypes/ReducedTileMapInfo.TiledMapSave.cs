@@ -59,7 +59,7 @@ namespace TMXGlueLib.DataTypes
         {
             var toReturn = new ReducedTileMapInfo();
 
-            var ses = tiledMapSave.ToSceneSave(1);
+            var ses = tiledMapSave.ToSceneSave(scale);
 
             ses.SpriteList.Sort((first, second) => first.Z.CompareTo(second.Z));
 
@@ -75,19 +75,36 @@ namespace TMXGlueLib.DataTypes
                 SpriteSave spriteSave = ses.SpriteList[0];
                 Point point = GetTextureDimensions(directory, loadedTextures, spriteSave);
 
-                toReturn.CellHeightInPixels = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt((spriteSave.BottomTextureCoordinate - spriteSave.TopTextureCoordinate) * point.Y);
-                toReturn.CellWidthInPixels = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt((spriteSave.RightTextureCoordinate - spriteSave.LeftTextureCoordinate) * point.X);
+                if (tiledMapSave.tileset.Count != 0)
+                {
+                    toReturn.CellHeightInPixels =
+                        (ushort)tiledMapSave.tileset[0].Tileheight;
+
+                    toReturn.CellWidthInPixels =
+                        (ushort)tiledMapSave.tileset[0].Tilewidth;
+                }
+                else
+                {
+                    toReturn.CellHeightInPixels = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt((spriteSave.BottomTextureCoordinate - spriteSave.TopTextureCoordinate) * point.Y);
+                    toReturn.CellWidthInPixels = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt((spriteSave.RightTextureCoordinate - spriteSave.LeftTextureCoordinate) * point.X);
+                }
 
                 toReturn.QuadWidth = spriteSave.ScaleX * 2;
                 toReturn.QuadHeight = spriteSave.ScaleY * 2;
             }
 
-            foreach (SpriteSave spriteSave in ses.SpriteList)
-            {
+            int indexInLayer = 0;
 
+            for(int i = 0; i < ses.SpriteList.Count; i++)
+            {
+            //foreach (SpriteSave spriteSave in ses.SpriteList)
+            //{
+                SpriteSave spriteSave = ses.SpriteList[i];
 
                 if (spriteSave.Z != z)
                 {
+                    indexInLayer = 0;
+
                     z = spriteSave.Z;
                     reducedLayerInfo = new ReducedLayerInfo();
                     reducedLayerInfo.Texture = spriteSave.Texture;
@@ -98,6 +115,7 @@ namespace TMXGlueLib.DataTypes
                 Point point = GetTextureDimensions(directory, loadedTextures, spriteSave);
 
                 ReducedQuadInfo quad = ReducedQuadInfo.FromSpriteSave(spriteSave, point.X, point.Y);
+
 
                 reducedLayerInfo.Quads.Add(quad);
 
