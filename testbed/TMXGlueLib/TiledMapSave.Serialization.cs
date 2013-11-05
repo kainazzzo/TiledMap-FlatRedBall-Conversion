@@ -360,7 +360,10 @@ namespace TMXGlueLib
         }
 
 
-
+        /// <summary>
+        /// Represents the index that this tile is displaying from the source tile map.  This is 1-based.  0 means no tile.  
+        /// This can span multiple tilesets.
+        /// </summary>
         private List<uint> _ids = null;
         [XmlIgnore]
         public List<uint> tiles

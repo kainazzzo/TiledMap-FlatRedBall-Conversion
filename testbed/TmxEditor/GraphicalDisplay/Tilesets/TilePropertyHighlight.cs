@@ -135,5 +135,11 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
         }
 
 
+
+
+        void IPositionedSizedObject.SetParentDirect(IPositionedSizedObject newParent)
+        {
+            // do nothing
+        }
     }
 }
