@@ -108,9 +108,9 @@ namespace TMXGlueTest
         {
             var target = new TiledMapSave
                 {
-                    tileset = new List<mapTileset>()
+                    tileset = new List<Tileset>()
                         {
-                            new mapTileset
+                            new Tileset
                                 {
                                     Firstgid = 1,
                                     Name = "tileset1",
@@ -162,7 +162,7 @@ namespace TMXGlueTest
                                                 },
                                         },
                                 },
-                            new mapTileset
+                            new Tileset
                                 {
                                     Firstgid = 3,
                                     Name = "tileset2",
@@ -364,9 +364,9 @@ namespace TMXGlueTest
                     tileheight = 32,
                     tilewidth = 32,
                     orientation = "orthogonal",
-                    tileset = new List<mapTileset>
+                    tileset = new List<Tileset>
                         {
-                            new mapTileset
+                            new Tileset
                                 {
                                     Firstgid = 1u,
                                     Name = "test",
@@ -568,9 +568,9 @@ namespace TMXGlueTest
                     width = 64,
                     tileheight = 32,
                     tilewidth = 32,
-                    tileset = new List<mapTileset>()
+                    tileset = new List<Tileset>()
                         {
-                            new mapTileset
+                            new Tileset
                                 {
                                     Firstgid = 1,
                                     Image = new mapTilesetImage[]

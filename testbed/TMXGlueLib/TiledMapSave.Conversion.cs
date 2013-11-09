@@ -81,7 +81,7 @@ namespace TMXGlueLib
             switch (type)
             {
                 case CSVPropertyType.Tile:
-                    foreach (mapTileset tileSet in this.tileset)
+                    foreach (Tileset tileSet in this.tileset)
                     {
                         if (tileSet.Tiles != null)
                         {
@@ -424,7 +424,7 @@ namespace TMXGlueLib
                     {
                         uint gid = mLayer.data[0].tiles[count];
 
-                        mapTileset tileSet = GetTilesetForGid(gid);
+                        Tileset tileSet = GetTilesetForGid(gid);
                         if (tileSet != null || !requireTile)
                         {
                             var node = new PositionedNode();
@@ -592,7 +592,7 @@ namespace TMXGlueLib
                 Parallel.For(0, mapLayer.data[0].tiles.Count, count =>
                 {
                     uint gid = mLayer.data[0].tiles[count];
-                    mapTileset tileSet = GetTilesetForGid(gid);
+                    Tileset tileSet = GetTilesetForGid(gid);
                     if (tileSet != null)
                     {
                         SpriteSave sprite = CreateSpriteSaveFromMapTileset(scale, mLayerCount, mLayer, count, gid, tileSet);
@@ -608,7 +608,7 @@ namespace TMXGlueLib
             return toReturn;
         }
 
-        private SpriteSave CreateSpriteSaveFromMapTileset(float scale, int layercount, MapLayer mapLayer, int count, uint gid, mapTileset tileSet)
+        private SpriteSave CreateSpriteSaveFromMapTileset(float scale, int layercount, MapLayer mapLayer, int count, uint gid, Tileset tileSet)
         {
             var sprite = new SpriteSave();
             if (!mapLayer.IsVisible && mapLayer.VisibleBehavior == LayerVisibleBehavior.Match)
@@ -704,7 +704,7 @@ namespace TMXGlueLib
             z += Offset.Item3;
         }
 
-        private void SetSpriteTextureCoordinates(uint gid, SpriteSave sprite, mapTileset tileSet, int imageWidth, int imageHeight, int tileWidth, int spacing, int tileHeight, int margin)
+        private void SetSpriteTextureCoordinates(uint gid, SpriteSave sprite, Tileset tileSet, int imageWidth, int imageHeight, int tileWidth, int spacing, int tileHeight, int margin)
         {
             // Calculate pixel coordinates in the texture sheet
             int leftPixelCoord = CalculateXCoordinate(gid - tileSet.Firstgid, imageWidth, tileWidth, spacing, margin);
@@ -733,7 +733,7 @@ namespace TMXGlueLib
             sprite.BottomTextureCoordinate = GetTextureCoordinate(bottomPixelCoord, imageHeight, changeVal);
         }
 
-        public mapTileset GetTilesetForGid(uint gid)
+        public Tileset GetTilesetForGid(uint gid)
         {
             // Assuming tilesets are sorted by the firstgid value...
             // Resort with LINQ if not
@@ -741,7 +741,7 @@ namespace TMXGlueLib
             {
                 for (int i = tileset.Count - 1; i >= 0; --i)
                 {
-                    mapTileset tileSet = tileset[i];
+                    Tileset tileSet = tileset[i];
                     if (gid >= tileSet.Firstgid)
                     {
                         return tileSet;

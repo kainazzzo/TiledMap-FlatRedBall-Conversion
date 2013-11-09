@@ -63,10 +63,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="ToolsUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\Gum\ToolsUtilities.dll</HintPath>
-    </Reference>
     <Reference Include="XnaAndWinforms, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\Gum\XnaAndWinforms.dll</HintPath>
@@ -143,6 +139,10 @@
       <Project>{a86ee399-7c93-42e1-80ed-ca4cbf4ca573}</Project>
       <Name>RenderingLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Gum\ToolsUtilities\ToolsUtilities.csproj">
+      <Project>{b941a93f-6093-4dc6-ad11-91a058b6c2cc}</Project>
+      <Name>ToolsUtilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TMXGlueLib\TMXGlueLib.csproj">
       <Project>{8600173A-6281-45E1-8076-54366E42CBDE}</Project>
       <Name>TMXGlueLib</Name>
@@ -153,7 +153,6 @@
     <Content Include="Libraries\FlatRedBall\FlatRedBall.PropertyGrid.pdb" />
     <Content Include="Libraries\Gum\ContentLibrary.dll" />
     <Content Include="Libraries\Gum\InputLibrary.dll" />
-    <Content Include="Libraries\Gum\ToolsUtilities.dll" />
     <Content Include="Libraries\Gum\XnaAndWinforms.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -14,6 +14,7 @@ using FlatRedBall.SpecializedXnaControls;
 using InputLibrary;
 using TmxEditor.PropertyGridDisplayers;
 using TmxEditor.GraphicalDisplay.Tilesets;
+using TmxEditor.UI;
 
 namespace TmxEditor.Controllers
 {
@@ -34,6 +35,8 @@ namespace TmxEditor.Controllers
         PropertyGrid mPropertyGrid;
         TilesetTileDisplayer mDisplayer;
 
+        
+
         Label mInfoLabel;
         #endregion
 
@@ -47,11 +50,11 @@ namespace TmxEditor.Controllers
             }
         }
 
-        public mapTileset CurrentTileset
+        public Tileset CurrentTileset
         {
             get
             {
-                return mTilesetsListBox.SelectedItem as mapTileset;
+                return mTilesetsListBox.SelectedItem as Tileset;
             }
         }
 
@@ -154,51 +157,32 @@ namespace TmxEditor.Controllers
 
         void HandleTilesetSelect(object sender, EventArgs e)
         {
-            ClearAllHighlights();
-
-
-            var currentTileset = mTilesetsListBox.SelectedItem as mapTileset;
-
-            SetTilesetSpriteTexture();
-
-            //int numberTilesTall = mSprite.Texture.Height / currentTileset.Tileheight;
-
-            foreach (var tile in currentTileset.Tiles)
-            {
-
-                int count = tile.properties.Count;
-
-                if (count != 0)
-                {
-                    float left;
-                    float top;
-                    float width;
-                    float height;
-                    GetTopLeftWidthHeight(tile, out left, out top, out width, out height);
-                    TilePropertyHighlight tph = new TilePropertyHighlight(mManagers);
-                    tph.X = left;
-                    tph.Y = top;
-                    
-                    tph.Width = width;
-                    tph.Height = height;
-                    tph.Count = count;
-                    tph.AddToManagers();
-
-                    tph.Tag = tile;
-
-                    mTilesWithPropertiesMarkers.Add(tph);
-                }
-            }
+            UpdateXnaDisplayToTileset();
         }
+
 
         private void GetTopLeftWidthHeight(mapTilesetTile tile, out float left, out float top, out float width, out float height)
         {
-            var currentTileset = mTilesetsListBox.SelectedItem as mapTileset;
+            var currentTileset = mTilesetsListBox.SelectedItem as Tileset;
 
-            int numberTilesWide = mSprite.Texture.Width / currentTileset.Tilewidth;
+            int numberTilesWide = 0;
+            if (currentTileset.Spacing != 0)
+            {
+                numberTilesWide = 1;
+                int widthToUse = mSprite.Texture.Width - currentTileset.Tilewidth;
 
-            int index = (int)(tile.id - currentTileset.Firstgid);
+                numberTilesWide += widthToUse / (currentTileset.Tilewidth + currentTileset.Spacing);
+            }
+            else
+            {
+                numberTilesWide = mSprite.Texture.Width / (currentTileset.Tilewidth);
+            }
 
+
+            // I think GID are global IDs for tiles in the map
+            // but within a tile set the IDs start at 0
+            //int index = (int)(tile.id - currentTileset.Firstgid);
+            int index = tile.id;
 
             long xIndex = index % numberTilesWide;
             long yIndex = index / numberTilesWide;
@@ -207,6 +191,74 @@ namespace TmxEditor.Controllers
             top = yIndex * currentTileset.Tileheight;
             width = currentTileset.Tilewidth;
             height = currentTileset.Tileheight;
+        }
+
+        internal void HandleAddPropertyClick()
+        {
+            var tile = AppState.Self.CurrentMapTilesetTile;
+            if (tile == null)
+            {
+                MessageBox.Show("You must first select a Layer");
+            }
+            else
+            {
+                NewPropertyWindow window = new NewPropertyWindow();
+                DialogResult result = window.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    string name = window.ResultName;
+                    string type = window.ResultType;
+                    var newProperty = new TMXGlueLib.property();
+                    LayersController.SetPropertyNameFromNameAndType(name, type, newProperty);
+
+                    
+
+                    tile.properties.Add(newProperty);
+
+
+                    mDisplayer.UpdateDisplayedProperties();
+                    mDisplayer.PropertyGrid.Refresh();
+
+                    if (AnyTileMapChange != null)
+                    {
+                        AnyTileMapChange(this, null);
+                    }
+                }
+
+            }
+
+        }
+
+        internal void HandleRemovePropertyClick()
+        {
+            property property = AppState.Self.CurrentTilesetTileProperty;
+
+            if (property != null)
+            {
+                var result =
+                    MessageBox.Show("Are you sure you'd like to remove the property " + property.name + "?", "Remove property?", MessageBoxButtons.YesNo);
+
+                if (result == DialogResult.Yes)
+                {
+                    AppState.Self.CurrentMapLayer.properties.Remove(property);
+                    mDisplayer.UpdateDisplayedProperties();
+                    mDisplayer.PropertyGrid.Refresh();
+                    if (AnyTileMapChange != null)
+                    {
+                        AnyTileMapChange(this, null);
+                    }
+                }
+            }
+
+        }
+
+        public property CurrentTilesetTileProperty 
+        { 
+            get
+            {
+                return mDisplayer.CurrentTilesetTileProperty;
+            }
         }
     }
 }

@@ -9,7 +9,8 @@ namespace TMXGlueLib
     /// <remarks/>
     [XmlType(AnonymousType = true)]
 // ReSharper disable InconsistentNaming
-    public class mapTileset
+    [XmlRoot("mapTileset")]
+    public class Tileset
 // ReSharper restore InconsistentNaming
     {
         private mapTilesetImage[] _imageField;

@@ -26,6 +26,22 @@ namespace TmxEditor
             }
         }
 
+        public property CurrentTilesetTileProperty
+        {
+            get
+            {
+                return TilesetController.Self.CurrentTilesetTileProperty;
+            }
+        }
+
+        public Tileset CurrentMapTileset
+        {
+            get
+            {
+                return TilesetController.Self.CurrentTileset;
+            }
+        }
+
         public mapTilesetTile CurrentMapTilesetTile
         {
             get

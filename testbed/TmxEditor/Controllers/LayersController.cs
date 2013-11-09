@@ -151,7 +151,7 @@ namespace TmxEditor.Controllers
             }
         }
 
-        private static void SetPropertyNameFromNameAndType(string name, string type, property propertyToSet)
+        public static void SetPropertyNameFromNameAndType(string name, string type, property propertyToSet)
         {
             if (!string.IsNullOrEmpty(type))
             {

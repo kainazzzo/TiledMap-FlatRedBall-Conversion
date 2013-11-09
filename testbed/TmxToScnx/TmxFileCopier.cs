@@ -22,7 +22,7 @@ namespace TmxToScnx
             string tmxPath = FileManager.RelativeDirectory;
             string destinationPath = FileManager.GetDirectory(destinationScnx);
 
-            foreach (mapTileset tileset in tms.tileset)
+            foreach (Tileset tileset in tms.tileset)
             {
                 foreach (mapTilesetImage image in tileset.Image)
                 {
@@ -61,7 +61,7 @@ namespace TmxToScnx
             System.Console.WriteLine("Fixing up tileset relative paths");
             if (tms.tileset != null)
             {
-                foreach (mapTileset tileset in tms.tileset)
+                foreach (Tileset tileset in tms.tileset)
                 {
                     foreach (mapTilesetImage image in tileset.Image)
                     {

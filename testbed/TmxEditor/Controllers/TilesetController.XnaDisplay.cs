@@ -16,11 +16,16 @@ namespace TmxEditor.Controllers
 {
     public partial class TilesetController
     {
+        #region Properties
+
         List<TilePropertyHighlight> mTilesWithPropertiesMarkers = new List<TilePropertyHighlight>();
 
         LineRectangle mOutlineRectangle;
         LineRectangle mHighlightRectangle;
         Sprite mSprite;
+
+        #endregion
+
         public void HandleXnaInitialize(SystemManagers managers)
         {
             mManagers = managers;
@@ -64,8 +69,14 @@ namespace TmxEditor.Controllers
 
             if (mCursor.PrimaryClick)
             {
-                CurrentTilesetTile = tileSetOver;
-
+                if (tileSetOver != null)
+                {
+                    CurrentTilesetTile = tileSetOver;
+                }
+                else
+                {
+                    CurrentTilesetTile = TryMakeNewTilesetTileAtCursor(mCursor);
+                }
             }
 
 
@@ -83,6 +94,24 @@ namespace TmxEditor.Controllers
 
         }
 
+        private mapTilesetTile TryMakeNewTilesetTileAtCursor(Cursor cursor)
+        {
+            var tileset = AppState.Self.CurrentMapTileset;
+            float worldX = cursor.GetWorldX(mManagers);
+            float worldY = cursor.GetWorldY(mManagers);
+
+            
+            mapTilesetTile newTile = new mapTilesetTile();
+            newTile.id = tileset.CoordinateToLocalId(
+                (int)worldX, 
+                (int)worldY);
+
+            newTile.properties = new List<property>();
+
+
+            return newTile;
+        }
+
         void HandleWindowResize()
         {
 
@@ -96,6 +125,42 @@ namespace TmxEditor.Controllers
 
 
 
+        private void UpdateXnaDisplayToTileset()
+        {
+            ClearAllHighlights();
+
+
+            var currentTileset = mTilesetsListBox.SelectedItem as Tileset;
+
+            SetTilesetSpriteTexture();
+
+            //int numberTilesTall = mSprite.Texture.Height / currentTileset.Tileheight;
+
+            foreach (var tile in currentTileset.Tiles.Where(item=>item.properties.Count != 0))
+            {
+
+                int count = tile.properties.Count;
+
+
+                float left;
+                float top;
+                float width;
+                float height;
+                GetTopLeftWidthHeight(tile, out left, out top, out width, out height);
+                TilePropertyHighlight tph = new TilePropertyHighlight(mManagers);
+                tph.X = left;
+                tph.Y = top;
+
+                tph.Width = width;
+                tph.Height = height;
+                tph.Count = count;
+                tph.AddToManagers();
+
+                tph.Tag = tile;
+
+                mTilesWithPropertiesMarkers.Add(tph);
+            }
+        }
 
         private void GetTilesetTileOver(out mapTilesetTile tileSetOver)
         {
@@ -129,7 +194,7 @@ namespace TmxEditor.Controllers
             }
 
             mOutlineRectangle.Visible = true;
-            mOutlineRectangle.X = mSprite.X - 15;
+            mOutlineRectangle.X = mSprite.X;
             mOutlineRectangle.Y = mSprite.Y;
             mOutlineRectangle.Width = mSprite.EffectiveWidth;
             mOutlineRectangle.Height = mSprite.EffectiveHeight;

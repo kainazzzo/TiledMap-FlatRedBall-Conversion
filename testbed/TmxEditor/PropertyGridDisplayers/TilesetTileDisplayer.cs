@@ -38,6 +38,7 @@ namespace TmxEditor.PropertyGridDisplayers
 
         private void UpdatePropertiesToInstance(mapTilesetTile tileSet)
         {
+
             if (tileSet != null)
             {
                 ExcludeAllMembers();
@@ -45,7 +46,41 @@ namespace TmxEditor.PropertyGridDisplayers
                 this.DisplayProperties(tileSet.properties);
 
             }
+            PropertyGrid.Visible = tileSet != null;
+
             this.PropertyGrid.Refresh();
+        }
+
+        public property CurrentTilesetTileProperty 
+        {
+            get
+            {
+
+                if (PropertyGrid.SelectedGridItem == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    string name = PropertyGrid.SelectedGridItem.Label;
+
+                    if (this.TilesetTileInstance != null)
+                    {
+                        var property = DisplayerExtensionMethods.GetPropertyByName(name, TilesetTileInstance.properties);
+                        return property;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+         
+        }
+
+        public void UpdateDisplayedProperties()
+        {
+            UpdatePropertiesToInstance(Instance as mapTilesetTile);
         }
     }
 }

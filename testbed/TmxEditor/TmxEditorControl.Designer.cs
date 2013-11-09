@@ -42,10 +42,12 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.LayersListBox = new System.Windows.Forms.TreeView();
             this.LayerListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.RemovePropertyButton = new System.Windows.Forms.Button();
+            this.RemoveLayerPropertyButton = new System.Windows.Forms.Button();
             this.AddLayerPropertyButton = new System.Windows.Forms.Button();
             this.LayerPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.LayerPropertyGridContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.RemoveTilesetPropertyButton = new System.Windows.Forms.Button();
+            this.AddTilesetPropertyButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.TilesetsTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -79,7 +81,7 @@
             this.XnaControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.XnaControl.Location = new System.Drawing.Point(0, 0);
             this.XnaControl.Name = "XnaControl";
-            this.XnaControl.Size = new System.Drawing.Size(619, 374);
+            this.XnaControl.Size = new System.Drawing.Size(619, 298);
             this.XnaControl.TabIndex = 5;
             this.XnaControl.Text = "graphicsDeviceControl1";
             // 
@@ -158,18 +160,22 @@
             // 
             // splitContainer3.Panel2
             // 
+            this.splitContainer3.Panel2.Controls.Add(this.RemoveTilesetPropertyButton);
+            this.splitContainer3.Panel2.Controls.Add(this.AddTilesetPropertyButton);
             this.splitContainer3.Panel2.Controls.Add(this.TilesetTilePropertyGrid);
             this.splitContainer3.Size = new System.Drawing.Size(623, 477);
-            this.splitContainer3.SplitterDistance = 378;
+            this.splitContainer3.SplitterDistance = 302;
             this.splitContainer3.TabIndex = 6;
             // 
             // TilesetTilePropertyGrid
             // 
-            this.TilesetTilePropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TilesetTilePropertyGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.TilesetTilePropertyGrid.HelpVisible = false;
             this.TilesetTilePropertyGrid.Location = new System.Drawing.Point(0, 0);
             this.TilesetTilePropertyGrid.Name = "TilesetTilePropertyGrid";
-            this.TilesetTilePropertyGrid.Size = new System.Drawing.Size(619, 91);
+            this.TilesetTilePropertyGrid.Size = new System.Drawing.Size(619, 135);
             this.TilesetTilePropertyGrid.TabIndex = 0;
             this.TilesetTilePropertyGrid.ToolbarVisible = false;
             // 
@@ -197,7 +203,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.RemovePropertyButton);
+            this.splitContainer1.Panel2.Controls.Add(this.RemoveLayerPropertyButton);
             this.splitContainer1.Panel2.Controls.Add(this.AddLayerPropertyButton);
             this.splitContainer1.Panel2.Controls.Add(this.LayerPropertyGrid);
             this.splitContainer1.Size = new System.Drawing.Size(813, 477);
@@ -221,16 +227,16 @@
             this.LayerListContextMenu.Name = "LayerListContextMenu";
             this.LayerListContextMenu.Size = new System.Drawing.Size(61, 4);
             // 
-            // RemovePropertyButton
+            // RemoveLayerPropertyButton
             // 
-            this.RemovePropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.RemovePropertyButton.Location = new System.Drawing.Point(114, 447);
-            this.RemovePropertyButton.Name = "RemovePropertyButton";
-            this.RemovePropertyButton.Size = new System.Drawing.Size(105, 23);
-            this.RemovePropertyButton.TabIndex = 2;
-            this.RemovePropertyButton.Text = "Remove Property";
-            this.RemovePropertyButton.UseVisualStyleBackColor = true;
-            this.RemovePropertyButton.Click += new System.EventHandler(this.RemovePropertyButton_Click);
+            this.RemoveLayerPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.RemoveLayerPropertyButton.Location = new System.Drawing.Point(114, 447);
+            this.RemoveLayerPropertyButton.Name = "RemoveLayerPropertyButton";
+            this.RemoveLayerPropertyButton.Size = new System.Drawing.Size(105, 23);
+            this.RemoveLayerPropertyButton.TabIndex = 2;
+            this.RemoveLayerPropertyButton.Text = "Remove Property";
+            this.RemoveLayerPropertyButton.UseVisualStyleBackColor = true;
+            this.RemoveLayerPropertyButton.Click += new System.EventHandler(this.RemovePropertyButton_Click);
             // 
             // AddLayerPropertyButton
             // 
@@ -262,6 +268,28 @@
             // 
             this.LayerPropertyGridContextMenu.Name = "LayerListContextMenu";
             this.LayerPropertyGridContextMenu.Size = new System.Drawing.Size(61, 4);
+            // 
+            // RemoveTilesetPropertyButton
+            // 
+            this.RemoveTilesetPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.RemoveTilesetPropertyButton.Location = new System.Drawing.Point(114, 141);
+            this.RemoveTilesetPropertyButton.Name = "RemoveTilesetPropertyButton";
+            this.RemoveTilesetPropertyButton.Size = new System.Drawing.Size(105, 23);
+            this.RemoveTilesetPropertyButton.TabIndex = 4;
+            this.RemoveTilesetPropertyButton.Text = "Remove Property";
+            this.RemoveTilesetPropertyButton.UseVisualStyleBackColor = true;
+            this.RemoveTilesetPropertyButton.Click += new System.EventHandler(this.RemoveTilesetPropertyButton_Click);
+            // 
+            // AddTilesetPropertyButton
+            // 
+            this.AddTilesetPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.AddTilesetPropertyButton.Location = new System.Drawing.Point(3, 141);
+            this.AddTilesetPropertyButton.Name = "AddTilesetPropertyButton";
+            this.AddTilesetPropertyButton.Size = new System.Drawing.Size(105, 23);
+            this.AddTilesetPropertyButton.TabIndex = 3;
+            this.AddTilesetPropertyButton.Text = "Add Property";
+            this.AddTilesetPropertyButton.UseVisualStyleBackColor = true;
+            this.AddTilesetPropertyButton.Click += new System.EventHandler(this.AddTilesetPropertyButton_Click);
             // 
             // TmxEditorControl
             // 
@@ -304,12 +332,14 @@
         private System.Windows.Forms.TreeView LayersListBox;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.PropertyGrid LayerPropertyGrid;
-        private System.Windows.Forms.Button RemovePropertyButton;
+        private System.Windows.Forms.Button RemoveLayerPropertyButton;
         private System.Windows.Forms.Button AddLayerPropertyButton;
         private System.Windows.Forms.ContextMenuStrip LayerListContextMenu;
         private System.Windows.Forms.ContextMenuStrip LayerPropertyGridContextMenu;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.PropertyGrid TilesetTilePropertyGrid;
+        private System.Windows.Forms.Button RemoveTilesetPropertyButton;
+        private System.Windows.Forms.Button AddTilesetPropertyButton;
     }
 }

@@ -87,7 +87,7 @@ namespace TMXGlueLib
 
         /// <remarks/>
         [XmlElement("tileset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public List<mapTileset> tileset
+        public List<Tileset> tileset
         {
             get;
             set;
@@ -160,7 +160,7 @@ namespace TMXGlueLib
         public TiledMapSave()
         {
             Layers = new List<MapLayer>();
-            tileset = new List<mapTileset>();
+            tileset = new List<Tileset>();
         }
     }
 
@@ -180,6 +180,10 @@ namespace TMXGlueLib
             set;
         }
 
+        public override string ToString()
+        {
+            return name + " = " + value;
+        }
     }
 
     /// <remarks/>

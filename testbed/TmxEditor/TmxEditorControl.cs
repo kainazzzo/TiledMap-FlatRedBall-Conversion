@@ -13,6 +13,7 @@ using RenderingLibrary;
 using FlatRedBall.SpecializedXnaControls;
 using TmxEditor.Controllers;
 using TmxEditor.UI;
+using ToolsUtilities;
 
 namespace TmxEditor
 {
@@ -35,9 +36,12 @@ namespace TmxEditor
             InitializeComponent();
 
             TilesetController.Self.Initialize(this.XnaControl, TilesetsListBox, this.StatusLabel, this.TilesetTilePropertyGrid);
+            TilesetController.Self.AnyTileMapChange += HandleChangeInternal;
+
             XnaControl.XnaInitialize += new Action(HandleXnaInitialize);
             XnaControl.XnaUpdate += new Action(HandleXnaUpdate);
             XnaControl.XnaDraw += new Action(HandleXnaDraw);
+
 
             LayersController.Self.Initialize(this.LayersListBox, LayerPropertyGrid);
             LayersController.Self.AnyTileMapChange += HandleChangeInternal;
@@ -89,14 +93,14 @@ namespace TmxEditor
 
                 Assembly assembly = Assembly.GetAssembly(typeof(XnaAndWinforms.GraphicsDeviceControl));
 
-                string targetFntFileName = WahooToolsUtilities.FileManager.UserApplicationDataForThisApplication + "Font18Arial.fnt";
-                string targetPngFileName = WahooToolsUtilities.FileManager.UserApplicationDataForThisApplication + "Font18Arial_0.png";
-                WahooToolsUtilities.FileManager.SaveEmbeddedResource(
+                string targetFntFileName = FileManager.UserApplicationDataForThisApplication + "Font18Arial.fnt";
+                string targetPngFileName = FileManager.UserApplicationDataForThisApplication + "Font18Arial_0.png";
+                FileManager.SaveEmbeddedResource(
                     assembly,
                     "XnaAndWinforms.Content.Font18Arial.fnt",
                     targetFntFileName);
 
-                WahooToolsUtilities.FileManager.SaveEmbeddedResource(
+                FileManager.SaveEmbeddedResource(
                     assembly,
                     "XnaAndWinforms.Content.Font18Arial_0.png",
                     targetPngFileName);
@@ -173,6 +177,16 @@ namespace TmxEditor
         private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
         {
 
+        }
+
+        private void AddTilesetPropertyButton_Click(object sender, EventArgs e)
+        {
+            TilesetController.Self.HandleAddPropertyClick();
+        }
+
+        private void RemoveTilesetPropertyButton_Click(object sender, EventArgs e)
+        {
+            TilesetController.Self.HandleRemovePropertyClick();
         }
     }
 }

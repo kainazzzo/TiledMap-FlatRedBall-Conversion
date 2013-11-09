@@ -75,7 +75,7 @@ namespace TmxEditor
         }
 
 
-        internal mapTileset GetTilesetByName(TiledMapSave tms, string name)
+        internal Tileset GetTilesetByName(TiledMapSave tms, string name)
         {
             return tms.tileset.FirstOrDefault(tileset => tileset != null && tileset.Name == name);
         }
