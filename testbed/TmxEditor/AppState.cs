@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlatRedBall.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,26 @@ namespace TmxEditor
 {
     public class AppState : Singleton<AppState>
     {
+        public string TmxFileName
+        {
+            get { return ProjectManager.Self.LastLoadedFile; }
+        }
+
+        public string TmxFolder
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(TmxFileName))
+                {
+                    return null;
+                }
+                else
+                {
+                    return FileManager.GetDirectory(TmxFileName);
+                }
+            }
+        }
+
         public MapLayer CurrentMapLayer
         {
             get
@@ -34,7 +55,7 @@ namespace TmxEditor
             }
         }
 
-        public Tileset CurrentMapTileset
+        public Tileset CurrentTileset
         {
             get
             {
@@ -47,6 +68,14 @@ namespace TmxEditor
             get
             {
                 return TilesetController.Self.CurrentTilesetTile;
+            }
+        }
+
+        public TiledMapSave CurrentTiledMapSave
+        {
+            get
+            {
+                return ProjectManager.Self.TiledMapSave;
             }
         }
     }

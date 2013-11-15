@@ -28,6 +28,7 @@ namespace TmxEditor
         #region Events
 
         public event EventHandler AnyTileMapChange;
+        public event EventHandler TilesetDisplayRightClick;
 
         #endregion
 
@@ -187,6 +188,23 @@ namespace TmxEditor
         private void RemoveTilesetPropertyButton_Click(object sender, EventArgs e)
         {
             TilesetController.Self.HandleRemovePropertyClick();
+        }
+
+        private void XnaControl_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && TilesetDisplayRightClick != null)
+            {
+                TilesetDisplayRightClick(this, e);
+            }
+        }
+
+        public void UpdateTilesetDisplay()
+        {
+
+            TilesetController.Self.UpdateXnaDisplayToTileset();
+
+            TilesetController.Self.Displayer.UpdateDisplayedProperties();
+            TilesetController.Self.Displayer.PropertyGrid.Refresh();
         }
     }
 }

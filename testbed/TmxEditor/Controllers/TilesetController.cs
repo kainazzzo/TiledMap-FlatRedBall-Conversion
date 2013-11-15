@@ -35,7 +35,7 @@ namespace TmxEditor.Controllers
         PropertyGrid mPropertyGrid;
         TilesetTileDisplayer mDisplayer;
 
-        
+        Tileset mTempTileset;
 
         Label mInfoLabel;
         #endregion
@@ -75,6 +75,15 @@ namespace TmxEditor.Controllers
                 UpdateHighlightRectangle();
             }
         }
+
+        public TilesetTileDisplayer Displayer
+        {
+            get
+            {
+                return mDisplayer;
+            }
+        }
+
 
         #endregion
 
@@ -165,18 +174,7 @@ namespace TmxEditor.Controllers
         {
             var currentTileset = mTilesetsListBox.SelectedItem as Tileset;
 
-            int numberTilesWide = 0;
-            if (currentTileset.Spacing != 0)
-            {
-                numberTilesWide = 1;
-                int widthToUse = mSprite.Texture.Width - currentTileset.Tilewidth;
-
-                numberTilesWide += widthToUse / (currentTileset.Tilewidth + currentTileset.Spacing);
-            }
-            else
-            {
-                numberTilesWide = mSprite.Texture.Width / (currentTileset.Tilewidth);
-            }
+            int numberTilesWide = currentTileset.GetNumberOfTilesWide();
 
 
             // I think GID are global IDs for tiles in the map
@@ -187,8 +185,12 @@ namespace TmxEditor.Controllers
             long xIndex = index % numberTilesWide;
             long yIndex = index / numberTilesWide;
 
-            left = xIndex * currentTileset.Tilewidth;
-            top = yIndex * currentTileset.Tileheight;
+            int leftAsInt;
+            int topAsInt;
+            currentTileset.IndexToCoordinate(xIndex, yIndex, out leftAsInt, out topAsInt);
+
+            left = leftAsInt;
+            top = topAsInt;
             width = currentTileset.Tilewidth;
             height = currentTileset.Tileheight;
         }
@@ -198,7 +200,7 @@ namespace TmxEditor.Controllers
             var tile = AppState.Self.CurrentMapTilesetTile;
             if (tile == null)
             {
-                MessageBox.Show("You must first select a Layer");
+                MessageBox.Show("You must first select a Tile");
             }
             else
             {
@@ -209,25 +211,38 @@ namespace TmxEditor.Controllers
                 {
                     string name = window.ResultName;
                     string type = window.ResultType;
-                    var newProperty = new TMXGlueLib.property();
-                    LayersController.SetPropertyNameFromNameAndType(name, type, newProperty);
-
-                    
-
-                    tile.properties.Add(newProperty);
-
-
-                    mDisplayer.UpdateDisplayedProperties();
-                    mDisplayer.PropertyGrid.Refresh();
-
-                    if (AnyTileMapChange != null)
-                    {
-                        AnyTileMapChange(this, null);
-                    }
+                    AddProperty(tile, name, type);
                 }
 
             }
 
+        }
+
+        public TMXGlueLib.property AddProperty(mapTilesetTile tile, string name, string type)
+        {
+            var newProperty = new TMXGlueLib.property();
+            LayersController.SetPropertyNameFromNameAndType(name, type, newProperty);
+
+
+
+            tile.properties.Add(newProperty);
+
+            bool newTileAdded = false;
+            if (AppState.Self.CurrentTileset.Tiles.Contains(tile) == false)
+            {
+                AppState.Self.CurrentTileset.Tiles.Add(tile);
+                newTileAdded = true;
+            }
+            UpdateXnaDisplayToTileset();
+
+            mDisplayer.UpdateDisplayedProperties();
+            mDisplayer.PropertyGrid.Refresh();
+
+            if (AnyTileMapChange != null)
+            {
+                AnyTileMapChange(this, null);
+            }
+            return newProperty;
         }
 
         internal void HandleRemovePropertyClick()
@@ -241,9 +256,10 @@ namespace TmxEditor.Controllers
 
                 if (result == DialogResult.Yes)
                 {
-                    AppState.Self.CurrentMapLayer.properties.Remove(property);
+                    AppState.Self.CurrentMapTilesetTile.properties.Remove(property);
                     mDisplayer.UpdateDisplayedProperties();
                     mDisplayer.PropertyGrid.Refresh();
+                    UpdateXnaDisplayToTileset();
                     if (AnyTileMapChange != null)
                     {
                         AnyTileMapChange(this, null);

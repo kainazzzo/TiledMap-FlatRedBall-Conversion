@@ -629,15 +629,19 @@ namespace TMXGlueLib
 
 
             sprite.Texture = tileSet.Image[0].sourceFileName;
+
             if (tileSet.TileDictionary.ContainsKey(gid - tileSet.Firstgid + 1))
             {
-                if (tileSet.TileDictionary[gid - tileSet.Firstgid + 1].PropertyDictionary.ContainsKey("name"))
+                var dictionary = tileSet.TileDictionary[gid - tileSet.Firstgid + 1].PropertyDictionary;
+
+                foreach (var kvp in dictionary)
                 {
-                    sprite.Name = tileSet.TileDictionary[gid - tileSet.Firstgid + 1].PropertyDictionary["name"];
-                }
-                else if (tileSet.TileDictionary[gid - tileSet.Firstgid + 1].PropertyDictionary.ContainsKey("Name"))
-                {
-                    sprite.Name = tileSet.TileDictionary[gid - tileSet.Firstgid + 1].PropertyDictionary["Name"];
+                    var key = kvp.Key;
+
+                    if (IsName(key))
+                    {
+                        sprite.Name = kvp.Value;
+                    }
                 }
             }
 
@@ -667,6 +671,16 @@ namespace TMXGlueLib
             sprite.ScaleX *= scale;
             sprite.ScaleY *= scale;
             return sprite;
+        }
+
+        private static bool IsName(string key)
+        {
+            string nameWithoutQuotes = key;
+            if (key.Contains("("))
+            {
+                nameWithoutQuotes = key.Substring(0, key.IndexOf("(")).Trim();
+            }
+            return key.ToLower() == "name";
         }
 
         public void CalculateWorldCoordinates(int layercount, int count, int tileWidth, int tileHeight, int layerWidth, out float x, out float y, out float z)
@@ -704,7 +718,7 @@ namespace TMXGlueLib
             z += Offset.Item3;
         }
 
-        private void SetSpriteTextureCoordinates(uint gid, SpriteSave sprite, Tileset tileSet, int imageWidth, int imageHeight, int tileWidth, int spacing, int tileHeight, int margin)
+        public void SetSpriteTextureCoordinates(uint gid, SpriteSave sprite, Tileset tileSet, int imageWidth, int imageHeight, int tileWidth, int spacing, int tileHeight, int margin)
         {
             // Calculate pixel coordinates in the texture sheet
             int leftPixelCoord = CalculateXCoordinate(gid - tileSet.Firstgid, imageWidth, tileWidth, spacing, margin);

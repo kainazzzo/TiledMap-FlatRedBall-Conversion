@@ -31,12 +31,15 @@
             this.components = new System.ComponentModel.Container();
             this.TilesetsListBox = new System.Windows.Forms.ListBox();
             this.XnaControl = new XnaAndWinforms.GraphicsDeviceControl();
+            this.TilesetXnaContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.LoadedTmxLabel = new System.Windows.Forms.Label();
             this.StatusLabel = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.TilesetsTab = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.RemoveTilesetPropertyButton = new System.Windows.Forms.Button();
+            this.AddTilesetPropertyButton = new System.Windows.Forms.Button();
             this.TilesetTilePropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.LayersTab = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -46,8 +49,6 @@
             this.AddLayerPropertyButton = new System.Windows.Forms.Button();
             this.LayerPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.LayerPropertyGridContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.RemoveTilesetPropertyButton = new System.Windows.Forms.Button();
-            this.AddTilesetPropertyButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.TilesetsTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -77,6 +78,7 @@
             // 
             // XnaControl
             // 
+            this.XnaControl.ContextMenuStrip = this.TilesetXnaContextMenu;
             this.XnaControl.DesiredFramesPerSecond = 30F;
             this.XnaControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.XnaControl.Location = new System.Drawing.Point(0, 0);
@@ -84,6 +86,12 @@
             this.XnaControl.Size = new System.Drawing.Size(619, 298);
             this.XnaControl.TabIndex = 5;
             this.XnaControl.Text = "graphicsDeviceControl1";
+            this.XnaControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.XnaControl_MouseClick);
+            // 
+            // TilesetXnaContextMenu
+            // 
+            this.TilesetXnaContextMenu.Name = "TilesetXnaContextMenu";
+            this.TilesetXnaContextMenu.Size = new System.Drawing.Size(61, 4);
             // 
             // LoadedTmxLabel
             // 
@@ -166,6 +174,28 @@
             this.splitContainer3.Size = new System.Drawing.Size(623, 477);
             this.splitContainer3.SplitterDistance = 302;
             this.splitContainer3.TabIndex = 6;
+            // 
+            // RemoveTilesetPropertyButton
+            // 
+            this.RemoveTilesetPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.RemoveTilesetPropertyButton.Location = new System.Drawing.Point(114, 141);
+            this.RemoveTilesetPropertyButton.Name = "RemoveTilesetPropertyButton";
+            this.RemoveTilesetPropertyButton.Size = new System.Drawing.Size(105, 23);
+            this.RemoveTilesetPropertyButton.TabIndex = 4;
+            this.RemoveTilesetPropertyButton.Text = "Remove Property";
+            this.RemoveTilesetPropertyButton.UseVisualStyleBackColor = true;
+            this.RemoveTilesetPropertyButton.Click += new System.EventHandler(this.RemoveTilesetPropertyButton_Click);
+            // 
+            // AddTilesetPropertyButton
+            // 
+            this.AddTilesetPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.AddTilesetPropertyButton.Location = new System.Drawing.Point(3, 141);
+            this.AddTilesetPropertyButton.Name = "AddTilesetPropertyButton";
+            this.AddTilesetPropertyButton.Size = new System.Drawing.Size(105, 23);
+            this.AddTilesetPropertyButton.TabIndex = 3;
+            this.AddTilesetPropertyButton.Text = "Add Property";
+            this.AddTilesetPropertyButton.UseVisualStyleBackColor = true;
+            this.AddTilesetPropertyButton.Click += new System.EventHandler(this.AddTilesetPropertyButton_Click);
             // 
             // TilesetTilePropertyGrid
             // 
@@ -269,28 +299,6 @@
             this.LayerPropertyGridContextMenu.Name = "LayerListContextMenu";
             this.LayerPropertyGridContextMenu.Size = new System.Drawing.Size(61, 4);
             // 
-            // RemoveTilesetPropertyButton
-            // 
-            this.RemoveTilesetPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.RemoveTilesetPropertyButton.Location = new System.Drawing.Point(114, 141);
-            this.RemoveTilesetPropertyButton.Name = "RemoveTilesetPropertyButton";
-            this.RemoveTilesetPropertyButton.Size = new System.Drawing.Size(105, 23);
-            this.RemoveTilesetPropertyButton.TabIndex = 4;
-            this.RemoveTilesetPropertyButton.Text = "Remove Property";
-            this.RemoveTilesetPropertyButton.UseVisualStyleBackColor = true;
-            this.RemoveTilesetPropertyButton.Click += new System.EventHandler(this.RemoveTilesetPropertyButton_Click);
-            // 
-            // AddTilesetPropertyButton
-            // 
-            this.AddTilesetPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AddTilesetPropertyButton.Location = new System.Drawing.Point(3, 141);
-            this.AddTilesetPropertyButton.Name = "AddTilesetPropertyButton";
-            this.AddTilesetPropertyButton.Size = new System.Drawing.Size(105, 23);
-            this.AddTilesetPropertyButton.TabIndex = 3;
-            this.AddTilesetPropertyButton.Text = "Add Property";
-            this.AddTilesetPropertyButton.UseVisualStyleBackColor = true;
-            this.AddTilesetPropertyButton.Click += new System.EventHandler(this.AddTilesetPropertyButton_Click);
-            // 
             // TmxEditorControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -341,5 +349,6 @@
         private System.Windows.Forms.PropertyGrid TilesetTilePropertyGrid;
         private System.Windows.Forms.Button RemoveTilesetPropertyButton;
         private System.Windows.Forms.Button AddTilesetPropertyButton;
+        public System.Windows.Forms.ContextMenuStrip TilesetXnaContextMenu;
     }
 }

@@ -58,16 +58,21 @@ namespace TmxEditor.Controllers
         void HandleXnaUpdate()
         {
 
+            mapTilesetTile tileSetOver = CursorActivity();
+
+
+            UpdateInfoLabelToTileset(tileSetOver);
+        }
+
+        private mapTilesetTile CursorActivity()
+        {
             mCursor.Activity(TimeManager.Self.CurrentTime);
             //mKeyboard.Activity();
-
-            string whatToShow = null;
-
 
             mapTilesetTile tileSetOver;
             GetTilesetTileOver(out tileSetOver);
 
-            if (mCursor.PrimaryClick)
+            if (mCursor.PrimaryClick && AppState.Self.CurrentTileset != null)
             {
                 if (tileSetOver != null)
                 {
@@ -75,11 +80,15 @@ namespace TmxEditor.Controllers
                 }
                 else
                 {
-                    CurrentTilesetTile = TryMakeNewTilesetTileAtCursor(mCursor);
+                    CurrentTilesetTile = TryGetOrMakeNewTilesetTileAtCursor(mCursor);
                 }
             }
+            return tileSetOver;
+        }
 
-
+        private void UpdateInfoLabelToTileset(mapTilesetTile tileSetOver)
+        {
+            string whatToShow = null;
             if (tileSetOver != null)
             {
 
@@ -91,23 +100,33 @@ namespace TmxEditor.Controllers
                 }
             }
             mInfoLabel.Text = whatToShow;
-
         }
 
-        private mapTilesetTile TryMakeNewTilesetTileAtCursor(Cursor cursor)
+        private mapTilesetTile TryGetOrMakeNewTilesetTileAtCursor(Cursor cursor)
         {
-            var tileset = AppState.Self.CurrentMapTileset;
+            var tileset = AppState.Self.CurrentTileset;
+
             float worldX = cursor.GetWorldX(mManagers);
             float worldY = cursor.GetWorldY(mManagers);
 
-            
-            mapTilesetTile newTile = new mapTilesetTile();
-            newTile.id = tileset.CoordinateToLocalId(
-                (int)worldX, 
-                (int)worldY);
+            int id = tileset.CoordinateToLocalId(
+                    (int)worldX,
+                    (int)worldY);
 
-            newTile.properties = new List<property>();
+            mapTilesetTile newTile = tileset.Tiles.FirstOrDefault(item=>item.id == id);
 
+            if (newTile == null)
+            {
+                if (worldX > -1 && worldY > -1 &&
+                    worldX < AppState.Self.CurrentTileset.Image[0].width &&
+                    worldY < AppState.Self.CurrentTileset.Image[0].height)
+                {
+                    newTile = new mapTilesetTile();
+                    newTile.id = id;
+
+                    newTile.properties = new List<property>();
+                }
+            }
 
             return newTile;
         }
@@ -125,7 +144,7 @@ namespace TmxEditor.Controllers
 
 
 
-        private void UpdateXnaDisplayToTileset()
+        public void UpdateXnaDisplayToTileset()
         {
             ClearAllHighlights();
 
@@ -135,30 +154,32 @@ namespace TmxEditor.Controllers
             SetTilesetSpriteTexture();
 
             //int numberTilesTall = mSprite.Texture.Height / currentTileset.Tileheight;
-
-            foreach (var tile in currentTileset.Tiles.Where(item=>item.properties.Count != 0))
+            if (currentTileset != null)
             {
+                foreach (var tile in currentTileset.Tiles.Where(item => item.properties.Count != 0))
+                {
 
-                int count = tile.properties.Count;
+                    int count = tile.properties.Count;
 
 
-                float left;
-                float top;
-                float width;
-                float height;
-                GetTopLeftWidthHeight(tile, out left, out top, out width, out height);
-                TilePropertyHighlight tph = new TilePropertyHighlight(mManagers);
-                tph.X = left;
-                tph.Y = top;
+                    float left;
+                    float top;
+                    float width;
+                    float height;
+                    GetTopLeftWidthHeight(tile, out left, out top, out width, out height);
+                    TilePropertyHighlight tph = new TilePropertyHighlight(mManagers);
+                    tph.X = left;
+                    tph.Y = top;
 
-                tph.Width = width;
-                tph.Height = height;
-                tph.Count = count;
-                tph.AddToManagers();
+                    tph.Width = width;
+                    tph.Height = height;
+                    tph.Count = count;
+                    tph.AddToManagers();
 
-                tph.Tag = tile;
+                    tph.Tag = tile;
 
-                mTilesWithPropertiesMarkers.Add(tph);
+                    mTilesWithPropertiesMarkers.Add(tph);
+                }
             }
         }
 
@@ -182,25 +203,27 @@ namespace TmxEditor.Controllers
 
         private void SetTilesetSpriteTexture()
         {
-            var image = CurrentTileset.Image[0];
-
-            string fileName = image.source;
-            string absoluteFile = ProjectManager.Self.MakeAbsolute(fileName);
-            mSprite.Visible = true;
-
-            if (System.IO.File.Exists(absoluteFile))
+            if (CurrentTileset != null && CurrentTileset.Image.Length != 0)
             {
-                mSprite.Texture = LoaderManager.Self.Load(absoluteFile, mManagers);
+                var image = CurrentTileset.Image[0];
+
+                string fileName = image.source;
+                string absoluteFile = ProjectManager.Self.MakeAbsolute(fileName);
+                mSprite.Visible = true;
+
+                if (System.IO.File.Exists(absoluteFile))
+                {
+                    mSprite.Texture = LoaderManager.Self.Load(absoluteFile, mManagers);
+                }
+
+                mOutlineRectangle.Visible = true;
+                mOutlineRectangle.X = mSprite.X;
+                mOutlineRectangle.Y = mSprite.Y;
+                mOutlineRectangle.Width = mSprite.EffectiveWidth;
+                mOutlineRectangle.Height = mSprite.EffectiveHeight;
+
+
             }
-
-            mOutlineRectangle.Visible = true;
-            mOutlineRectangle.X = mSprite.X;
-            mOutlineRectangle.Y = mSprite.Y;
-            mOutlineRectangle.Width = mSprite.EffectiveWidth;
-            mOutlineRectangle.Height = mSprite.EffectiveHeight;
-
-
-
 
 
 

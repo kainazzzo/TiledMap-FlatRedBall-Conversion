@@ -7,6 +7,14 @@ namespace TMXGlueLib
 {
     public static class TilesetExtensionMethods
     {
+        public static void IndexToCoordinate(this Tileset tileset, long xIndex, long yIndex, out int xCoordinate, out int yCoordinate)
+        {
+            xCoordinate = tileset.Margin + (int)xIndex * (tileset.Tilewidth + tileset.Spacing);
+            yCoordinate = tileset.Margin + (int)yIndex * (tileset.Tileheight + tileset.Spacing);
+
+
+        }
+
         public static void CoordinateToIndex(this Tileset tileset, int xCoordinate, int yCoordinate, out int xIndex, out int yIndex)
         {
             xIndex = 0;
@@ -51,16 +59,18 @@ namespace TMXGlueLib
             else
             {
                 int effectiveWidth = tileset.Image[0].width;
+                int effectiveTileWidth = tileset.Tilewidth;
+
                 if (tileset.Margin != 0)
                 {
                     effectiveWidth -= 2 * tileset.Margin;
                 }
                 if (tileset.Spacing != 0)
                 {
-                    effectiveWidth += tileset.Spacing; // adds to the last entry
+                    effectiveTileWidth += tileset.Spacing; // adds to the last entry
                 }
 
-                return effectiveWidth / tileset.Tilewidth;
+                return effectiveWidth / effectiveTileWidth;
             }
         }
 
