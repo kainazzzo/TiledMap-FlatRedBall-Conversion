@@ -74,8 +74,6 @@ namespace TMXGlueLib
             return propertyDictionary;
         }
         
-
-
         public List<property> properties
         {
             get { return mProperties; }
@@ -161,6 +159,29 @@ namespace TMXGlueLib
         {
             Layers = new List<MapLayer>();
             tileset = new List<Tileset>();
+        }
+
+        public List<string> GetReferencedFiles()
+        {
+            List<string> referencedFiles = new List<string>();
+
+            foreach (var tileset in this.tileset)
+            {
+                if (tileset != null && tileset.Image.Length != 0)
+                {
+                    var image = tileset.Image[0];
+
+                    string fileName = image.source;
+
+                    // keep it relative
+                    referencedFiles.Add(fileName);
+
+                }
+
+            }
+
+
+            return referencedFiles;
         }
     }
 
