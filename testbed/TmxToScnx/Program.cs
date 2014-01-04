@@ -14,7 +14,7 @@ namespace TmxToScnx
         {
             if (args.Length < 2)
             {
-                System.Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx or output.tilb> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf]");
+                System.Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx or output.tilb> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf] copyimages=true|false");
                 return;
             }
 
@@ -31,7 +31,11 @@ namespace TmxToScnx
                 // Convert once in case of any exceptions
 
                 System.Console.WriteLine("{0} converted successfully.", parsedArgs.SourceFile);
-                TmxFileCopier.CopyTmxTilesetImagesToDestination(parsedArgs.SourceFile, parsedArgs.DestinationFile, tms);
+
+                if (parsedArgs.CopyImages)
+                {
+                    TmxFileCopier.CopyTmxTilesetImagesToDestination(parsedArgs.SourceFile, parsedArgs.DestinationFile, tms);
+                }
 
                 // Fix up the image sources to be relative to the newly copied ones.
                 // I don't know why we're doing this, but it wipes out the old relative 
@@ -74,8 +78,24 @@ namespace TmxToScnx
                 System.Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
                 // all files should have been copied over, and since we're using the .scnx files,
                 // we are going to use the destination instead of the source.
+
+                FileReferenceType referenceType = FileReferenceType.NoDirectory;
+
+                if (parsedArgs.CopyImages == false)
+                {
+                    referenceType = FileReferenceType.Absolute;
+                }
+
                 ReducedTileMapInfo rtmi = 
-                    ReducedTileMapInfo.FromTiledMapSave(tms, parsedArgs.Scale, FileManager.GetDirectory(parsedArgs.DestinationFile));
+                    ReducedTileMapInfo.FromTiledMapSave(tms, parsedArgs.Scale, FileManager.GetDirectory(parsedArgs.DestinationFile), referenceType);
+
+                if (parsedArgs.CopyImages == false)
+                {
+                    foreach (var item in rtmi.Layers)
+                    {
+                        item.Texture = FileManager.MakeRelative(item.Texture, FileManager.GetDirectory(parsedArgs.SourceFile));
+                    }
+                }
 
                 if (System.IO.File.Exists(parsedArgs.DestinationFile))
                 {

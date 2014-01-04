@@ -33,7 +33,11 @@ namespace TMXGlueLib.DataTypes
     {
         private static Point GetTextureDimensions(string directory, Dictionary<string, Point> loadedTextures, SpriteSave spriteSave)
         {
-            string absoluteFile = directory + spriteSave.Texture;
+            string absoluteFile = spriteSave.Texture;
+            if (FlatRedBall.IO.FileManager.IsRelative(absoluteFile))
+            {
+                absoluteFile = directory + absoluteFile;
+            }
 
             Point point;
             if (loadedTextures.ContainsKey(absoluteFile))
@@ -55,11 +59,11 @@ namespace TMXGlueLib.DataTypes
 
 
 
-        public static ReducedTileMapInfo FromTiledMapSave(TiledMapSave tiledMapSave, float scale, string directory)
+        public static ReducedTileMapInfo FromTiledMapSave(TiledMapSave tiledMapSave, float scale, string directory, FileReferenceType referenceType)
         {
             var toReturn = new ReducedTileMapInfo();
 
-            var ses = tiledMapSave.ToSceneSave(scale);
+            var ses = tiledMapSave.ToSceneSave(scale, referenceType);
 
             ses.SpriteList.Sort((first, second) => first.Z.CompareTo(second.Z));
 

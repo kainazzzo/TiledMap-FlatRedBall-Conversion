@@ -18,7 +18,7 @@ namespace TmxToScnx
 
     class TmxToScnxCommandLineArgs
     {
-        #region Fields
+        #region Properties
 
         public string SourceFile
         {
@@ -56,6 +56,12 @@ namespace TmxToScnx
             set;
         }
 
+        public bool CopyImages
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         public TmxToScnxCommandLineArgs()
@@ -69,6 +75,7 @@ namespace TmxToScnx
             Offset = new Tuple<float, float, float>(0, 0, 0);
             LayerVisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
             SaveType = TmxToScnx.SaveType.Tilb;
+            CopyImages = true;
         }
 
 
@@ -127,6 +134,16 @@ namespace TmxToScnx
                         {
                             Offset = new Tuple<float, float, float>(xf, yf, zf);
                         }
+                    }
+                    break;
+                case "copyimages":
+                    if (value.ToLowerInvariant() == "false")
+                    {
+                        CopyImages = false;
+                    }
+                    else
+                    {
+                        CopyImages = true;
                     }
                     break;
                 default:

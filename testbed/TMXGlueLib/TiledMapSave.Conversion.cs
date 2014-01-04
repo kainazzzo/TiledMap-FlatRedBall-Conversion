@@ -16,6 +16,13 @@ using FlatRedBall.Math.Geometry;
 
 namespace TMXGlueLib
 {
+    public enum FileReferenceType
+    {
+        NoDirectory,
+        Absolute,
+        Relative
+    }
+
     public partial class TiledMapSave
     {
         #region Enums
@@ -567,7 +574,7 @@ namespace TMXGlueLib
             }
         }
 
-        public SceneSave ToSceneSave(float scale)
+        public SceneSave ToSceneSave(float scale, FileReferenceType referenceType = FileReferenceType.NoDirectory)
         {
             var toReturn = new SceneSave { CoordinateSystem = FlatRedBall.Math.CoordinateSystem.RightHanded };
 
@@ -589,26 +596,29 @@ namespace TMXGlueLib
 
                 MapLayer mLayer = mapLayer;
                 int mLayerCount = layercount;
-                Parallel.For(0, mapLayer.data[0].tiles.Count, count =>
+
+                for(int i = 0; i < mapLayer.data[0].tiles.Count; i++)
+                //Parallel.For(0, mapLayer.data[0].tiles.Count, i =>
                 {
-                    uint gid = mLayer.data[0].tiles[count];
+                    uint gid = mLayer.data[0].tiles[i];
                     Tileset tileSet = GetTilesetForGid(gid);
                     if (tileSet != null)
                     {
-                        SpriteSave sprite = CreateSpriteSaveFromMapTileset(scale, mLayerCount, mLayer, count, gid, tileSet);
+                        SpriteSave sprite = CreateSpriteSaveFromMapTileset(scale, mLayerCount, mLayer, i, gid, tileSet, referenceType);
                         lock (toReturn)
                         {
                             toReturn.SpriteList.Add(sprite);
                         }
                     }
-                    });
+                    }
+                //);
                 ++layercount;
             }
 
             return toReturn;
         }
 
-        private SpriteSave CreateSpriteSaveFromMapTileset(float scale, int layercount, MapLayer mapLayer, int count, uint gid, Tileset tileSet)
+        private SpriteSave CreateSpriteSaveFromMapTileset(float scale, int layercount, MapLayer mapLayer, int tileIndex, uint gid, Tileset tileSet, FileReferenceType referenceType = FileReferenceType.NoDirectory)
         {
             var sprite = new SpriteSave();
             if (!mapLayer.IsVisible && mapLayer.VisibleBehavior == LayerVisibleBehavior.Match)
@@ -627,8 +637,20 @@ namespace TMXGlueLib
             //int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
             //int tilesHigh = (imageHeight - margin) / (tileHeight + spacing);
 
+            if (referenceType == FileReferenceType.NoDirectory)
+            {
+                sprite.Texture = tileSet.Image[0].sourceFileName;
+            }
+            else if (referenceType == FileReferenceType.Absolute)
+            {
+                string directory = FileManager.GetDirectory(this.FileName);
+                sprite.Texture = FileManager.RemoveDotDotSlash( directory + tileSet.Image[0].source );
 
-            sprite.Texture = tileSet.Image[0].sourceFileName;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
 
             if (tileSet.TileDictionary.ContainsKey(gid - tileSet.Firstgid + 1))
             {
@@ -646,7 +668,7 @@ namespace TMXGlueLib
             }
 
             SetSpriteTextureCoordinates(gid, sprite, tileSet, imageWidth, imageHeight, tileWidth, spacing, tileHeight, margin);
-            CalculateWorldCoordinates(layercount, count, tileWidth, tileHeight, this.width, out sprite.X, out sprite.Y, out sprite.Z);
+            CalculateWorldCoordinates(layercount, tileIndex, tileWidth, tileHeight, this.width, out sprite.X, out sprite.Y, out sprite.Z);
 
             sprite.ScaleX = tileWidth / 2.0f;
             sprite.ScaleY = tileHeight / 2.0f;
@@ -849,6 +871,17 @@ namespace TMXGlueLib
             {
             }
             var tms = FileManager.XmlDeserialize<TiledMapSave>(fileName);
+
+
+            if (FileManager.IsRelative(fileName))
+            {
+                tms.FileName = FileManager.RelativeDirectory + fileName;
+            }
+            else
+            {
+                tms.FileName = fileName;
+            }
+
             FileManager.RelativeDirectory = oldRelativeDirectory;
 
             foreach (MapLayer layer in tms.Layers)

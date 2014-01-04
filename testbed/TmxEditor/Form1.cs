@@ -119,7 +119,7 @@ namespace TmxEditor
                         ReducedTileMapInfo.FromTiledMapSave( 
                             ProjectManager.Self.TiledMapSave , 
                             1, 
-                            FileManager.GetDirectory( ProjectManager.Self.LastLoadedFile));
+                            FileManager.GetDirectory( ProjectManager.Self.LastLoadedFile), TMXGlueLib.FileReferenceType.NoDirectory);
 
                     rtmi.WriteTo(writer);
 

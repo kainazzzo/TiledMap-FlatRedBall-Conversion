@@ -39,6 +39,13 @@ namespace TMXGlueLib
         #endregion
 
         [XmlIgnore]
+        public string FileName
+        {
+            get;
+            set;
+        }
+
+        [XmlIgnore]
         public IDictionary<string, string> PropertyDictionary
         {
             get
@@ -734,6 +741,8 @@ namespace TMXGlueLib
         }
     }
 
+    #region mapObjectgroupObjectPolyline
+
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     public partial class mapObjectgroupObjectPolyline
@@ -756,6 +765,9 @@ namespace TMXGlueLib
         }
     }
 
+    #endregion
+
+    #region NewDataSet Class
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     [XmlRoot(Namespace = "", IsNullable = false)]
@@ -778,4 +790,7 @@ namespace TMXGlueLib
             }
         }
     }
+
+    #endregion
+
 }

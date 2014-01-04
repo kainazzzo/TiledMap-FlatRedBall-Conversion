@@ -45,7 +45,7 @@ namespace TmxToTilb
 
                 System.Console.WriteLine(string.Format("Saving \"{0}\".", destinationFile));
                 ReducedTileMapInfo rtmi = ReducedTileMapInfo.FromTiledMapSave(tms, scale,
-                    FileManager.GetDirectory(sourceTmx));
+                    FileManager.GetDirectory(sourceTmx), FileReferenceType.NoDirectory);
 
                 using(FileStream fileStream = File.OpenWrite(destinationFile))
                 using (BinaryWriter writer = new BinaryWriter(fileStream))
