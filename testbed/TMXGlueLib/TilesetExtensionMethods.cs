@@ -77,7 +77,11 @@ namespace TMXGlueLib
             // than there are tiles.
             // We can correct this simply by adding 1 to the resulting tilesWide *if* there
             // is spacing...
-            int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
+            // Update January 26, 2014
+            // We need to multiply margin
+            // by 2 since the margin applies
+            // to all sides
+            int tilesWide = (imageWidth - (2*margin)) / (tileWidth + spacing);
             // ...so let's do that here:
             if (spacing != 0)
             {

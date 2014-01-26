@@ -5,6 +5,7 @@ using FlatRedBall.Content.Scene;
 using FlatRedBall.IO;
 using TMXGlueLib;
 using TMXGlueLib.DataTypes;
+using System.Reflection;
 
 namespace TmxToScnx
 {
@@ -20,7 +21,11 @@ namespace TmxToScnx
 
             try
             {
+                Assembly assembly = Assembly.GetEntryAssembly();
+                AssemblyName assemblyName = assembly.GetName();
+                Version version = assemblyName.Version;
 
+                Console.WriteLine("TMX to SCNX converter version " + version.ToString());
 
                 TmxToScnxCommandLineArgs parsedArgs = new TmxToScnxCommandLineArgs();
                 parsedArgs.ParseOptionalCommandLineArgs(args);

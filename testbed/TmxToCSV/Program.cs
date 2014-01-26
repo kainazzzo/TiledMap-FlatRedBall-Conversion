@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using TMXGlueLib;
 
 namespace TmxToCSV
@@ -15,6 +16,11 @@ namespace TmxToCSV
 
             try
             {
+                Assembly assembly = Assembly.GetEntryAssembly();
+                AssemblyName assemblyName = assembly.GetName();
+                Version version = assemblyName.Version;
+                Console.WriteLine("TMX to CSV converter version " + version.ToString());
+
                 string sourceTmx = args[0];
                 string destinationCSV = args[1];
                 string layerName = null;
@@ -24,6 +30,7 @@ namespace TmxToCSV
                 {
                     ParseOptionalCommandLineArgs(args, out type, out layerName);
                 }
+                Console.WriteLine("Create columns from " + type);
                 
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 

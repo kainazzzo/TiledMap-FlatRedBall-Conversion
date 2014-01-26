@@ -83,6 +83,10 @@ namespace TmxToScnx
         {
             SourceFile = args[0];
             DestinationFile = args[1];
+
+            // For some reason the Destination may contain "\r\n" after it.  Maybe only when supplying
+            // the arguments through visual studio?  In either case, let's trim it:
+            DestinationFile = DestinationFile.Trim();
             
             if (args.Length >= 3)
             {

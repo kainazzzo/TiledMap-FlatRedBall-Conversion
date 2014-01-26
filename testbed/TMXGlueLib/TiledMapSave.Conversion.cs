@@ -92,9 +92,11 @@ namespace TMXGlueLib
                     {
                         if (tileSet.Tiles != null)
                         {
-                            foreach (mapTilesetTile tile in tileSet.Tiles)
+                            foreach (mapTilesetTile tile in tileSet.Tiles.Where(t=>t.PropertyDictionary.Count > 0))
                             {
-                                WriteValuesFromDictionary(sb, null, tile.PropertyDictionary, 0, 0, columnNames);
+                                var propertyDictionary = tile.PropertyDictionary;
+
+                                WriteValuesFromDictionary(sb, null, propertyDictionary, 0, 0, columnNames);
                             }
                         }
                     }
@@ -122,39 +124,79 @@ namespace TMXGlueLib
             }
         }
 
+        static int numberOfUnnamedTiles = 0;
+
         private void WriteValuesFromDictionary(StringBuilder sb, IDictionary<string, string> pDictionary, IDictionary<string, string> iDictionary, int x, int y, IEnumerable<string> columnNames)
         {
-            if (iDictionary.Any(p => p.Key.Equals("name", StringComparison.CurrentCultureIgnoreCase)))
-            {
-                sb.Append(iDictionary.First(p => p.Key.Equals("name", StringComparison.CurrentCultureIgnoreCase)).Value);
+            // January 26, 2014
+            // I spent quite a while
+            // trying to figure out why
+            // my TMX wasn't making a CSV
+            // properly, but then I should
+            // comment it.  The general idea
+            // is that each tile will be represented
+            // as a row in the CSV.  The CSV will be deserialized
+            // to a dictionary, and the Name value is the Key.  Therefore
+            // each tile must have a Name value so that it can be referenced
+            // in the resulting dictionary.  If there is no Name value, then we're 
+            // going to skip the tile.
+            // Update January 26, 2014
+            // I got confused about this
+            // and was able to solve it by
+            // digging into the source, but
+            // others won't have this benefit,
+            // and those who do know this may forget
+            // (as I did).  So let's make this easier
+            // to work with by generating a name if one
+            // doesn't exist.  This makes it much easier
+            // to figure out the intended usage of this plugin.
+            //if (doesDictionaryContainNameValue)
+            //{
 
-                foreach (string columnName in columnNames)
+            string nameValue = null;
+
+            bool doesDictionaryContainNameValue = 
+                iDictionary.Any(p => StripName(p.Key).Equals("name", StringComparison.CurrentCultureIgnoreCase));
+
+            if (doesDictionaryContainNameValue)
+            {
+                nameValue = iDictionary.First(p => StripName(p.Key).Equals("name", StringComparison.CurrentCultureIgnoreCase)).Value;
+            }
+            else
+            {
+                nameValue = "UnnamedTile" + numberOfUnnamedTiles;
+                numberOfUnnamedTiles++;
+            }
+
+            sb.Append(nameValue);
+
+            foreach (string columnName in columnNames)
+            {
+                if (columnName.Equals("X (int)", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    if (columnName.Equals("X (int)", StringComparison.CurrentCultureIgnoreCase))
+                    sb.AppendFormat(",{0}", x);
+                }
+                else if (columnName.Equals("Y (int)", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    sb.AppendFormat(",{0}", y);
+                }
+                else if (!StripName(columnName).Equals("name", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    if (iDictionary.Any(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
                     {
-                        sb.AppendFormat(",{0}", x);
+                        sb.AppendFormat(",\"{0}\"", iDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value.Replace("\"", "\"\""));
                     }
-                    else if (columnName.Equals("Y (int)", StringComparison.CurrentCultureIgnoreCase))
+                    else if (pDictionary != null && pDictionary.Any(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
                     {
-                        sb.AppendFormat(",{0}", y);
-                    }else if (!columnName.Equals("name", StringComparison.CurrentCultureIgnoreCase))
+                        sb.AppendFormat(",\"{0}\"", pDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value.Replace("\"", "\"\""));
+                    }
+                    else
                     {
-                        if (iDictionary.Any(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
-                        {
-                            sb.AppendFormat(",\"{0}\"", iDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value.Replace("\"", "\"\""));
-                        }
-                        else if (pDictionary != null && pDictionary.Any(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
-                        {
-                            sb.AppendFormat(",\"{0}\"", pDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value.Replace("\"", "\"\""));
-                        }
-                        else
-                        {
-                            sb.Append(",");
-                        }
+                        sb.Append(",");
                     }
                 }
-                sb.AppendLine();
             }
+            sb.AppendLine();
         }
 
         private static void WriteColumnHeader(StringBuilder sb, IEnumerable<string> columnNames)
@@ -162,7 +204,12 @@ namespace TMXGlueLib
             sb.Append("Name (required)");
             foreach (string columnName in columnNames)
             {
-                if (!columnName.Equals("name", StringComparison.CurrentCultureIgnoreCase))
+                string strippedName = StripName(columnName);
+
+
+                bool isName = !strippedName.Equals("name", StringComparison.CurrentCultureIgnoreCase);
+
+                if (isName)
                 {
                     // Update August 27, 2012
                     // We can't just assume that
@@ -183,6 +230,29 @@ namespace TMXGlueLib
                 }
             }
             sb.AppendLine();
+        }
+
+        private static string StripName(string columnName)
+        {
+            int index = -1;
+
+            if (columnName.Contains(' '))
+            {
+                index = columnName.IndexOf(' ');
+            }
+            if(index == -1 || (columnName.Contains('(') && columnName.IndexOf('(') < index))
+            {
+                index = columnName.IndexOf('(');
+            }
+
+            if (index == -1)
+            {
+                return columnName;
+            }
+            else
+            {
+                return columnName.Substring(0, index);
+            }
         }
 
         public class CaseInsensitiveEqualityComparer : IEqualityComparer<string>
@@ -697,12 +767,7 @@ namespace TMXGlueLib
 
         private static bool IsName(string key)
         {
-            string nameWithoutQuotes = key;
-            if (key.Contains("("))
-            {
-                nameWithoutQuotes = key.Substring(0, key.IndexOf("(")).Trim();
-            }
-            return key.ToLower() == "name";
+            return StripName(key).ToLower() == "name";
         }
 
         public void CalculateWorldCoordinates(int layercount, int count, int tileWidth, int tileHeight, int layerWidth, out float x, out float y, out float z)
@@ -807,12 +872,10 @@ namespace TMXGlueLib
             
         private static int CalculateYCoordinate(uint gid, int imageWidth, int tileWidth, int tileHeight, int spacing, int margin)
         {
-            int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
-            // See the comment in CalculateXCoordinate for information on why we ++ here
-            if (spacing != 0)
-            {
-                tilesWide++;
-            }
+
+            int tilesWide = TilesetExtensionMethods.GetNumberOfTilesWide(
+                imageWidth, margin, tileWidth, spacing);
+
             int normalizedy = (int)(gid / tilesWide);
             int pixely = normalizedy * (tileHeight + spacing) + margin;
 
