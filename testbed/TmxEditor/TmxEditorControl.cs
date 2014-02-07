@@ -36,7 +36,8 @@ namespace TmxEditor
         {
             InitializeComponent();
 
-            TilesetController.Self.Initialize(this.XnaControl, TilesetsListBox, this.StatusLabel, this.TilesetTilePropertyGrid);
+            TilesetController.Self.Initialize(this.XnaControl, TilesetsListBox, this.StatusLabel, 
+                this.TilesetTilePropertyGrid, this.HasCollisionsCheckBox, NameTextBox);
             TilesetController.Self.AnyTileMapChange += HandleChangeInternal;
 
             XnaControl.XnaInitialize += new Action(HandleXnaInitialize);
@@ -77,7 +78,31 @@ namespace TmxEditor
         {
             if (!string.IsNullOrEmpty(mCurrentFileName) && ProjectManager.Self.TiledMapSave != null)
             {
-                ProjectManager.Self.TiledMapSave.Save(mCurrentFileName);
+
+                const int maxTries = 5;
+                int numberOfTries = 0;
+                bool hasSaved = false;
+
+                Exception lastException = null;
+
+                while (!hasSaved && numberOfTries < maxTries)
+                {
+                    try
+                    {
+                        ProjectManager.Self.TiledMapSave.Save(mCurrentFileName);
+                        hasSaved = true;
+                    }
+                    catch(Exception exception)
+                    {
+                        exception = lastException;
+                        numberOfTries++;
+                    }
+                }
+
+                if (!hasSaved)
+                {
+                    throw new Exception("Error saving TMX file: " + lastException);
+                }
 
             }
         }
@@ -205,6 +230,11 @@ namespace TmxEditor
 
             TilesetController.Self.Displayer.UpdateDisplayedProperties();
             TilesetController.Self.Displayer.PropertyGrid.Refresh();
+        }
+
+        private void HasCollisionsCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            TilesetController.Self.HasCollisionsCheckBoxChanged(HasCollisionsCheckBox.Checked);
         }
     }
 }

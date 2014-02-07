@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using FlatRedBall.Glue.GuiDisplay;
 using TMXGlueLib;
+using TmxEditor.Controllers;
 
 namespace TmxEditor.PropertyGridDisplayers
 {
@@ -43,7 +44,26 @@ namespace TmxEditor.PropertyGridDisplayers
             {
                 ExcludeAllMembers();
 
-                this.DisplayProperties(tileSet.properties);
+
+                string[] toExclude = new string[]
+                {
+                    TilesetController.HasCollisionVariableName,
+                    "Name"
+
+                };
+
+
+                var enumerable = tileSet.properties.Where(item =>
+                    {
+                        string strippedName = property.GetStrippedName(item.name);
+
+                        bool include = toExclude.Contains(strippedName) == false;
+
+                        return include;
+
+                    });
+
+                this.DisplayProperties(enumerable);
 
             }
             PropertyGrid.Visible = tileSet != null;

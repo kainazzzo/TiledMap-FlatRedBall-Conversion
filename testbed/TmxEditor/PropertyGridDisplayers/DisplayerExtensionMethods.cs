@@ -10,7 +10,7 @@ namespace TmxEditor.PropertyGridDisplayers
 {
     public static class DisplayerExtensionMethods
     {
-        public static void DisplayProperties(this PropertyGridDisplayer displayer, List<property> propertyList)
+        public static void DisplayProperties(this PropertyGridDisplayer displayer, IEnumerable<property> propertyList)
         {
             foreach (var property in propertyList)
             {
@@ -60,7 +60,7 @@ namespace TmxEditor.PropertyGridDisplayers
         }
 
 
-        private static void IncludeProperty(this PropertyGridDisplayer displayer, List<property> propertyList, TMXGlueLib.property property)
+        private static void IncludeProperty(this PropertyGridDisplayer displayer, IEnumerable<property> propertyList, TMXGlueLib.property property)
         {
             string name = property.name;
 
@@ -100,7 +100,7 @@ namespace TmxEditor.PropertyGridDisplayers
                 );
         }
 
-        public static property GetPropertyByName(string name, List<property> properties)
+        public static property GetPropertyByName(string name, IEnumerable<property> properties)
         {
             property property = null;
 

@@ -98,6 +98,8 @@ namespace TmxEditor.Controllers
                     whatToShow += "(" + property.name + ", " + property.value + ") ";
 
                 }
+
+                whatToShow += "(ID, " + tileSetOver.id + ")";
             }
             mInfoLabel.Text = whatToShow;
         }
@@ -146,10 +148,15 @@ namespace TmxEditor.Controllers
 
         public void UpdateXnaDisplayToTileset()
         {
+
+            var currentTileset = mTilesetsListBox.SelectedItem as Tileset;
+
+
+
+
             ClearAllHighlights();
 
 
-            var currentTileset = mTilesetsListBox.SelectedItem as Tileset;
 
             SetTilesetSpriteTexture();
 
@@ -238,7 +245,10 @@ namespace TmxEditor.Controllers
 
             if (CurrentTilesetTile == null)
             {
-                mHighlightRectangle.Visible = false;
+                if (mHighlightRectangle != null)
+                {
+                    mHighlightRectangle.Visible = false;
+                }
             }
             else
             {

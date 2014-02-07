@@ -81,14 +81,26 @@ namespace TMXGlueLib
             // We need to multiply margin
             // by 2 since the margin applies
             // to all sides
-            int tilesWide = (imageWidth - (2*margin)) / (tileWidth + spacing);
             // ...so let's do that here:
-            if (spacing != 0)
-            {
-                tilesWide++;
-            }
+            //int tilesWide = (imageWidth - (2 * margin)) / (tileWidth + spacing);
 
-            return tilesWide;
+            //if (spacing != 0)
+            //{
+            //    tilesWide++;
+            //}
+
+            // Update February 7, 2014
+            // No, this doesn't seem like it's working right, and it's confusing, so I'm going
+            // to break this down a bit:
+            // First let's take off the margin so we can see how
+            // much usable space we have:
+            int usableSpace = imageWidth - 2 * margin;
+            // If there is a margin, all tiles except the last will have the margin added to the right of them
+            // Since the last one won't have the margin added, let's just add the margin to the usable space, then do 
+            // a simple int division:
+            usableSpace += spacing;
+
+            return usableSpace / (tileWidth + spacing);
 
         }
 

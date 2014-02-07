@@ -208,6 +208,24 @@ namespace TMXGlueLib
             set;
         }
 
+        public static string GetStrippedName(string name)
+        {
+            string nameWithoutType;
+            if (name.Contains('(') && name.Contains(')'))
+            {
+                int open = name.IndexOf('(');
+                int close = name.IndexOf(')');
+
+                nameWithoutType = name.Substring(0, open).Trim();
+            }
+            else
+            {
+                nameWithoutType = name;
+            }
+
+            return nameWithoutType;
+        }
+
         public override string ToString()
         {
             return name + " = " + value;

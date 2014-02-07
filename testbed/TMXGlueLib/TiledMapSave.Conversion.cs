@@ -184,11 +184,27 @@ namespace TMXGlueLib
                 {
                     if (iDictionary.Any(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
                     {
-                        sb.AppendFormat(",\"{0}\"", iDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value.Replace("\"", "\"\""));
+                        var value =
+                            iDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value;
+
+                        if (value != null)
+                        {
+                            value = value.Replace("\"", "\"\"");
+                        }
+
+                        sb.AppendFormat(",\"{0}\"", value);
                     }
                     else if (pDictionary != null && pDictionary.Any(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
                     {
-                        sb.AppendFormat(",\"{0}\"", pDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value.Replace("\"", "\"\""));
+                        var value =
+                            pDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value;
+
+                        if (value != null)
+                        {
+                            value = value.Replace("\"", "\"\"");
+                        }
+
+                        sb.AppendFormat(",\"{0}\"", value);
                     }
                     else
                     {
@@ -722,9 +738,11 @@ namespace TMXGlueLib
                 throw new NotImplementedException();
             }
 
-            if (tileSet.TileDictionary.ContainsKey(gid - tileSet.Firstgid + 1))
+            uint nameRelativeToStartOfTileset = gid - tileSet.Firstgid + 1;
+
+            if (tileSet.TileDictionary.ContainsKey(nameRelativeToStartOfTileset))
             {
-                var dictionary = tileSet.TileDictionary[gid - tileSet.Firstgid + 1].PropertyDictionary;
+                var dictionary = tileSet.TileDictionary[nameRelativeToStartOfTileset].PropertyDictionary;
 
                 foreach (var kvp in dictionary)
                 {

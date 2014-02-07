@@ -15,11 +15,17 @@ using InputLibrary;
 using TmxEditor.PropertyGridDisplayers;
 using TmxEditor.GraphicalDisplay.Tilesets;
 using TmxEditor.UI;
+using FlatRedBall.Utilities;
 
 namespace TmxEditor.Controllers
 {
     public partial class TilesetController : ToolComponent<TilesetController>
     {
+
+        public const string HasCollisionVariableName = "HasCollision";
+
+
+
         #region Fields
 
         ListBox mTilesetsListBox;
@@ -34,6 +40,8 @@ namespace TmxEditor.Controllers
         GraphicsDeviceControl mControl;
         PropertyGrid mPropertyGrid;
         TilesetTileDisplayer mDisplayer;
+        CheckBox mHasCollisionsCheckBox;
+        TextBox mNameTextBox;
 
         Tileset mTempTileset;
 
@@ -69,10 +77,7 @@ namespace TmxEditor.Controllers
                 mCurrentTilesetTile = value;
 
 
-                mDisplayer.Instance = mCurrentTilesetTile;
-                mDisplayer.PropertyGrid.Refresh();
-
-                UpdateHighlightRectangle();
+                RefreshUiToSelectedTile();
             }
         }
 
@@ -93,13 +98,18 @@ namespace TmxEditor.Controllers
 
         #endregion
 
-        public void Initialize(GraphicsDeviceControl control, ListBox tilesetsListBox, Label infoLabel, PropertyGrid propertyGrid)
+        public void Initialize(GraphicsDeviceControl control, ListBox tilesetsListBox, 
+            Label infoLabel, PropertyGrid propertyGrid, CheckBox hasCollisionsCheckBox, TextBox nameTextBox)
         {
             mDisplayer = new TilesetTileDisplayer();
             mDisplayer.PropertyGrid = propertyGrid;
             mDisplayer.RefreshOnTimer = false;
             mDisplayer.PropertyGrid.PropertyValueChanged += HandlePropertyValueChangeInternal;
 
+            mHasCollisionsCheckBox = hasCollisionsCheckBox;
+
+            mNameTextBox = nameTextBox;
+            mNameTextBox.KeyDown += HandleNameTextBoxKeyDown;
 
             mPropertyGrid = propertyGrid;
             mControl = control;
@@ -107,6 +117,7 @@ namespace TmxEditor.Controllers
 
             mTilesetsListBox = tilesetsListBox;
             mTilesetsListBox.SelectedIndexChanged += new EventHandler(HandleTilesetSelect);
+            mTilesetsListBox.LostFocus += HandleLostFocus;
 
             ReactToLoadedFile = HandleLoadedFile;
             ReactToXnaInitialize = HandleXnaInitialize;
@@ -118,7 +129,27 @@ namespace TmxEditor.Controllers
             control.XnaUpdate += new Action(HandleXnaUpdate);
             
             mInfoLabel = infoLabel;
+
+            CurrentTilesetTile = null;
         }
+
+        void HandleLostFocus(object sender, EventArgs e)
+        {
+
+
+
+            HandleNameChange();
+        }
+
+        void HandleNameTextBoxKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                HandleNameChange();
+                e.Handled = true;
+            }
+        }
+
 
         void HandlePropertyValueChangeInternal(object s, PropertyValueChangedEventArgs e)
         {
@@ -167,6 +198,8 @@ namespace TmxEditor.Controllers
         void HandleTilesetSelect(object sender, EventArgs e)
         {
             UpdateXnaDisplayToTileset();
+
+            
         }
 
 
@@ -218,7 +251,21 @@ namespace TmxEditor.Controllers
 
         }
 
-        public TMXGlueLib.property AddProperty(mapTilesetTile tile, string name, string type)
+        public property GetExistingProperty(string propertyName, mapTilesetTile tile)
+        {
+            Func<property, bool> predicate = item =>
+                {
+                    return item.name == propertyName ||
+                        item.name.StartsWith(propertyName + " ") ||
+                        item.name.StartsWith(propertyName + "(");
+
+                };
+
+            return tile.properties.FirstOrDefault(predicate);
+        }
+
+        public TMXGlueLib.property AddProperty(mapTilesetTile tile, string name, string type,
+            bool raiseChangedEvent = true)
         {
             var newProperty = new TMXGlueLib.property();
             LayersController.SetPropertyNameFromNameAndType(name, type, newProperty);
@@ -238,7 +285,7 @@ namespace TmxEditor.Controllers
             mDisplayer.UpdateDisplayedProperties();
             mDisplayer.PropertyGrid.Refresh();
 
-            if (AnyTileMapChange != null)
+            if (raiseChangedEvent && AnyTileMapChange != null)
             {
                 AnyTileMapChange(this, null);
             }
@@ -276,5 +323,159 @@ namespace TmxEditor.Controllers
                 return mDisplayer.CurrentTilesetTileProperty;
             }
         }
+
+        internal void HasCollisionsCheckBoxChanged(bool hasCollisions)
+        {
+            // let's see if the property exists
+            var tileset = AppState.Self.CurrentMapTilesetTile;
+
+            var existingProperty = GetExistingProperty(HasCollisionVariableName, CurrentTilesetTile);
+
+            bool changesOccurred = false;
+
+            if (hasCollisions && existingProperty == null)
+            {
+                // We'll do it after setting the value
+                const bool raiseChangedEvent = false;
+                existingProperty = AddProperty(CurrentTilesetTile, HasCollisionVariableName, "bool", raiseChangedEvent);
+                existingProperty.value = hasCollisions.ToString();
+                changesOccurred = true;
+
+
+                if (GetExistingProperty("Name", CurrentTilesetTile) == null)
+                {
+                    AddRandomNameTo(CurrentTilesetTile);
+                }
+
+            }
+            else if (hasCollisions == false && existingProperty != null)
+            {
+                CurrentTilesetTile.properties.Remove(existingProperty);
+
+                UpdateXnaDisplayToTileset();
+                changesOccurred = true;
+            }
+
+
+            if (changesOccurred)
+            {
+                RefreshUiToSelectedTile();
+            }
+
+            if (changesOccurred && AnyTileMapChange != null)
+            {
+                AnyTileMapChange(this, null);
+            }
+        }
+
+        private void AddRandomNameTo(mapTilesetTile tile)
+        {
+            string value = "Unnamed1";
+
+            while (GetTilesetTileByName(value) != null)
+            {
+                value = StringFunctions.IncrementNumberAtEnd(value);
+            }
+
+            AddProperty(tile, "Name", "string", false).value = value;
+        }
+
+        private object GetTilesetTileByName(string value)
+        {
+            foreach (var tileset in AppState.Self.CurrentTiledMapSave.tileset)
+            {
+                foreach (var tile in tileset.Tiles)
+                {
+                    foreach (var property in tile.properties)
+                    {
+                        if (property.GetStrippedName(property.name).ToLower() == "name" &&
+                            property.value == value)
+                        {
+                            return tile;
+                        }
+
+                    }
+                }
+
+
+            }
+
+            return null;
+        }
+
+
+        private void HandleNameChange()
+        {
+            var tileset = AppState.Self.CurrentMapTilesetTile;
+
+            if (tileset != null)
+            {
+
+                var existingProperty = GetExistingProperty("Name", CurrentTilesetTile);
+
+                bool changesOccurred = false;
+
+                bool hasName = string.IsNullOrEmpty(mNameTextBox.Text) == false;
+
+                if (hasName && existingProperty == null)
+                {
+                    // get rid of this property
+                    const bool raiseChangedEvent = false;
+                    existingProperty = AddProperty(CurrentTilesetTile, "Name", "string", raiseChangedEvent);
+                    existingProperty.value = mNameTextBox.Text;
+                    changesOccurred = true;
+                }
+                else if (hasName == false && existingProperty != null)
+                {
+                    CurrentTilesetTile.properties.Remove(existingProperty);
+
+                    UpdateXnaDisplayToTileset();
+                    changesOccurred = true;
+                }
+
+
+                if (changesOccurred && AnyTileMapChange != null)
+                {
+                    AnyTileMapChange(this, null);
+                }
+            }
+        }
+
+        private void RefreshUiToSelectedTile()
+        {
+            mDisplayer.Instance = mCurrentTilesetTile;
+            mDisplayer.PropertyGrid.Refresh();
+
+            UpdateHighlightRectangle();
+
+            mHasCollisionsCheckBox.Enabled = mCurrentTilesetTile != null;
+            mNameTextBox.Enabled = mCurrentTilesetTile != null;
+
+            if (mHasCollisionsCheckBox.Enabled)
+            {
+                Func<property, bool> predicate = item => property.GetStrippedName( item.name ) == TilesetController.HasCollisionVariableName;
+
+                mHasCollisionsCheckBox.Checked =
+                    mCurrentTilesetTile.properties.Any(predicate) &&
+                    mCurrentTilesetTile.properties.First(predicate).value.ToLowerInvariant() == "true";
+
+                var nameProperty = mCurrentTilesetTile.properties.FirstOrDefault(item => property.GetStrippedName(item.name) == "Name");
+
+                if (nameProperty != null)
+                {
+                    mNameTextBox.Text = nameProperty.value;
+                }
+                else
+                {
+                    mNameTextBox.Text = "";
+                }
+            }
+            else
+            {
+                mHasCollisionsCheckBox.Checked = false;
+                mNameTextBox.Text = "";
+            }
+        }
+
     }
 }

@@ -38,6 +38,7 @@
             this.TilesetsTab = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.HasCollisionsCheckBox = new System.Windows.Forms.CheckBox();
             this.RemoveTilesetPropertyButton = new System.Windows.Forms.Button();
             this.AddTilesetPropertyButton = new System.Windows.Forms.Button();
             this.TilesetTilePropertyGrid = new System.Windows.Forms.PropertyGrid();
@@ -49,6 +50,8 @@
             this.AddLayerPropertyButton = new System.Windows.Forms.Button();
             this.LayerPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.LayerPropertyGridContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.NameLabel = new System.Windows.Forms.Label();
+            this.NameTextBox = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.TilesetsTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -168,12 +171,26 @@
             // 
             // splitContainer3.Panel2
             // 
+            this.splitContainer3.Panel2.Controls.Add(this.NameTextBox);
+            this.splitContainer3.Panel2.Controls.Add(this.NameLabel);
+            this.splitContainer3.Panel2.Controls.Add(this.HasCollisionsCheckBox);
             this.splitContainer3.Panel2.Controls.Add(this.RemoveTilesetPropertyButton);
             this.splitContainer3.Panel2.Controls.Add(this.AddTilesetPropertyButton);
             this.splitContainer3.Panel2.Controls.Add(this.TilesetTilePropertyGrid);
             this.splitContainer3.Size = new System.Drawing.Size(623, 477);
             this.splitContainer3.SplitterDistance = 302;
             this.splitContainer3.TabIndex = 6;
+            // 
+            // HasCollisionsCheckBox
+            // 
+            this.HasCollisionsCheckBox.AutoSize = true;
+            this.HasCollisionsCheckBox.Location = new System.Drawing.Point(3, 27);
+            this.HasCollisionsCheckBox.Name = "HasCollisionsCheckBox";
+            this.HasCollisionsCheckBox.Size = new System.Drawing.Size(91, 17);
+            this.HasCollisionsCheckBox.TabIndex = 5;
+            this.HasCollisionsCheckBox.Text = "Has Collisions";
+            this.HasCollisionsCheckBox.UseVisualStyleBackColor = true;
+            this.HasCollisionsCheckBox.CheckedChanged += new System.EventHandler(this.HasCollisionsCheckBox_CheckedChanged);
             // 
             // RemoveTilesetPropertyButton
             // 
@@ -203,9 +220,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TilesetTilePropertyGrid.HelpVisible = false;
-            this.TilesetTilePropertyGrid.Location = new System.Drawing.Point(0, 0);
+            this.TilesetTilePropertyGrid.Location = new System.Drawing.Point(0, 50);
             this.TilesetTilePropertyGrid.Name = "TilesetTilePropertyGrid";
-            this.TilesetTilePropertyGrid.Size = new System.Drawing.Size(619, 135);
+            this.TilesetTilePropertyGrid.Size = new System.Drawing.Size(619, 85);
             this.TilesetTilePropertyGrid.TabIndex = 0;
             this.TilesetTilePropertyGrid.ToolbarVisible = false;
             // 
@@ -299,6 +316,23 @@
             this.LayerPropertyGridContextMenu.Name = "LayerListContextMenu";
             this.LayerPropertyGridContextMenu.Size = new System.Drawing.Size(61, 4);
             // 
+            // NameLabel
+            // 
+            this.NameLabel.AutoSize = true;
+            this.NameLabel.Location = new System.Drawing.Point(3, 7);
+            this.NameLabel.Name = "NameLabel";
+            this.NameLabel.Size = new System.Drawing.Size(38, 13);
+            this.NameLabel.TabIndex = 6;
+            this.NameLabel.Text = "Name:";
+            // 
+            // NameTextBox
+            // 
+            this.NameTextBox.AcceptsReturn = true;
+            this.NameTextBox.Location = new System.Drawing.Point(47, 4);
+            this.NameTextBox.Name = "NameTextBox";
+            this.NameTextBox.Size = new System.Drawing.Size(172, 20);
+            this.NameTextBox.TabIndex = 7;
+            // 
             // TmxEditorControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -316,6 +350,7 @@
             this.splitContainer2.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
+            this.splitContainer3.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             this.LayersTab.ResumeLayout(false);
@@ -350,5 +385,8 @@
         private System.Windows.Forms.Button RemoveTilesetPropertyButton;
         private System.Windows.Forms.Button AddTilesetPropertyButton;
         public System.Windows.Forms.ContextMenuStrip TilesetXnaContextMenu;
+        private System.Windows.Forms.CheckBox HasCollisionsCheckBox;
+        private System.Windows.Forms.TextBox NameTextBox;
+        private System.Windows.Forms.Label NameLabel;
     }
 }
