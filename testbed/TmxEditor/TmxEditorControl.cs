@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using FlatRedBall.Glue.SaveClasses;
 using TmxEditor.GraphicalDisplay.Tilesets;
 using System.Reflection;
 using RenderingLibrary.Content;
@@ -48,6 +49,25 @@ namespace TmxEditor
             LayersController.Self.Initialize(this.LayersListBox, LayerPropertyGrid);
             LayersController.Self.AnyTileMapChange += HandleChangeInternal;
 
+        }
+
+        private List<string> _entities;
+
+        public List<string> Entities
+        {
+            get
+            {
+                return _entities;
+            }
+            set
+            {
+                _entities = value;
+                EntitiesComboBox.Items.Clear();
+                if (value != null)
+                {
+                    _entities.ForEach(e => EntitiesComboBox.Items.Add(e));
+                }
+            }
         }
 
         void HandleChangeInternal(object sender, EventArgs args)

@@ -135,6 +135,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\FRBDK\Glue\GlueSaveClasses\GlueSaveClasses.csproj">
+      <Project>{545FF183-4D9D-4121-9A04-1D354B0B0DBA}</Project>
+      <Name>GlueSaveClasses</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Gum\RenderingLibrary\RenderingLibrary.csproj">
       <Project>{a86ee399-7c93-42e1-80ed-ca4cbf4ca573}</Project>
       <Name>RenderingLibrary</Name>
