@@ -66,6 +66,11 @@ namespace TmxEditor.Controllers
 
         private mapTilesetTile CursorActivity()
         {
+            if (mCursor == null)
+            {
+                throw new Exception("mCursor is null");
+            }
+
             mCursor.Activity(TimeManager.Self.CurrentTime);
             //mKeyboard.Activity();
 

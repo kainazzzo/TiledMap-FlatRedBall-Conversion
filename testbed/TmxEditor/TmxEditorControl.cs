@@ -131,33 +131,43 @@ namespace TmxEditor
         {
             try
             {
-                // For now we'll just use one SystemManagers but we may need to expand this if we have two windows
-                mManagers = new SystemManagers();
-                mManagers.Initialize(XnaControl.GraphicsDevice);
+                CreateManagers();
 
 
-
-                Assembly assembly = Assembly.GetAssembly(typeof(XnaAndWinforms.GraphicsDeviceControl));
-
-                string targetFntFileName = FileManager.UserApplicationDataForThisApplication + "Font18Arial.fnt";
-                string targetPngFileName = FileManager.UserApplicationDataForThisApplication + "Font18Arial_0.png";
-                FileManager.SaveEmbeddedResource(
-                    assembly,
-                    "XnaAndWinforms.Content.Font18Arial.fnt",
-                    targetFntFileName);
-
-                FileManager.SaveEmbeddedResource(
-                    assembly,
-                    "XnaAndWinforms.Content.Font18Arial_0.png",
-                    targetPngFileName);
+                string targetFntFileName = CreateAndSaveFonts();
 
                 LoaderManager.Self.Initialize(null, targetFntFileName, XnaControl.Services, mManagers);
                 ToolComponentManager.Self.ReactToXnaInitialize(mManagers);
             }
             catch (Exception e)
             {
-                throw new Exception("Error initializing XNA");
+                throw new Exception("Error initializing XNA\n\n" + e.ToString());
             }
+        }
+
+        private void CreateManagers()
+        {
+            // For now we'll just use one SystemManagers but we may need to expand this if we have two windows
+            mManagers = new SystemManagers();
+            mManagers.Initialize(XnaControl.GraphicsDevice);
+        }
+
+        private static string CreateAndSaveFonts()
+        {
+            Assembly assembly = Assembly.GetAssembly(typeof(XnaAndWinforms.GraphicsDeviceControl));
+
+            string targetFntFileName = FileManager.UserApplicationDataForThisApplication + "Font18Arial.fnt";
+            string targetPngFileName = FileManager.UserApplicationDataForThisApplication + "Font18Arial_0.png";
+            FileManager.SaveEmbeddedResource(
+                assembly,
+                "XnaAndWinforms.Content.Font18Arial.fnt",
+                targetFntFileName);
+
+            FileManager.SaveEmbeddedResource(
+                assembly,
+                "XnaAndWinforms.Content.Font18Arial_0.png",
+                targetPngFileName);
+            return targetFntFileName;
         }
 
 

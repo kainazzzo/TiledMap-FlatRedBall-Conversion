@@ -12,21 +12,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
 
-
-
-//////////////////////////////////
-///////////////WARNING///////////
-// This file comes from the 
-// TMX Git repository by Domenic.
-// If any changes are to be made, they
-// should be made there then this file should
-// be overwritten.
-//////////////////////////////////
-
-
-
 namespace TMXGlueLib.DataTypes
 {
+    #region ReducedQuadInfo
 
     public partial class ReducedQuadInfo
     {
@@ -53,6 +41,7 @@ namespace TMXGlueLib.DataTypes
             return toReturn;
         }
 
+
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(LeftQuadCoordinate);
@@ -69,6 +58,10 @@ namespace TMXGlueLib.DataTypes
             return Name + " " + LeftQuadCoordinate + " " + BottomQuadCorodinate;
         }
     }
+
+    #endregion
+
+    #region ReducedLayerInfo
 
     public class ReducedLayerInfo
     {
@@ -113,6 +106,9 @@ namespace TMXGlueLib.DataTypes
         }
     }
 
+    #endregion
+
+    #region ReducedTileMapInfo
 
 
     public partial class ReducedTileMapInfo
@@ -166,12 +162,36 @@ namespace TMXGlueLib.DataTypes
             }
         }
 
-        
+        public static ReducedTileMapInfo FromFile(string fileName)
+        {
+            ReducedTileMapInfo rtmi = null;
+            using (Stream inputStream = FileManager.GetStreamForFile(fileName))
+            using (BinaryReader binaryReader = new BinaryReader(inputStream))
+            {
+                rtmi = ReducedTileMapInfo.ReadFrom(binaryReader);
 
+            }
 
+            return rtmi;
+        }
         public override string ToString()
         {
             return this.Layers.Count.ToString(CultureInfo.InvariantCulture);
         }
+
+        public List<string> GetReferencedFiles()
+        {
+            List<string> toReturn = new List<string>();
+
+            foreach (var item in Layers)
+            {
+                toReturn.Add(item.Texture);
+
+            }
+
+            return toReturn;
+        }
     }
+
+    #endregion
 }
