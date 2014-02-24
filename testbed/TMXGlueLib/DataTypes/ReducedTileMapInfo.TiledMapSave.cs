@@ -113,7 +113,7 @@ namespace TMXGlueLib.DataTypes
                     reducedLayerInfo = new ReducedLayerInfo();
                     reducedLayerInfo.Texture = spriteSave.Texture;
 
-                    reducedLayerInfo.Name = tiledMapSave.Layers[toReturn.Layers.Count].Name;
+                    reducedLayerInfo.Name = tiledMapSave.Layers[ FlatRedBall.Math.MathFunctions.RoundToInt(z)].Name;
                     toReturn.Layers.Add(reducedLayerInfo);
 
                 }
