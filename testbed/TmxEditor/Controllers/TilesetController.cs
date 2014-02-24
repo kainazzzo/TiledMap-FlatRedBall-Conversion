@@ -352,27 +352,25 @@ namespace TmxEditor.Controllers
                     AddRandomNameTo(CurrentTilesetTile);
                 }
             }
-            else
+            else if (!string.IsNullOrEmpty(entityToCreate) && existingProperty != null)
             {
-                if (!string.IsNullOrEmpty(entityToCreate))
+                // existingProperty is not null, so check if it changed
+                if (existingProperty.value != entityToCreate)
                 {
-                    // existingProperty is not null, so check if they match
-                    if (existingProperty.value != entityToCreate)
-                    {
-                        // Changed
-                        changesOccurred = true;
-                        existingProperty.value = entityToCreate;
-                    }
-                }
-                else if (existingProperty != null)
-                {
-                    // Implicitly, entityToCreate is null or empty, so remove it
-                    CurrentTilesetTile.properties.Remove(existingProperty);
-
-                    UpdateXnaDisplayToTileset();
+                    // Changed
                     changesOccurred = true;
+                    existingProperty.value = entityToCreate;
                 }
             }
+            else if (string.IsNullOrEmpty(entityToCreate) && existingProperty != null)
+            {
+                // The property was removed
+                CurrentTilesetTile.properties.Remove(existingProperty);
+
+                UpdateXnaDisplayToTileset();
+                changesOccurred = true;
+            }
+            
 
             if (changesOccurred)
             {
