@@ -65,8 +65,10 @@ namespace TMXGlueLib.DataTypes
 
     public class ReducedLayerInfo
     {
-        public string Texture;       
- 
+        public string Texture;
+
+        public string Name;
+
         public uint NumberOfQuads;
 
         public List<ReducedQuadInfo> Quads = new List<ReducedQuadInfo>();
@@ -75,8 +77,10 @@ namespace TMXGlueLib.DataTypes
         {
             ReducedLayerInfo toReturn = new ReducedLayerInfo();
 
-
             toReturn.Texture = reader.ReadString();
+
+            toReturn.Name = reader.ReadString();
+
             toReturn.NumberOfQuads = reader.ReadUInt32();
 
             for(int i = 0; i < toReturn.NumberOfQuads; i++)
@@ -90,6 +94,9 @@ namespace TMXGlueLib.DataTypes
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(Texture);
+
+            writer.Write(Name);
+            
             NumberOfQuads = (uint)Quads.Count;
             writer.Write(Quads.Count);
 

@@ -108,7 +108,7 @@ namespace TMXGlueTest
         {
             var target = new TiledMapSave
                 {
-                    tileset = new List<Tileset>()
+                    Tilesets = new List<Tileset>()
                         {
                             new Tileset
                                 {
@@ -364,7 +364,7 @@ namespace TMXGlueTest
                     tileheight = 32,
                     tilewidth = 32,
                     orientation = "orthogonal",
-                    tileset = new List<Tileset>
+                    Tilesets = new List<Tileset>
                         {
                             new Tileset
                                 {
@@ -568,7 +568,7 @@ namespace TMXGlueTest
                     width = 64,
                     tileheight = 32,
                     tilewidth = 32,
-                    tileset = new List<Tileset>()
+                    Tilesets = new List<Tileset>()
                         {
                             new Tileset
                                 {

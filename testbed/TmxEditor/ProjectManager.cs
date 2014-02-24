@@ -44,9 +44,63 @@ namespace TmxEditor
 
         }
 
+        public void SaveTiledMapSave()
+        {
+            string fileName = this.LastLoadedFile;
+
+            SaveTiledMapSave(fileName);
+        }
+
         public void SaveTiledMapSave(string fileName)
         {
-            TiledMapSave.Save(fileName);
+            if (TiledMapSave == null)
+            {
+                System.Windows.Forms.MessageBox.Show("No tile map loaded");
+            }
+            else
+            {
+                string directoryToSave = FileManager.GetDirectory(fileName);
+
+
+                bool oldLoadFromSource = Tileset.ShouldLoadValuesFromSource;
+                Tileset.ShouldLoadValuesFromSource = false;
+
+                // First let's save out the shared map (if necessary)
+                foreach (var tileset in TiledMapSave.Tilesets.Where(item => !string.IsNullOrEmpty(item.Source)))
+                {
+
+                    string absoluteTilesetFilename = directoryToSave + tileset.Source;
+                    string oldSource = tileset.Source;
+                    tileset.Source = null;
+
+
+                    // We're going to clone the tileset and remove the "source" property, because tilesets
+                    // in .tsx files shouldn't have sources:
+                    var forSaving = CloneAndCast(tileset);
+
+
+                    FileManager.XmlSerialize(forSaving, absoluteTilesetFilename);
+
+                    tileset.Source = oldSource;
+
+                }
+
+                Tileset.ShouldLoadValuesFromSource = oldLoadFromSource;
+
+                TiledMapSave.Save(fileName);
+            }
+        }
+
+        private ExternalTileSet CloneAndCast(Tileset tileset)
+        {
+            string container;
+
+            FileManager.XmlSerialize(tileset, out container);
+
+            container = container.Replace("<mapTileset", "<tileset");
+            container = container.Replace(@"</mapTileset", "</tileset");
+
+            return FileManager.XmlDeserializeFromString<ExternalTileSet>(container);
         }
 
         internal void LoadTilesetFrom(string fileName, out string output)
@@ -56,7 +110,7 @@ namespace TmxEditor
             var stringBuilder = new StringBuilder();
 
 
-            foreach (var tileset in toCopyFrom.tileset)
+            foreach (var tileset in toCopyFrom.Tilesets)
             {
                 var copyTo = GetTilesetByName(TiledMapSave, tileset.Name);
 
@@ -77,7 +131,7 @@ namespace TmxEditor
 
         internal Tileset GetTilesetByName(TiledMapSave tms, string name)
         {
-            return tms.tileset.FirstOrDefault(tileset => tileset != null && tileset.Name == name);
+            return tms.Tilesets.FirstOrDefault(tileset => tileset != null && tileset.Name == name);
         }
     }
 }

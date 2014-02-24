@@ -34,9 +34,9 @@ namespace TMXGlueTest
             {
                 var xs = new XmlSerializer(typeof(TiledMapSave));
                 var tilemap = (TiledMapSave)xs.Deserialize(ms);
-                Assert.AreEqual(1, tilemap.tileset[0].Tiles.Count);
-                
-                var tile = tilemap.tileset[0].Tiles[0];
+                Assert.AreEqual(1, tilemap.Tilesets[0].Tiles.Count);
+
+                var tile = tilemap.Tilesets[0].Tiles[0];
 
                 Assert.AreEqual(1, tile.properties.Count);
                 Assert.AreEqual("Name", tile.properties[0].name);
@@ -71,7 +71,7 @@ namespace TMXGlueTest
             {
                 var xs = new XmlSerializer(typeof(TiledMapSave));
                 var tilemap = (TiledMapSave)xs.Deserialize(ms);
-                var tile = tilemap.tileset[0].Tiles[0];
+                var tile = tilemap.Tilesets[0].Tiles[0];
 
                 var sceneSave = tilemap.ToSceneSave(1.0f);
                 Assert.AreEqual(1, sceneSave.SpriteList.Count);

@@ -120,6 +120,15 @@ public partial class tileset {
     }
 }
 
+
+[System.Xml.Serialization.XmlRootAttribute(ElementName = "tileset",  Namespace = "", IsNullable = false)]
+public class ExternalTileSet : Tileset
+{
+
+
+}
+
+
 /// <remarks/>
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
 public partial class tilesetImage {

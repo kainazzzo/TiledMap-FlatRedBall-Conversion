@@ -186,10 +186,13 @@ namespace TmxEditor.Controllers
         {
             mTilesetsListBox.Items.Clear();
             // this could be an empty .tmx.  Support that.
-            if (ProjectManager.Self.TiledMapSave.tileset != null)
+            if (ProjectManager.Self.TiledMapSave.Tilesets != null)
             {
-                foreach (var tileset in ProjectManager.Self.TiledMapSave.tileset)
+                foreach (var tileset in ProjectManager.Self.TiledMapSave.Tilesets)
                 {
+
+
+
                     mTilesetsListBox.Items.Add(tileset);
                 }
             }
@@ -382,7 +385,7 @@ namespace TmxEditor.Controllers
 
         private object GetTilesetTileByName(string value)
         {
-            foreach (var tileset in AppState.Self.CurrentTiledMapSave.tileset)
+            foreach (var tileset in AppState.Self.CurrentTiledMapSave.Tilesets)
             {
                 foreach (var tile in tileset.Tiles)
                 {
@@ -417,11 +420,16 @@ namespace TmxEditor.Controllers
 
                 bool hasName = string.IsNullOrEmpty(mNameTextBox.Text) == false;
 
-                if (hasName && existingProperty == null)
+                if (hasName)
                 {
-                    // get rid of this property
-                    const bool raiseChangedEvent = false;
-                    existingProperty = AddProperty(CurrentTilesetTile, "Name", "string", raiseChangedEvent);
+                    if (existingProperty == null)
+                    {
+                        // There's no property for Name, so let's add it...
+                        const bool raiseChangedEvent = false;
+                        existingProperty = AddProperty(CurrentTilesetTile, "Name", "string", raiseChangedEvent);
+                    }
+
+                    // ...and now that we've added, let's modify it:
                     existingProperty.value = mNameTextBox.Text;
                     changesOccurred = true;
                 }

@@ -215,7 +215,7 @@ namespace TmxEditor.Controllers
 
         private void SetTilesetSpriteTexture()
         {
-            if (CurrentTileset != null && CurrentTileset.Image.Length != 0)
+            if (CurrentTileset != null && CurrentTileset.Image != null && CurrentTileset.Image.Length != 0)
             {
                 var image = CurrentTileset.Image[0];
 

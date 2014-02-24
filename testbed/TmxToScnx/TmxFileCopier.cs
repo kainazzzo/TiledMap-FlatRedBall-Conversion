@@ -10,7 +10,7 @@ namespace TmxToScnx
         public static void CopyTmxTilesetImagesToDestination(string sourceTmx, string destinationScnx, TiledMapSave tms)
         {
             //////////Early Out///////////////////
-            if (tms.tileset == null)
+            if (tms.Tilesets == null)
             {
                 return;
             }
@@ -22,7 +22,7 @@ namespace TmxToScnx
             string tmxPath = FileManager.RelativeDirectory;
             string destinationPath = FileManager.GetDirectory(destinationScnx);
 
-            foreach (Tileset tileset in tms.tileset)
+            foreach (Tileset tileset in tms.Tilesets)
             {
                 foreach (mapTilesetImage image in tileset.Image)
                 {
@@ -59,9 +59,9 @@ namespace TmxToScnx
         public static void FixupImageSources(TiledMapSave tms)
         {
             System.Console.WriteLine("Fixing up tileset relative paths");
-            if (tms.tileset != null)
+            if (tms.Tilesets != null)
             {
-                foreach (Tileset tileset in tms.tileset)
+                foreach (Tileset tileset in tms.Tilesets)
                 {
                     foreach (mapTilesetImage image in tileset.Image)
                     {

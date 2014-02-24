@@ -109,7 +109,7 @@ namespace TmxEditor
                 {
                     try
                     {
-                        ProjectManager.Self.TiledMapSave.Save(mCurrentFileName);
+                        ProjectManager.Self.SaveTiledMapSave();
                         hasSaved = true;
                     }
                     catch(Exception exception)
@@ -266,5 +266,6 @@ namespace TmxEditor
         {
             TilesetController.Self.HasCollisionsCheckBoxChanged(HasCollisionsCheckBox.Checked);
         }
+
     }
 }

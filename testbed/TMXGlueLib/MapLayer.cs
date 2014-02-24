@@ -160,5 +160,10 @@ namespace TMXGlueLib
         [XmlIgnore]
         public TiledMapSave.LayerVisibleBehavior VisibleBehavior = TiledMapSave.LayerVisibleBehavior.Ignore;
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
     }
 }

@@ -79,13 +79,13 @@ namespace TMXGlueLib.DataTypes
                 SpriteSave spriteSave = ses.SpriteList[0];
                 Point point = GetTextureDimensions(directory, loadedTextures, spriteSave);
 
-                if (tiledMapSave.tileset.Count != 0)
+                if (tiledMapSave.Tilesets.Count != 0)
                 {
                     toReturn.CellHeightInPixels =
-                        (ushort)tiledMapSave.tileset[0].Tileheight;
+                        (ushort)tiledMapSave.Tilesets[0].Tileheight;
 
                     toReturn.CellWidthInPixels =
-                        (ushort)tiledMapSave.tileset[0].Tilewidth;
+                        (ushort)tiledMapSave.Tilesets[0].Tilewidth;
                 }
                 else
                 {
@@ -112,6 +112,8 @@ namespace TMXGlueLib.DataTypes
                     z = spriteSave.Z;
                     reducedLayerInfo = new ReducedLayerInfo();
                     reducedLayerInfo.Texture = spriteSave.Texture;
+
+                    reducedLayerInfo.Name = tiledMapSave.Layers[toReturn.Layers.Count].Name;
                     toReturn.Layers.Add(reducedLayerInfo);
 
                 }

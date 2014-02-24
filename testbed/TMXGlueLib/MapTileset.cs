@@ -35,6 +35,8 @@ namespace TMXGlueLib
             }
         }
 
+        public static bool ShouldLoadValuesFromSource = true;
+
         [XmlAttribute("source", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string Source
         {
@@ -45,29 +47,42 @@ namespace TMXGlueLib
             set
             {
                 this._sourceField = value;
-                if (this._sourceField != null)
+
+                if (ShouldLoadValuesFromSource)
                 {
-                    _sourceField = _sourceField.Replace("/", "\\");
-                    var xts = FileManager.XmlDeserialize<tileset>(_sourceField);
+                    LoadValuesFromSource();
+                }
+            }
+        }
+
+        private void LoadValuesFromSource()
+        {
+            if (!string.IsNullOrEmpty(this._sourceField))
+            {
+                _sourceField = _sourceField.Replace("/", "\\");
+                var xts = FileManager.XmlDeserialize<tileset>(_sourceField);
+
+                if (xts.image != null)
+                {
+
                     Image = new mapTilesetImage[xts.image.Length];
 
                     Parallel.For(0, xts.image.Length, count =>
+                    {
+                        this.Image[count] = new mapTilesetImage
                         {
-                            this.Image[count] = new mapTilesetImage
-                                {
-                                    source = xts.image[count].source,
-                                    height = xts.image[count].height != 0 ? xts.image[count].height : xts.tileheight,
-                                    width = xts.image[count].width != 0 ? xts.image[count].width : xts.tilewidth
-                                };
-                        });
-
-                    this.Name = xts.name;
-                    this.Margin = xts.margin;
-                    this.Spacing = xts.spacing;
-                    this.Tileheight = xts.tileheight;
-                    this.Tilewidth = xts.tilewidth;
-                    this.Tiles = xts.tile;
+                            source = xts.image[count].source,
+                            height = xts.image[count].height != 0 ? xts.image[count].height : xts.tileheight,
+                            width = xts.image[count].width != 0 ? xts.image[count].width : xts.tilewidth
+                        };
+                    });
                 }
+                this.Name = xts.name;
+                this.Margin = xts.margin;
+                this.Spacing = xts.spacing;
+                this.Tileheight = xts.tileheight;
+                this.Tilewidth = xts.tilewidth;
+                this.Tiles = xts.tile;
             }
         }
 
@@ -106,11 +121,27 @@ namespace TMXGlueLib
             }
         }
 
+
+        public bool ShouldSerializeImage()
+        {
+            return string.IsNullOrEmpty(this.Source);
+        }
+
+
         [XmlArray("terraintypes", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 3)]
         public List<mapTilesetTerrain> terraintypes = new List<mapTilesetTerrain>();
 
+        public bool ShouldSerializeterraintypes()
+        {
+            return string.IsNullOrEmpty(this.Source);
+        }
+
         [XmlElement("tile", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 4)]
         public List<mapTilesetTile> Tiles = new List<mapTilesetTile>();
+        public bool ShouldSerializeTiles()
+        {
+            return string.IsNullOrEmpty(this.Source);
+        }
         //{
         //    get
         //    {
@@ -198,12 +229,22 @@ namespace TMXGlueLib
             set;
         }
 
+        public bool ShouldSerializeName()
+        {
+            return string.IsNullOrEmpty(this.Source);
+        }
+
         /// <remarks/>
         [XmlAttribute("tilewidth")]
         public int Tilewidth
         {
             get;
             set;
+        }
+
+        public bool ShouldSerializeTilewidth()
+        {
+            return string.IsNullOrEmpty(this.Source);
         }
 
         /// <remarks/>
@@ -214,12 +255,22 @@ namespace TMXGlueLib
             set;
         }
 
+        public bool ShouldSerializeTileheight()
+        {
+            return string.IsNullOrEmpty(this.Source);
+        }
+
         /// <remarks/>
         [XmlAttribute("spacing")]
         public int Spacing
         {
             get;
             set;
+        }
+
+        public bool ShouldSerializeSpacing()
+        {
+            return string.IsNullOrEmpty(this.Source);
         }
 
         /// <remarks/>
@@ -230,9 +281,22 @@ namespace TMXGlueLib
             set;
         }
 
+        public bool ShouldSerializeMargin()
+        {
+            return string.IsNullOrEmpty(this.Source);
+        }
+
         public override string ToString()
         {
-            return this.Name;
+            string toReturn = this.Name;
+
+            if (!string.IsNullOrEmpty(Source))
+            {
+                string sourceWithoutPath = FileManager.RemovePath(Source);
+                toReturn += " (" + sourceWithoutPath + ")";
+            }
+
+            return toReturn;
         }
     }
 

@@ -90,9 +90,15 @@ namespace TMXGlueLib
             }
         }
 
+        public bool ShouldSerializeproperties()
+        {
+            return mProperties != null && mProperties.Count != 0;
+        }
+
+
         /// <remarks/>
         [XmlElement("tileset", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public List<Tileset> tileset
+        public List<Tileset> Tilesets
         {
             get;
             set;
@@ -165,14 +171,14 @@ namespace TMXGlueLib
         public TiledMapSave()
         {
             Layers = new List<MapLayer>();
-            tileset = new List<Tileset>();
+            Tilesets = new List<Tileset>();
         }
 
         public List<string> GetReferencedFiles()
         {
             List<string> referencedFiles = new List<string>();
 
-            foreach (var tileset in this.tileset)
+            foreach (var tileset in this.Tilesets)
             {
                 if (tileset != null && tileset.Image.Length != 0)
                 {

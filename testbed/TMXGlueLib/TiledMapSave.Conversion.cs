@@ -88,7 +88,7 @@ namespace TMXGlueLib
             switch (type)
             {
                 case CSVPropertyType.Tile:
-                    foreach (Tileset tileSet in this.tileset)
+                    foreach (Tileset tileSet in this.Tilesets)
                     {
                         if (tileSet.Tiles != null)
                         {
@@ -292,7 +292,7 @@ namespace TMXGlueLib
             {
                 case CSVPropertyType.Tile:
                     return
-                        this.tileset.SelectMany(t => t.Tiles)
+                        this.Tilesets.SelectMany(t => t.Tiles)
                             .SelectMany(tile => tile.PropertyDictionary)
                             .Select(d => d.Key)
                             .Distinct(new CaseInsensitiveEqualityComparer());
@@ -856,11 +856,11 @@ namespace TMXGlueLib
         {
             // Assuming tilesets are sorted by the firstgid value...
             // Resort with LINQ if not
-            if (tileset != null)
+            if (Tilesets != null)
             {
-                for (int i = tileset.Count - 1; i >= 0; --i)
+                for (int i = Tilesets.Count - 1; i >= 0; --i)
                 {
-                    Tileset tileSet = tileset[i];
+                    Tileset tileSet = Tilesets[i];
                     if (gid >= tileSet.Firstgid)
                     {
                         return tileSet;
