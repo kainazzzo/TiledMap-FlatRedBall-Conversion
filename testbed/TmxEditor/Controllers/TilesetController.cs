@@ -23,6 +23,7 @@ namespace TmxEditor.Controllers
     {
 
         public const string HasCollisionVariableName = "HasCollision";
+        public const string EntityToCreatePropertyName = "EntityToCreate";
 
 
 
@@ -41,6 +42,7 @@ namespace TmxEditor.Controllers
         PropertyGrid mPropertyGrid;
         TilesetTileDisplayer mDisplayer;
         CheckBox mHasCollisionsCheckBox;
+        ComboBox mEntitiesComboBox;
         TextBox mNameTextBox;
 
         Tileset mTempTileset;
@@ -99,7 +101,7 @@ namespace TmxEditor.Controllers
         #endregion
 
         public void Initialize(GraphicsDeviceControl control, ListBox tilesetsListBox, 
-            Label infoLabel, PropertyGrid propertyGrid, CheckBox hasCollisionsCheckBox, TextBox nameTextBox)
+            Label infoLabel, PropertyGrid propertyGrid, CheckBox hasCollisionsCheckBox, TextBox nameTextBox, ComboBox entitiesComboBox)
         {
             mDisplayer = new TilesetTileDisplayer();
             mDisplayer.PropertyGrid = propertyGrid;
@@ -107,6 +109,8 @@ namespace TmxEditor.Controllers
             mDisplayer.PropertyGrid.PropertyValueChanged += HandlePropertyValueChangeInternal;
 
             mHasCollisionsCheckBox = hasCollisionsCheckBox;
+            mEntitiesComboBox = entitiesComboBox;
+            
 
             mNameTextBox = nameTextBox;
             mNameTextBox.KeyDown += HandleNameTextBoxKeyDown;
@@ -326,6 +330,60 @@ namespace TmxEditor.Controllers
                 return mDisplayer.CurrentTilesetTileProperty;
             }
         }
+        internal void EntitiesComboBoxChanged(string entityToCreate)
+        {
+            var tileset = AppState.Self.CurrentMapTilesetTile;
+
+            var existingProperty = GetExistingProperty(EntityToCreatePropertyName, CurrentTilesetTile);
+
+            bool changesOccurred = false;
+            if (!string.IsNullOrEmpty(entityToCreate) && existingProperty == null)
+            {
+                // New property added
+                const bool raiseChangedEvent = false;
+                existingProperty = AddProperty(CurrentTilesetTile, EntityToCreatePropertyName, "string",
+                    raiseChangedEvent);
+                existingProperty.value = entityToCreate;
+
+                changesOccurred = true;
+
+                if (GetExistingProperty("Name", CurrentTilesetTile) == null)
+                {
+                    AddRandomNameTo(CurrentTilesetTile);
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(entityToCreate))
+                {
+                    // existingProperty is not null, so check if they match
+                    if (existingProperty.value != entityToCreate)
+                    {
+                        // Changed
+                        changesOccurred = true;
+                        existingProperty.value = entityToCreate;
+                    }
+                }
+                else if (existingProperty != null)
+                {
+                    // Implicitly, entityToCreate is null or empty, so remove it
+                    CurrentTilesetTile.properties.Remove(existingProperty);
+
+                    UpdateXnaDisplayToTileset();
+                    changesOccurred = true;
+                }
+            }
+
+            if (changesOccurred)
+            {
+                RefreshUiToSelectedTile();
+            }
+
+            if (changesOccurred && AnyTileMapChange != null)
+            {
+                AnyTileMapChange(this, null);
+            }
+        }
 
         internal void HasCollisionsCheckBoxChanged(bool hasCollisions)
         {
@@ -458,6 +516,7 @@ namespace TmxEditor.Controllers
 
             mHasCollisionsCheckBox.Enabled = mCurrentTilesetTile != null;
             mNameTextBox.Enabled = mCurrentTilesetTile != null;
+            mEntitiesComboBox.Enabled = mCurrentTilesetTile != null;
 
             if (mHasCollisionsCheckBox.Enabled)
             {
@@ -466,6 +525,21 @@ namespace TmxEditor.Controllers
                 mHasCollisionsCheckBox.Checked =
                     mCurrentTilesetTile.properties.Any(predicate) &&
                     mCurrentTilesetTile.properties.First(predicate).value.ToLowerInvariant() == "true";
+
+                var entityProperty =
+                    mCurrentTilesetTile.properties.FirstOrDefault(item => property.GetStrippedName(item.name) == TilesetController.EntityToCreatePropertyName);
+                if (entityProperty != null)
+                {
+                    foreach (var item in mEntitiesComboBox.Items)
+                    {
+                        var value = item as string;
+                        if (value == entityProperty.value)
+                        {
+                            mEntitiesComboBox.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
 
                 var nameProperty = mCurrentTilesetTile.properties.FirstOrDefault(item => property.GetStrippedName(item.name) == "Name");
 
@@ -482,8 +556,12 @@ namespace TmxEditor.Controllers
             {
                 mHasCollisionsCheckBox.Checked = false;
                 mNameTextBox.Text = "";
+                mEntitiesComboBox.SelectedValue = null;
             }
+
+            
         }
 
+        
     }
 }

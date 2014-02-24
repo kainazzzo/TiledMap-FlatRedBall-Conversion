@@ -38,7 +38,7 @@ namespace TmxEditor
             InitializeComponent();
 
             TilesetController.Self.Initialize(this.XnaControl, TilesetsListBox, this.StatusLabel, 
-                this.TilesetTilePropertyGrid, this.HasCollisionsCheckBox, NameTextBox);
+                this.TilesetTilePropertyGrid, this.HasCollisionsCheckBox, NameTextBox, EntitiesComboBox);
             TilesetController.Self.AnyTileMapChange += HandleChangeInternal;
 
             XnaControl.XnaInitialize += new Action(HandleXnaInitialize);
@@ -265,6 +265,11 @@ namespace TmxEditor
         private void HasCollisionsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             TilesetController.Self.HasCollisionsCheckBoxChanged(HasCollisionsCheckBox.Checked);
+        }
+
+        private void EntitiesComboBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            TilesetController.Self.EntitiesComboBoxChanged(EntitiesComboBox.SelectedItem as string);
         }
 
     }

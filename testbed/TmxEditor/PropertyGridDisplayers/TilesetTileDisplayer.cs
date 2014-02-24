@@ -48,6 +48,7 @@ namespace TmxEditor.PropertyGridDisplayers
                 string[] toExclude = new string[]
                 {
                     TilesetController.HasCollisionVariableName,
+                    TilesetController.EntityToCreatePropertyName,
                     "Name"
 
                 };
