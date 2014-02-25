@@ -30,6 +30,7 @@ namespace TmxEditor
 
         public event EventHandler AnyTileMapChange;
         public event EventHandler TilesetDisplayRightClick;
+        public event EventHandler LoadEntities;
 
         #endregion
 
@@ -272,5 +273,14 @@ namespace TmxEditor
             TilesetController.Self.EntitiesComboBoxChanged(EntitiesComboBox.SelectedItem as string);
         }
 
+        private void EntitiesComboBox_Click(object sender, EventArgs e)
+        {
+            if (LoadEntities != null)
+            {
+                LoadEntities(sender, e);
+            }
+        }
+
+        
     }
 }
