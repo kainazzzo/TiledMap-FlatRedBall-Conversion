@@ -64,6 +64,8 @@ namespace TmxEditor
             {
                 _entities = value;
                 EntitiesComboBox.Items.Clear();
+                EntitiesComboBox.Items.Add("None");
+
                 if (value != null)
                 {
                     _entities.ForEach(e => EntitiesComboBox.Items.Add(e));

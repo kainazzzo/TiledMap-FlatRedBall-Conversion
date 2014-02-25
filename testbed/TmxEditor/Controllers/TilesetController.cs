@@ -337,7 +337,7 @@ namespace TmxEditor.Controllers
             var existingProperty = GetExistingProperty(EntityToCreatePropertyName, CurrentTilesetTile);
 
             bool changesOccurred = false;
-            if (!string.IsNullOrEmpty(entityToCreate) && existingProperty == null)
+            if (entityToCreate != "None" && existingProperty == null)
             {
                 // New property added
                 const bool raiseChangedEvent = false;
@@ -352,7 +352,7 @@ namespace TmxEditor.Controllers
                     AddRandomNameTo(CurrentTilesetTile);
                 }
             }
-            else if (!string.IsNullOrEmpty(entityToCreate) && existingProperty != null)
+            else if (entityToCreate != "None" && existingProperty != null)
             {
                 // existingProperty is not null, so check if it changed
                 if (existingProperty.value != entityToCreate)
@@ -362,7 +362,7 @@ namespace TmxEditor.Controllers
                     existingProperty.value = entityToCreate;
                 }
             }
-            else if (string.IsNullOrEmpty(entityToCreate) && existingProperty != null)
+            else if (entityToCreate == "None" && existingProperty != null)
             {
                 // The property was removed
                 CurrentTilesetTile.properties.Remove(existingProperty);
@@ -538,6 +538,10 @@ namespace TmxEditor.Controllers
                         }
                     }
                 }
+                else
+                {
+                    mEntitiesComboBox.SelectedItem = "None";
+                }
 
                 var nameProperty = mCurrentTilesetTile.properties.FirstOrDefault(item => property.GetStrippedName(item.name) == "Name");
 
@@ -554,7 +558,7 @@ namespace TmxEditor.Controllers
             {
                 mHasCollisionsCheckBox.Checked = false;
                 mNameTextBox.Text = "";
-                mEntitiesComboBox.SelectedValue = null;
+                mEntitiesComboBox.SelectedItem = "None";
             }
 
             
