@@ -10,13 +10,6 @@ namespace TmxEditor
         public Action<string> ReactToLoadedAndMergedProperties;
         public Action<SystemManagers> ReactToXnaInitialize;
         public Action ReactToWindowResize;
-
-        protected ToolComponentBase()
-        {
-            ReactToLoadedFile += s => LastLoadedFile = s;
-        }
-
-        public string LastLoadedFile { get; protected set; }
     }
 
     public abstract class ToolComponent<T> : ToolComponentBase where T : class, new()
