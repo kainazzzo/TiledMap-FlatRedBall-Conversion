@@ -106,6 +106,15 @@ namespace TmxEditor.Controllers
 
                 whatToShow += "(ID, " + tileSetOver.id + ")";
             }
+            else if(CurrentTileset != null)
+            {
+                var width = CurrentTileset.Tilewidth;
+
+                int x = (int)(mCursor.GetWorldX(mManagers) / width);
+                int y = (int)(mCursor.GetWorldY(mManagers) / width);
+
+                whatToShow = "ID, " + (x + y* CurrentTileset.GetNumberOfTilesWide());
+            }
             mInfoLabel.Text = whatToShow;
         }
 

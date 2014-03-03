@@ -46,6 +46,7 @@
             this.RemoveTilesetPropertyButton = new System.Windows.Forms.Button();
             this.AddTilesetPropertyButton = new System.Windows.Forms.Button();
             this.TilesetTilePropertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.TilesetPropertiesMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.LayersTab = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.LayersListBox = new System.Windows.Forms.TreeView();
@@ -54,7 +55,6 @@
             this.AddLayerPropertyButton = new System.Windows.Forms.Button();
             this.LayerPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.LayerPropertyGridContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.TilesetPropertiesMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tabControl1.SuspendLayout();
             this.TilesetsTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -135,7 +135,7 @@
             this.TilesetsTab.Controls.Add(this.splitContainer2);
             this.TilesetsTab.Location = new System.Drawing.Point(4, 22);
             this.TilesetsTab.Name = "TilesetsTab";
-            this.TilesetsTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.TilesetsTab.Padding = new System.Windows.Forms.Padding(3);
             this.TilesetsTab.Size = new System.Drawing.Size(819, 482);
             this.TilesetsTab.TabIndex = 0;
             this.TilesetsTab.Text = "Tilesets";
@@ -270,12 +270,17 @@
             this.TilesetTilePropertyGrid.TabIndex = 0;
             this.TilesetTilePropertyGrid.ToolbarVisible = false;
             // 
+            // TilesetPropertiesMenuStrip
+            // 
+            this.TilesetPropertiesMenuStrip.Name = "TilesetPropertiesMenuStrip";
+            this.TilesetPropertiesMenuStrip.Size = new System.Drawing.Size(61, 4);
+            // 
             // LayersTab
             // 
             this.LayersTab.Controls.Add(this.splitContainer1);
             this.LayersTab.Location = new System.Drawing.Point(4, 22);
             this.LayersTab.Name = "LayersTab";
-            this.LayersTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.LayersTab.Padding = new System.Windows.Forms.Padding(3);
             this.LayersTab.Size = new System.Drawing.Size(819, 482);
             this.LayersTab.TabIndex = 1;
             this.LayersTab.Text = "Layers";
@@ -359,11 +364,6 @@
             // 
             this.LayerPropertyGridContextMenu.Name = "LayerListContextMenu";
             this.LayerPropertyGridContextMenu.Size = new System.Drawing.Size(61, 4);
-            // 
-            // TilesetPropertiesMenuStrip
-            // 
-            this.TilesetPropertiesMenuStrip.Name = "TilesetPropertiesMenuStrip";
-            this.TilesetPropertiesMenuStrip.Size = new System.Drawing.Size(61, 4);
             // 
             // TmxEditorControl
             // 

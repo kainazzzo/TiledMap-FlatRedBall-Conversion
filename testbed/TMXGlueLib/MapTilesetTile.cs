@@ -46,5 +46,24 @@ namespace TMXGlueLib
                 get;
                 set;
             }
+
+            public override string ToString()
+            {
+                string toReturn = id.ToString();
+
+                if(PropertyDictionary.Count != null)
+                {
+                    toReturn += " (";
+
+                    foreach (var kvp in PropertyDictionary)
+                    {
+                        toReturn += "(" + kvp.Key + "," + kvp.Value + ")";
+                    }
+
+
+                    toReturn += ")";
+                }
+                return toReturn;
+            }
         }
 }
