@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using RenderingLibrary.Graphics;
 using RenderingLibrary;
-using RenderingLibrary.Content;
 using System.Windows.Forms;
-using FlatRedBall.IO;
 using FlatRedBall.SpecializedXnaControls.Input;
 using TMXGlueLib;
 using XnaAndWinforms;
-using FlatRedBall.SpecializedXnaControls;
-using InputLibrary;
 using TmxEditor.PropertyGridDisplayers;
-using TmxEditor.GraphicalDisplay.Tilesets;
 using TmxEditor.UI;
 using FlatRedBall.Utilities;
 
@@ -95,6 +87,7 @@ namespace TmxEditor.Controllers
         #region Events
 
         public event EventHandler AnyTileMapChange;
+        public event EventHandler EntityAssociationsChanged;
 
         #endregion
 
@@ -267,6 +260,11 @@ namespace TmxEditor.Controllers
             if (changesOccurred)
             {
                 RefreshUiToSelectedTile();
+
+                if (EntityAssociationsChanged != null)
+                {
+                    EntityAssociationsChanged(this, null);
+                }
             }
 
             if (changesOccurred && AnyTileMapChange != null)
