@@ -105,7 +105,7 @@ namespace TmxEditor.PropertyGridDisplayers
             property property = null;
 
 
-            property = properties.First((candidate) => candidate.name == name);
+            property = properties.FirstOrDefault((candidate) => candidate.name == name);
 
             return property;
         }

@@ -45,17 +45,33 @@ namespace TmxEditor.Controllers
 
         private void HandleEditNameAndType(object sender, EventArgs e)
         {
-
-            NewPropertyWindow window = new NewPropertyWindow();
-
-            window.ResultName = property.GetStrippedName( CurrentTilesetTileProperty.name);
-            window.ResultType = property.GetPropertyName( CurrentTilesetTileProperty.name);
-
-            DialogResult result = window.ShowDialog();
-
-            if (result == DialogResult.OK)
+            if (CurrentTilesetTileProperty != null)
             {
+                NewPropertyWindow window = new NewPropertyWindow();
 
+                window.ResultName = property.GetStrippedName(CurrentTilesetTileProperty.name);
+                window.ResultType = property.GetPropertyName(CurrentTilesetTileProperty.name);
+
+                DialogResult result = window.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    LayersController.SetPropertyNameFromNameAndType(
+                        window.ResultName, window.ResultType, CurrentTilesetTileProperty);
+
+                    mDisplayer.UpdateDisplayedProperties();
+                    mDisplayer.PropertyGrid.Refresh();
+
+                    if (AnyTileMapChange != null)
+                    {
+                        AnyTileMapChange(this, null);
+                    }
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("No property selected");
             }
         }
 
