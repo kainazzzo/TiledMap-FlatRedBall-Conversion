@@ -19,6 +19,10 @@ namespace TmxEditor.UI
             {
                 return NameTextBox.Text;
             }
+            set
+            {
+                NameTextBox.Text = value;
+            }
         }
 
 
@@ -27,6 +31,10 @@ namespace TmxEditor.UI
             get
             {
                 return TypeComboBox.Text;
+            }
+            set
+            {
+                TypeComboBox.Text = value;
             }
         }
 

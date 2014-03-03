@@ -11,10 +11,14 @@ namespace TmxEditor.Controllers
 {
     public partial class TilesetController
     {
+        #region Fields
 
         PropertyGrid mPropertyGrid;
         TilesetTileDisplayer mDisplayer;
 
+        #endregion
+
+        #region Properties
 
         public property CurrentTilesetTileProperty
         {
@@ -24,12 +28,35 @@ namespace TmxEditor.Controllers
             }
         }
 
+        #endregion
+
+        #region Methods
+
         private void InitializePropertyGrid(PropertyGrid propertyGrid)
         {
             mDisplayer = new TilesetTileDisplayer();
             mDisplayer.PropertyGrid = propertyGrid;
             mDisplayer.RefreshOnTimer = false;
             mDisplayer.PropertyGrid.PropertyValueChanged += HandlePropertyValueChangeInternal;
+
+            propertyGrid.ContextMenuStrip.Items.Add(
+                "Edit Name/Type", null, HandleEditNameAndType);
+        }
+
+        private void HandleEditNameAndType(object sender, EventArgs e)
+        {
+
+            NewPropertyWindow window = new NewPropertyWindow();
+
+            window.ResultName = property.GetStrippedName( CurrentTilesetTileProperty.name);
+            window.ResultType = property.GetPropertyName( CurrentTilesetTileProperty.name);
+
+            DialogResult result = window.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+
+            }
         }
 
 
@@ -132,6 +159,8 @@ namespace TmxEditor.Controllers
             }
 
         }
+
+        #endregion
 
     }
 }

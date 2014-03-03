@@ -232,6 +232,27 @@ namespace TMXGlueLib
             return nameWithoutType;
         }
 
+        public static string GetPropertyName(string name)
+        {
+            if (name.Contains('(') && name.Contains(')'))
+            {
+                int open = name.IndexOf('(');
+                int close = name.IndexOf(')');
+
+                int afterOpen = open+1;
+
+                return name.Substring(afterOpen, close - afterOpen);
+
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+
+
         public override string ToString()
         {
             return name + " = " + value;
