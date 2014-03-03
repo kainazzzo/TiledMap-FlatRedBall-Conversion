@@ -91,7 +91,7 @@
             this.XnaControl.Location = new System.Drawing.Point(0, 0);
             this.XnaControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.XnaControl.Name = "XnaControl";
-            this.XnaControl.Size = new System.Drawing.Size(937, 461);
+            this.XnaControl.Size = new System.Drawing.Size(937, 460);
             this.XnaControl.TabIndex = 5;
             this.XnaControl.Text = "graphicsDeviceControl1";
             this.XnaControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.XnaControl_MouseClick);
@@ -192,7 +192,7 @@
             this.splitContainer3.Panel2.Controls.Add(this.AddTilesetPropertyButton);
             this.splitContainer3.Panel2.Controls.Add(this.TilesetTilePropertyGrid);
             this.splitContainer3.Size = new System.Drawing.Size(941, 739);
-            this.splitContainer3.SplitterDistance = 465;
+            this.splitContainer3.SplitterDistance = 464;
             this.splitContainer3.SplitterWidth = 6;
             this.splitContainer3.TabIndex = 6;
             // 
@@ -205,6 +205,7 @@
             this.EntitiesComboBox.Size = new System.Drawing.Size(239, 28);
             this.EntitiesComboBox.TabIndex = 9;
             this.EntitiesComboBox.SelectedValueChanged += new System.EventHandler(this.EntitiesComboBox_SelectedValueChanged);
+            this.EntitiesComboBox.Click += new System.EventHandler(this.EntitiesComboBox_Click);
             // 
             // label1
             // 
@@ -249,7 +250,7 @@
             // RemoveTilesetPropertyButton
             // 
             this.RemoveTilesetPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.RemoveTilesetPropertyButton.Location = new System.Drawing.Point(171, 220);
+            this.RemoveTilesetPropertyButton.Location = new System.Drawing.Point(171, 217);
             this.RemoveTilesetPropertyButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RemoveTilesetPropertyButton.Name = "RemoveTilesetPropertyButton";
             this.RemoveTilesetPropertyButton.Size = new System.Drawing.Size(158, 35);
@@ -261,7 +262,7 @@
             // AddTilesetPropertyButton
             // 
             this.AddTilesetPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AddTilesetPropertyButton.Location = new System.Drawing.Point(4, 220);
+            this.AddTilesetPropertyButton.Location = new System.Drawing.Point(4, 217);
             this.AddTilesetPropertyButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.AddTilesetPropertyButton.Name = "AddTilesetPropertyButton";
             this.AddTilesetPropertyButton.Size = new System.Drawing.Size(158, 35);
@@ -279,7 +280,7 @@
             this.TilesetTilePropertyGrid.Location = new System.Drawing.Point(0, 78);
             this.TilesetTilePropertyGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TilesetTilePropertyGrid.Name = "TilesetTilePropertyGrid";
-            this.TilesetTilePropertyGrid.Size = new System.Drawing.Size(937, 134);
+            this.TilesetTilePropertyGrid.Size = new System.Drawing.Size(937, 131);
             this.TilesetTilePropertyGrid.TabIndex = 0;
             this.TilesetTilePropertyGrid.ToolbarVisible = false;
             // 
@@ -290,7 +291,7 @@
             this.LayersTab.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.LayersTab.Name = "LayersTab";
             this.LayersTab.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.LayersTab.Size = new System.Drawing.Size(1233, 747);
+            this.LayersTab.Size = new System.Drawing.Size(1233, 749);
             this.LayersTab.TabIndex = 1;
             this.LayersTab.Text = "Layers";
             this.LayersTab.UseVisualStyleBackColor = true;
@@ -312,7 +313,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.RemoveLayerPropertyButton);
             this.splitContainer1.Panel2.Controls.Add(this.AddLayerPropertyButton);
             this.splitContainer1.Panel2.Controls.Add(this.LayerPropertyGrid);
-            this.splitContainer1.Size = new System.Drawing.Size(1225, 737);
+            this.splitContainer1.Size = new System.Drawing.Size(1225, 739);
             this.splitContainer1.SplitterDistance = 315;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 8;
@@ -326,7 +327,7 @@
             this.LayersListBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.LayersListBox.Name = "LayersListBox";
             this.LayersListBox.ShowRootLines = false;
-            this.LayersListBox.Size = new System.Drawing.Size(311, 733);
+            this.LayersListBox.Size = new System.Drawing.Size(311, 735);
             this.LayersListBox.TabIndex = 7;
             this.LayersListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LayersListBox_MouseClick);
             // 
@@ -338,7 +339,7 @@
             // RemoveLayerPropertyButton
             // 
             this.RemoveLayerPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.RemoveLayerPropertyButton.Location = new System.Drawing.Point(171, 693);
+            this.RemoveLayerPropertyButton.Location = new System.Drawing.Point(171, 695);
             this.RemoveLayerPropertyButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RemoveLayerPropertyButton.Name = "RemoveLayerPropertyButton";
             this.RemoveLayerPropertyButton.Size = new System.Drawing.Size(158, 35);
@@ -350,7 +351,7 @@
             // AddLayerPropertyButton
             // 
             this.AddLayerPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AddLayerPropertyButton.Location = new System.Drawing.Point(4, 693);
+            this.AddLayerPropertyButton.Location = new System.Drawing.Point(4, 695);
             this.AddLayerPropertyButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.AddLayerPropertyButton.Name = "AddLayerPropertyButton";
             this.AddLayerPropertyButton.Size = new System.Drawing.Size(158, 35);
@@ -369,7 +370,7 @@
             this.LayerPropertyGrid.Location = new System.Drawing.Point(0, 0);
             this.LayerPropertyGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.LayerPropertyGrid.Name = "LayerPropertyGrid";
-            this.LayerPropertyGrid.Size = new System.Drawing.Size(891, 690);
+            this.LayerPropertyGrid.Size = new System.Drawing.Size(887, 692);
             this.LayerPropertyGrid.TabIndex = 0;
             this.LayerPropertyGrid.ToolbarVisible = false;
             this.LayerPropertyGrid.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.LayerPropertyGrid_SelectedGridItemChanged);
