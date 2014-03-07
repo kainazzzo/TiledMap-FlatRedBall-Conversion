@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.TilesetsListBox = new System.Windows.Forms.ListBox();
+            this.TilesetListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.XnaControl = new XnaAndWinforms.GraphicsDeviceControl();
             this.TilesetXnaContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.LoadedTmxLabel = new System.Windows.Forms.Label();
@@ -74,6 +75,7 @@
             // 
             // TilesetsListBox
             // 
+            this.TilesetsListBox.ContextMenuStrip = this.TilesetListContextMenu;
             this.TilesetsListBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TilesetsListBox.FormattingEnabled = true;
             this.TilesetsListBox.Location = new System.Drawing.Point(0, 0);
@@ -81,6 +83,11 @@
             this.TilesetsListBox.Size = new System.Drawing.Size(180, 472);
             this.TilesetsListBox.TabIndex = 6;
             this.TilesetsListBox.SelectedIndexChanged += new System.EventHandler(this.TilesetsListBox_SelectedIndexChanged);
+            // 
+            // TilesetListContextMenu
+            // 
+            this.TilesetListContextMenu.Name = "TilesetListContextMenu";
+            this.TilesetListContextMenu.Size = new System.Drawing.Size(61, 4);
             // 
             // XnaControl
             // 
@@ -423,5 +430,6 @@
         private System.Windows.Forms.ComboBox EntitiesComboBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ContextMenuStrip TilesetPropertiesMenuStrip;
+        private System.Windows.Forms.ContextMenuStrip TilesetListContextMenu;
     }
 }

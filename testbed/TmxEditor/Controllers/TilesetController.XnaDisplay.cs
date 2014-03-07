@@ -11,11 +11,23 @@ using TMXGlueLib;
 using RenderingLibrary.Content;
 using RenderingLibrary.Math.Geometry;
 using TmxEditor.GraphicalDisplay.Tilesets;
+using XnaAndWinforms;
+using System.Windows.Forms;
+using TmxEditor.Managers;
 
 namespace TmxEditor.Controllers
 {
     public partial class TilesetController
     {
+
+        #region Fields
+
+        GraphicsDeviceControl mControl;
+
+
+        #endregion
+
+
         #region Properties
 
         List<TilePropertyHighlight> mTilesWithPropertiesMarkers = new List<TilePropertyHighlight>();
@@ -52,7 +64,127 @@ namespace TmxEditor.Controllers
             mCursor.Initialize(mControl);
             mCameraPanningLogic = new CameraPanningLogic(mControl, managers, mCursor, mKeyboard);
             mManagers.Renderer.SamplerState = Microsoft.Xna.Framework.Graphics.SamplerState.PointClamp;
-            
+
+            mControl.KeyDown += HandleXnaControlKeyDown;
+            mControl.KeyPress += HandleXnaControlKeyPress;
+        }
+
+        private void HandleXnaControlKeyPress(object sender, KeyPressEventArgs e)
+        {
+
+            #region Copy ( (char)3 )
+
+            if (e.KeyChar == (char)3)
+            {
+
+                if (CurrentTilesetTile != null)
+                {
+                    e.Handled = true;
+                    CopyPasteManager.Self.StoreCopyOf(CurrentTilesetTile);
+                }
+            }
+
+            #endregion
+
+            #region Paste ( (char)22 )
+
+            else if (e.KeyChar == (char)22)
+            {
+                HandlePasteTilesetTileProperties(e);
+            }
+            #endregion
+
+        }
+
+        private void HandlePasteTilesetTileProperties(KeyPressEventArgs e)
+        {
+            e.Handled = true;
+            // Paste CTRL+V stuff
+
+            if (CurrentTilesetTile != null)
+            {
+                if (CopyPasteManager.Self.CopiedTilesetTile != null)
+                {
+                    bool wasAnythingChanged = false;
+
+                    foreach (var propertyToCopy in CopyPasteManager.Self.CopiedTilesetTile.properties)
+                    {
+                        if (propertyToCopy.StrippedNameLower != "name")
+                        {
+                            // Is there already a property with this name?
+                            property toPasteOn = CurrentTilesetTile.properties.FirstOrDefault(item => item.StrippedNameLower == propertyToCopy.StrippedNameLower);
+
+                            if (toPasteOn == null)
+                            {
+                                toPasteOn = new property();
+                                CurrentTilesetTile.properties.Add(toPasteOn);
+                            }
+
+                            toPasteOn.name = propertyToCopy.name;
+                            toPasteOn.value = propertyToCopy.value;
+
+                            CurrentTilesetTile.ForceRebuildPropertyDictionary();
+
+                            wasAnythingChanged = true;
+
+                        }
+                    }
+
+                    if (wasAnythingChanged)
+                    {
+                        if (GetExistingProperty("Name", CurrentTilesetTile) == null)
+                        {
+                            AddRandomNameTo(CurrentTilesetTile);
+                        }
+
+                    }
+
+                    if (wasAnythingChanged)
+                    {
+                        UpdateXnaDisplayToTileset();
+
+                        RefreshUiToSelectedTile();
+
+                        if (AnyTileMapChange != null)
+                        {
+                            AnyTileMapChange(this, null);
+                        }
+
+                    }
+                }
+            }
+        }
+
+        private void HandleXnaControlKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if (e.KeyCode == System.Windows.Forms.Keys.Delete && CurrentTilesetTile != null)
+            {
+                // Delete everything here after asking the user if it's okay:
+                string message;
+
+                var dialogResult = MessageBox.Show("Is it okay to delete all properties on this tile?", "Delete properties?",
+                    MessageBoxButtons.YesNo);
+
+                if (dialogResult == DialogResult.Yes)
+                {
+                    AppState.Self.CurrentTileset.Tiles.Remove(CurrentTilesetTile);
+                    CurrentTilesetTile = null;
+
+                    UpdateXnaDisplayToTileset();
+
+                    UpdatePropertiesUI();
+
+                    if (AnyTileMapChange != null)
+                    {
+                        AnyTileMapChange(this, null);
+                    }
+                    
+                }
+            }
+
+
+
+
         }
 
         void HandleXnaUpdate()
@@ -77,15 +209,21 @@ namespace TmxEditor.Controllers
             mapTilesetTile tileSetOver;
             GetTilesetTileOver(out tileSetOver);
 
-            if (mCursor.PrimaryClick && AppState.Self.CurrentTileset != null)
+            // let's make whatever has focus lose it:
+            if (mCursor.PrimaryClick)
             {
-                if (tileSetOver != null)
+                mControl.Focus();
+
+                if (AppState.Self.CurrentTileset != null)
                 {
-                    CurrentTilesetTile = tileSetOver;
-                }
-                else
-                {
-                    CurrentTilesetTile = TryGetOrMakeNewTilesetTileAtCursor(mCursor);
+                    if (tileSetOver != null)
+                    {
+                        CurrentTilesetTile = tileSetOver;
+                    }
+                    else
+                    {
+                        CurrentTilesetTile = TryGetOrMakeNewTilesetTileAtCursor(mCursor);
+                    }
                 }
             }
             return tileSetOver;
@@ -118,7 +256,7 @@ namespace TmxEditor.Controllers
             mInfoLabel.Text = whatToShow;
         }
 
-        private mapTilesetTile TryGetOrMakeNewTilesetTileAtCursor(Cursor cursor)
+        private mapTilesetTile TryGetOrMakeNewTilesetTileAtCursor( InputLibrary.Cursor cursor)
         {
             var tileset = AppState.Self.CurrentTileset;
 

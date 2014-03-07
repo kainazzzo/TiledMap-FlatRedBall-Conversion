@@ -68,6 +68,7 @@
     <Compile Include="AppState.cs" />
     <Compile Include="Controllers\LayersController.cs" />
     <Compile Include="Controllers\Singleton.cs" />
+    <Compile Include="Controllers\TilesetController.ListBox.cs" />
     <Compile Include="Controllers\TilesetController.PropertyGrid.cs" />
     <Compile Include="Controllers\TilesetController.XnaDisplay.cs" />
     <Compile Include="Form1.cs">
@@ -80,9 +81,11 @@
     <Compile Include="GraphicalDisplay\CursorExtensionMethods.cs" />
     <Compile Include="GraphicalDisplay\Tilesets\TilePropertyHighlight.cs" />
     <Compile Include="Controllers\TilesetController.cs" />
+    <Compile Include="Managers\CopyPasteManager.cs" />
     <Compile Include="PropertyGridDisplayers\DisplayerExtensionMethods.cs" />
     <Compile Include="PropertyGridDisplayers\MapLayerDisplayer.cs" />
     <Compile Include="PropertyGridDisplayers\TilesetTileDisplayer.cs" />
+    <Compile Include="ProvidedContext.cs" />
     <Compile Include="TimeManager.cs" />
     <Compile Include="TmxEditorControl.cs">
       <SubType>UserControl</SubType>
@@ -100,6 +103,12 @@
     </Compile>
     <Compile Include="UI\NewPropertyWindow.Designer.cs">
       <DependentUpon>NewPropertyWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TsxSelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\TsxSelectionForm.Designer.cs">
+      <DependentUpon>TsxSelectionForm.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -119,6 +128,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\NewPropertyWindow.resx">
       <DependentUpon>NewPropertyWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\TsxSelectionForm.resx">
+      <DependentUpon>TsxSelectionForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">

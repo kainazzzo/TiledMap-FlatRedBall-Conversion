@@ -3,6 +3,7 @@ using System.Xml.Serialization;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using FlatRedBall.IO;
+using System.IO;
 
 namespace TMXGlueLib
 {
@@ -60,7 +61,30 @@ namespace TMXGlueLib
             if (!string.IsNullOrEmpty(this._sourceField))
             {
                 _sourceField = _sourceField.Replace("/", "\\");
-                var xts = FileManager.XmlDeserialize<tileset>(_sourceField);
+
+                tileset xts = null;
+
+                try
+                {
+
+                    xts = FileManager.XmlDeserialize<tileset>(_sourceField);
+                }
+                catch (FileNotFoundException)
+                {
+                    string fileAttemptedToLoad = _sourceField;
+                    if (FileManager.IsRelative(_sourceField))
+                    {
+                        fileAttemptedToLoad = FileManager.RelativeDirectory + _sourceField;
+                    }
+
+                    string message = "Could not find the shared tsx file " + fileAttemptedToLoad + 
+                        "\nIf this is a relative file name, then the loader will use " +
+                        "the FileManager's RelativeDirectory to make the file absolute.  Therefore, be sure to set the FileManger's RelativeDirectory to the file represented by " +
+                        "this fileset before setting this property if setting this property manually.";
+
+
+                    throw new FileNotFoundException(message);
+                }
 
                 if (xts.image != null)
                 {

@@ -113,9 +113,7 @@ namespace TmxEditor.Controllers
         {
             Func<property, bool> predicate = item =>
             {
-                return item.name == propertyName ||
-                    item.name.StartsWith(propertyName + " ") ||
-                    item.name.StartsWith(propertyName + "(");
+                return item.StrippedNameLower == propertyName.ToLowerInvariant();
 
             };
 
@@ -142,14 +140,19 @@ namespace TmxEditor.Controllers
             }
             UpdateXnaDisplayToTileset();
 
-            mDisplayer.UpdateDisplayedProperties();
-            mDisplayer.PropertyGrid.Refresh();
+            UpdatePropertiesUI();
 
             if (raiseChangedEvent && AnyTileMapChange != null)
             {
                 AnyTileMapChange(this, null);
             }
             return newProperty;
+        }
+
+        private void UpdatePropertiesUI()
+        {
+            mDisplayer.UpdateDisplayedProperties();
+            mDisplayer.PropertyGrid.Refresh();
         }
 
         internal void HandleRemovePropertyClick()

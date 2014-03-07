@@ -50,6 +50,20 @@ namespace TMXGlueLib
             }
         }
 
+        public static int GetNumberOfTilesWide(this Tileset tileset)
+        {
+            if (tileset.Image.Length == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return GetNumberOfTilesWide(
+                    tileset.Image[0].width, tileset.Margin, tileset.Tilewidth, tileset.Spacing);
+            }
+        }
+
+
         public static int GetNumberOfTilesWide(int imageWidth, int margin, int tileWidth, int spacing)
         {
             // The following logic
@@ -104,7 +118,17 @@ namespace TMXGlueLib
 
         }
 
-        public static int GetNumberOfTilesWide(this Tileset tileset)
+        public static int GetTileCount(this Tileset tileset)
+        {
+            int width = tileset.GetNumberOfTilesWide();
+            int height = tileset.GetNumberOfTilesTall();
+
+            return width * height;
+
+
+        }
+
+        public static int GetNumberOfTilesTall(this Tileset tileset)
         {
             if (tileset.Image.Length == 0)
             {
@@ -113,8 +137,20 @@ namespace TMXGlueLib
             else
             {
                 return GetNumberOfTilesWide(
-                    tileset.Image[0].width, tileset.Margin, tileset.Tilewidth, tileset.Spacing);
+                    tileset.Image[0].height, tileset.Margin, tileset.Tileheight, tileset.Spacing);
             }
+        }
+
+
+        public static int GetNumberOfTilesTall(int imageHeight, int margin, int tileHeight, int spacing)
+        {
+            // See GetNumberOfTilesWide for a discussion about this approach
+            int usableSpace = imageHeight - 2 * margin;
+            usableSpace += spacing;
+
+            return usableSpace / (tileHeight + spacing);
+
+
         }
 
         public static int IndexToLocalId(this Tileset tileset, int xIndex, int yIndex)

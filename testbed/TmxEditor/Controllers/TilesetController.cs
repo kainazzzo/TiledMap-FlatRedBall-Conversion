@@ -21,7 +21,6 @@ namespace TmxEditor.Controllers
 
         #region Fields
 
-        ListBox mTilesetsListBox;
         mapTilesetTile mCurrentTilesetTile;
 
         SystemManagers mManagers;
@@ -30,7 +29,6 @@ namespace TmxEditor.Controllers
 
         InputLibrary.Cursor mCursor;
         InputLibrary.Keyboard mKeyboard;
-        GraphicsDeviceControl mControl;
         CheckBox mHasCollisionsCheckBox;
         ComboBox mEntitiesComboBox;
         TextBox mNameTextBox;
@@ -47,14 +45,6 @@ namespace TmxEditor.Controllers
             get
             {
                 return mManagers.Renderer.Camera;
-            }
-        }
-
-        public Tileset CurrentTileset
-        {
-            get
-            {
-                return mTilesetsListBox.SelectedItem as Tileset;
             }
         }
 
@@ -102,14 +92,13 @@ namespace TmxEditor.Controllers
 
             mNameTextBox = nameTextBox;
             mNameTextBox.KeyDown += HandleNameTextBoxKeyDown;
+            mNameTextBox.LostFocus += HandleLostFocus;
 
             mPropertyGrid = propertyGrid;
             mControl = control;
             ToolComponentManager.Self.Register(this);
 
-            mTilesetsListBox = tilesetsListBox;
-            mTilesetsListBox.SelectedIndexChanged += new EventHandler(HandleTilesetSelect);
-            mTilesetsListBox.LostFocus += HandleLostFocus;
+            InitializeListBox(tilesetsListBox);
 
             ReactToLoadedFile = HandleLoadedFile;
             ReactToXnaInitialize = HandleXnaInitialize;
@@ -127,9 +116,6 @@ namespace TmxEditor.Controllers
 
         void HandleLostFocus(object sender, EventArgs e)
         {
-
-
-
             HandleNameChange();
         }
 
@@ -164,30 +150,6 @@ namespace TmxEditor.Controllers
 
         }
 
-        private void FillListBox()
-        {
-            mTilesetsListBox.Items.Clear();
-            // this could be an empty .tmx.  Support that.
-            if (ProjectManager.Self.TiledMapSave.Tilesets != null)
-            {
-                foreach (var tileset in ProjectManager.Self.TiledMapSave.Tilesets)
-                {
-
-
-
-                    mTilesetsListBox.Items.Add(tileset);
-                }
-            }
-        }
-
-        void HandleTilesetSelect(object sender, EventArgs e)
-        {
-            UpdateXnaDisplayToTileset();
-
-            
-        }
-
-
         private void GetTopLeftWidthHeight(mapTilesetTile tile, out float left, out float top, out float width, out float height)
         {
             var currentTileset = mTilesetsListBox.SelectedItem as Tileset;
@@ -212,8 +174,6 @@ namespace TmxEditor.Controllers
             width = currentTileset.Tilewidth;
             height = currentTileset.Tileheight;
         }
-
-
 
         internal void EntitiesComboBoxChanged(string entityToCreate)
         {
@@ -402,11 +362,13 @@ namespace TmxEditor.Controllers
 
             UpdateHighlightRectangle();
 
-            mHasCollisionsCheckBox.Enabled = mCurrentTilesetTile != null;
-            mNameTextBox.Enabled = mCurrentTilesetTile != null;
-            mEntitiesComboBox.Enabled = mCurrentTilesetTile != null;
+            bool hasSelectedTileset = mCurrentTilesetTile != null;
 
-            if (mHasCollisionsCheckBox.Enabled)
+            mHasCollisionsCheckBox.Enabled = hasSelectedTileset;
+            mNameTextBox.Enabled = hasSelectedTileset;
+            mEntitiesComboBox.Enabled = hasSelectedTileset;
+
+            if (hasSelectedTileset)
             {
                 Func<property, bool> predicate = item => property.GetStrippedName( item.name ) == TilesetController.HasCollisionVariableName;
 

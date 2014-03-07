@@ -214,6 +214,24 @@ namespace TMXGlueLib
             set;
         }
 
+        [XmlIgnore]
+        public string StrippedName
+        {
+            get
+            {
+                return GetStrippedName(this.name);
+            }
+        }
+
+        public string StrippedNameLower
+        {
+            get
+            {
+                return GetStrippedName(this.name).ToLowerInvariant();
+            }
+        }
+
+
         public static string GetStrippedName(string name)
         {
             string nameWithoutType;

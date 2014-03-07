@@ -21,12 +21,14 @@ namespace TMXGlueLib
                     {
                         if (propertyDictionaryField == null)
                         {
-                            propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
+                            ForceRebuildPropertyDictionary();
                         }
                         return propertyDictionaryField;
                     }
                 }
             }
+
+
 
             List<property> mProperties = new List<property>();
 
@@ -64,6 +66,11 @@ namespace TMXGlueLib
                     toReturn += ")";
                 }
                 return toReturn;
+            }
+
+            public void ForceRebuildPropertyDictionary()
+            {
+                propertyDictionaryField = TiledMapSave.BuildPropertyDictionaryConcurrently(properties);
             }
         }
 }

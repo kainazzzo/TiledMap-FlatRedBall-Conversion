@@ -84,6 +84,9 @@ namespace TMXGlueLib
 
         private void WriteColumnValues(StringBuilder sb, IList<string> columnNames, CSVPropertyType type, string layerName)
         {
+            columnNames = columnNames.Select(item => property.GetStrippedName(item)).ToList();
+
+
             // TODO: There is probably a good way to refactor this code
             switch (type)
             {
@@ -156,11 +159,11 @@ namespace TMXGlueLib
             string nameValue = null;
 
             bool doesDictionaryContainNameValue = 
-                iDictionary.Any(p => StripName(p.Key).Equals("name", StringComparison.CurrentCultureIgnoreCase));
+                iDictionary.Any(p => property.GetStrippedName(p.Key).Equals("name", StringComparison.CurrentCultureIgnoreCase));
 
             if (doesDictionaryContainNameValue)
             {
-                nameValue = iDictionary.First(p => StripName(p.Key).Equals("name", StringComparison.CurrentCultureIgnoreCase)).Value;
+                nameValue = iDictionary.First(p => property.GetStrippedName(p.Key).Equals("name", StringComparison.CurrentCultureIgnoreCase)).Value;
             }
             else
             {
@@ -172,20 +175,15 @@ namespace TMXGlueLib
 
             foreach (string columnName in columnNames)
             {
-                if (columnName.Equals("X (int)", StringComparison.CurrentCultureIgnoreCase))
+                string strippedColumnName = property.GetStrippedName(columnName);
+
+
+                if (!strippedColumnName.Equals("name", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    sb.AppendFormat(",{0}", x);
-                }
-                else if (columnName.Equals("Y (int)", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    sb.AppendFormat(",{0}", y);
-                }
-                else if (!StripName(columnName).Equals("name", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    if (iDictionary.Any(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
+                    if (iDictionary.Any(p => property.GetStrippedName(p.Key).Equals(strippedColumnName, StringComparison.CurrentCultureIgnoreCase)))
                     {
                         var value =
-                            iDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value;
+                            iDictionary.First(p => property.GetStrippedName(p.Key).Equals(strippedColumnName, StringComparison.CurrentCultureIgnoreCase)).Value;
 
                         if (value != null)
                         {
@@ -194,10 +192,10 @@ namespace TMXGlueLib
 
                         sb.AppendFormat(",\"{0}\"", value);
                     }
-                    else if (pDictionary != null && pDictionary.Any(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)))
+                    else if (pDictionary != null && pDictionary.Any(p => p.Key.Equals(strippedColumnName, StringComparison.CurrentCultureIgnoreCase)))
                     {
                         var value =
-                            pDictionary.First(p => p.Key.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).Value;
+                            pDictionary.First(p => p.Key.Equals(strippedColumnName, StringComparison.CurrentCultureIgnoreCase)).Value;
 
                         if (value != null)
                         {
@@ -220,12 +218,12 @@ namespace TMXGlueLib
             sb.Append("Name (required)");
             foreach (string columnName in columnNames)
             {
-                string strippedName = StripName(columnName);
+                string strippedName = property.GetStrippedName(columnName);
 
 
-                bool isName = !strippedName.Equals("name", StringComparison.CurrentCultureIgnoreCase);
+                bool isName = strippedName.Equals("name", StringComparison.CurrentCultureIgnoreCase);
 
-                if (isName)
+                if (!isName)
                 {
                     // Update August 27, 2012
                     // We can't just assume that
@@ -248,44 +246,28 @@ namespace TMXGlueLib
             sb.AppendLine();
         }
 
-        private static string StripName(string columnName)
-        {
-            int index = -1;
 
-            if (columnName.Contains(' '))
-            {
-                index = columnName.IndexOf(' ');
-            }
-            if(index == -1 || (columnName.Contains('(') && columnName.IndexOf('(') < index))
-            {
-                index = columnName.IndexOf('(');
-            }
-
-            if (index == -1)
-            {
-                return columnName;
-            }
-            else
-            {
-                return columnName.Substring(0, index);
-            }
-        }
-
-        public class CaseInsensitiveEqualityComparer : IEqualityComparer<string>
+        /// <summary>
+        /// Compares the stripped name of properties - removing the type
+        /// </summary>
+        public class CaseInsensitivePropertyEqualityComparer : IEqualityComparer<string>
         {
             public bool Equals(string x, string y)
             {
-                return x.Equals(y, StringComparison.CurrentCultureIgnoreCase);
+
+                return property.GetStrippedName(x).Equals(property.GetStrippedName(y), StringComparison.CurrentCultureIgnoreCase);
             }
 
             public int GetHashCode(string obj)
             {
-                return obj.ToLowerInvariant().GetHashCode();
+                return property.GetStrippedName(obj).ToLowerInvariant().GetHashCode();
             }
         }
 
         private IEnumerable<string> GetColumnNames(CSVPropertyType type, string layerName)
         {
+            var comparer = new CaseInsensitivePropertyEqualityComparer();
+
             var columnNames = new HashSet<string>();
 
             switch (type)
@@ -295,7 +277,7 @@ namespace TMXGlueLib
                         this.Tilesets.SelectMany(t => t.Tiles)
                             .SelectMany(tile => tile.PropertyDictionary)
                             .Select(d => d.Key)
-                            .Distinct(new CaseInsensitiveEqualityComparer());
+                            .Distinct(comparer);
                 case CSVPropertyType.Layer:
                     return
                         this.Layers.Where(
@@ -304,9 +286,9 @@ namespace TMXGlueLib
                             (l.Name != null && l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
                             .SelectMany(l => l.PropertyDictionary)
                             .Select(d => d.Key)
-                            .Distinct(new CaseInsensitiveEqualityComparer());
+                            .Distinct(comparer);
                 case CSVPropertyType.Map:
-                    return this.PropertyDictionary.Select(d => d.Key).Distinct(new CaseInsensitiveEqualityComparer());
+                    return this.PropertyDictionary.Select(d => d.Key).Distinct(comparer);
                 case CSVPropertyType.Object:
                     return ((new[] {"X (int)", "Y (int)"}.Select(d => d)
                         .Union(objectgroup.Where(l =>
@@ -315,13 +297,13 @@ namespace TMXGlueLib
                                                   l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
                                    .SelectMany(o => o.@object)
                                    .SelectMany(o => o.PropertyDictionary)
-                                   .Select(d => d.Key), new CaseInsensitiveEqualityComparer())
+                                   .Select(d => d.Key), comparer)
                         .Union(objectgroup.Where(l =>
                                                  layerName == null ||
                                                  (l.name != null &&
                                                   l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
                                    .SelectMany(o => o.PropertyDictionary)
-                                   .Select(d => d.Key), new CaseInsensitiveEqualityComparer())));
+                                   .Select(d => d.Key), comparer)));
             }
             return columnNames;
         }
@@ -785,7 +767,7 @@ namespace TMXGlueLib
 
         private static bool IsName(string key)
         {
-            return StripName(key).ToLower() == "name";
+            return property.GetStrippedName(key).ToLower() == "name";
         }
 
         public void CalculateWorldCoordinates(int layercount, int count, int tileWidth, int tileHeight, int layerWidth, out float x, out float y, out float z)

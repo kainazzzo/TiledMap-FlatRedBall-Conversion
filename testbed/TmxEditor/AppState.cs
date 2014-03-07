@@ -78,5 +78,22 @@ namespace TmxEditor
                 return ProjectManager.Self.TiledMapSave;
             }
         }
+
+
+        public ProvidedContext ProvidedContext
+        {
+            get;
+            set;
+
+        }
+
+        public AppState()
+        {
+
+            ProvidedContext = new ProvidedContext();
+
+        }
+
+
     }
 }

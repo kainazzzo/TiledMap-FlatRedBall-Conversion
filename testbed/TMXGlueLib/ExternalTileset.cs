@@ -20,7 +20,8 @@ using TMXGlueLib;
 /// <remarks/>
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
 [System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
-public partial class tileset {
+public partial class tileset 
+{
 
     private tilesetImage[] imageField;
     
