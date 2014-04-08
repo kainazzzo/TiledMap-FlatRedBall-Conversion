@@ -67,7 +67,6 @@ namespace TMXGlueLib.DataTypes
 
             ses.SpriteList.Sort((first, second) => first.Z.CompareTo(second.Z));
 
-            float z = float.NaN;
             ReducedLayerInfo reducedLayerInfo = null;
 
 
@@ -99,6 +98,7 @@ namespace TMXGlueLib.DataTypes
 
             int indexInLayer = 0;
             int layerIndex = 0;
+            float z = float.NaN;
 
             for(int i = 0; i < ses.SpriteList.Count; i++)
             {
@@ -112,6 +112,7 @@ namespace TMXGlueLib.DataTypes
 
                     z = spriteSave.Z;
                     reducedLayerInfo = new ReducedLayerInfo();
+                    reducedLayerInfo.Z = spriteSave.Z;
                     reducedLayerInfo.Texture = spriteSave.Texture;
 
                     // This doesn't work if the map has a non-zero Z offset:
