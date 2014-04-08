@@ -98,6 +98,7 @@ namespace TMXGlueLib.DataTypes
             }
 
             int indexInLayer = 0;
+            int layerIndex = 0;
 
             for(int i = 0; i < ses.SpriteList.Count; i++)
             {
@@ -113,9 +114,12 @@ namespace TMXGlueLib.DataTypes
                     reducedLayerInfo = new ReducedLayerInfo();
                     reducedLayerInfo.Texture = spriteSave.Texture;
 
-                    reducedLayerInfo.Name = tiledMapSave.Layers[ FlatRedBall.Math.MathFunctions.RoundToInt(z)].Name;
-                    toReturn.Layers.Add(reducedLayerInfo);
+                    // This doesn't work if the map has a non-zero Z offset:
+                    //reducedLayerInfo.Name = tiledMapSave.Layers[ FlatRedBall.Math.MathFunctions.RoundToInt(z)].Name;
+                    reducedLayerInfo.Name = tiledMapSave.Layers[layerIndex].Name;
 
+                    toReturn.Layers.Add(reducedLayerInfo);
+                    layerIndex++;
                 }
 
                 Point point = GetTextureDimensions(directory, loadedTextures, spriteSave);

@@ -53,12 +53,6 @@ namespace TmxEditor.Controllers
 
         private void HandleAddNewTilesetClick(object sender, EventArgs e)
         {
-#if DEBUG
-            AppState.Self.ProvidedContext.AvailableTsxFiles.Add(
-                @"C:\Users\Victor\Documents\FlatRedBallProjects\CursorTest\CursorTest\CursorTestContent\Screens\TestScreen\basictiles.tsx");
-
-#endif
-
             string fileName;
             bool succeeded;
             GetTilesetFromFileOrOptions(out fileName, out succeeded);
@@ -101,11 +95,6 @@ namespace TmxEditor.Controllers
 
         void HandleSetSharedTilesetClick(object sender, EventArgs e)
         {
-#if DEBUG
-            AppState.Self.ProvidedContext.AvailableTsxFiles.Add(
-                @"C:\Users\Victor\Documents\FlatRedBallProjects\CursorTest\CursorTest\CursorTestContent\Screens\TestScreen\basictiles.tsx");
-
-#endif
 
 
 

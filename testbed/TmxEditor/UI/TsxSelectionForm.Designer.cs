@@ -53,6 +53,7 @@
             this.FromThisProjectTreeView.ShowRootLines = false;
             this.FromThisProjectTreeView.Size = new System.Drawing.Size(348, 131);
             this.FromThisProjectTreeView.TabIndex = 1;
+            this.FromThisProjectTreeView.DoubleClick += new System.EventHandler(this.FromThisProjectTreeView_DoubleClick);
             // 
             // groupBox1
             // 
@@ -161,7 +162,6 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.CancelButton;
             this.ClientSize = new System.Drawing.Size(353, 252);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.OkayButton);

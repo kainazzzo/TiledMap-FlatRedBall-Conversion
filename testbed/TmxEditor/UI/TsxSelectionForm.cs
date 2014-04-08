@@ -123,5 +123,14 @@ namespace TmxEditor.UI
             return succeeded;
         }
 
+        private void FromThisProjectTreeView_DoubleClick(object sender, EventArgs e)
+        {
+            if (FromThisProjectTreeView.SelectedNode != null)
+            {
+                DialogResult = System.Windows.Forms.DialogResult.OK;
+                this.Close();
+            }
+        }
+
     }
 }
