@@ -59,7 +59,7 @@ namespace TMXGlueLib.DataTypes
 
 
 
-        public static ReducedTileMapInfo FromTiledMapSave(TiledMapSave tiledMapSave, float scale, string directory, FileReferenceType referenceType)
+        public static ReducedTileMapInfo FromTiledMapSave(TiledMapSave tiledMapSave, float scale, float zOffset, string directory, FileReferenceType referenceType)
         {
             var toReturn = new ReducedTileMapInfo();
 
@@ -116,8 +116,8 @@ namespace TMXGlueLib.DataTypes
                     reducedLayerInfo.Texture = spriteSave.Texture;
 
                     // This doesn't work if the map has a non-zero Z offset:
-                    //reducedLayerInfo.Name = tiledMapSave.Layers[ FlatRedBall.Math.MathFunctions.RoundToInt(z)].Name;
-                    reducedLayerInfo.Name = tiledMapSave.Layers[layerIndex].Name;
+                    reducedLayerInfo.Name = tiledMapSave.Layers[ FlatRedBall.Math.MathFunctions.RoundToInt(z - zOffset)].Name;
+                    //reducedLayerInfo.Name = tiledMapSave.Layers[layerIndex].Name;
 
                     toReturn.Layers.Add(reducedLayerInfo);
                     layerIndex++;
