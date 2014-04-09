@@ -71,11 +71,15 @@ namespace TMXGlueLib.DataTypes
 
         public uint NumberOfQuads;
 
+        public float Z;
+
         public List<ReducedQuadInfo> Quads = new List<ReducedQuadInfo>();
 
         public static ReducedLayerInfo ReadFrom(BinaryReader reader)
         {
             ReducedLayerInfo toReturn = new ReducedLayerInfo();
+
+            toReturn.Z = reader.ReadSingle();
 
             toReturn.Texture = reader.ReadString();
 
@@ -93,6 +97,8 @@ namespace TMXGlueLib.DataTypes
 
         public void WriteTo(BinaryWriter writer)
         {
+            writer.Write(Z);
+
             writer.Write(Texture);
 
             writer.Write(Name);
@@ -128,11 +134,15 @@ namespace TMXGlueLib.DataTypes
 
         public uint NumberOfLayers;
 
+        public int VersionNumber;
+
         public List<ReducedLayerInfo> Layers = new List<ReducedLayerInfo>();
 
         public static ReducedTileMapInfo ReadFrom(BinaryReader reader)
         {
             ReducedTileMapInfo toReturn = new ReducedTileMapInfo();
+
+            toReturn.VersionNumber = reader.ReadInt32();
 
             toReturn.CellWidthInPixels = reader.ReadUInt16();
             toReturn.CellHeightInPixels = reader.ReadUInt16();
@@ -153,7 +163,7 @@ namespace TMXGlueLib.DataTypes
 
         public void WriteTo(BinaryWriter writer)
         {
-            NumberOfLayers = (uint)Layers.Count;
+            writer.Write(VersionNumber);
 
             writer.Write(CellWidthInPixels);
             writer.Write(CellHeightInPixels);
@@ -161,6 +171,7 @@ namespace TMXGlueLib.DataTypes
             writer.Write(QuadHeight);
             writer.Write(QuadWidth);
 
+            NumberOfLayers = (uint)Layers.Count;
             writer.Write(NumberOfLayers);
 
             for (int i = 0; i < NumberOfLayers; i++)
