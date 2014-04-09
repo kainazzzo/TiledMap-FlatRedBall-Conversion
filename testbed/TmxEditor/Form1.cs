@@ -112,14 +112,16 @@ namespace TmxEditor
 
             if (!string.IsNullOrEmpty(fileName))
             {
-
+                // Eventually read this from somewhere?
+                float zOffset = 0;
                 using (FileStream stream = File.OpenWrite(fileName))
                 using(BinaryWriter writer = new BinaryWriter(stream))
                 {
                     ReducedTileMapInfo rtmi = 
                         ReducedTileMapInfo.FromTiledMapSave( 
                             ProjectManager.Self.TiledMapSave , 
-                            1, 
+                            1,
+                            zOffset,
                             FileManager.GetDirectory( ProjectManager.Self.LastLoadedFile), TMXGlueLib.FileReferenceType.NoDirectory);
 
                     rtmi.WriteTo(writer);

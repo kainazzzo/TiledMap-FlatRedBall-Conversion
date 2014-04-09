@@ -92,7 +92,7 @@ namespace TmxToScnx
                 }
 
                 ReducedTileMapInfo rtmi = 
-                    ReducedTileMapInfo.FromTiledMapSave(tms, parsedArgs.Scale, FileManager.GetDirectory(parsedArgs.DestinationFile), referenceType);
+                    ReducedTileMapInfo.FromTiledMapSave(tms, parsedArgs.Scale, parsedArgs.Offset.Item3, FileManager.GetDirectory(parsedArgs.DestinationFile), referenceType);
 
                 if (parsedArgs.CopyImages == false)
                 {

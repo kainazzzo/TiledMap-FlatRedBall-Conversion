@@ -26,11 +26,13 @@ namespace TmxToTilb
                 string sourceTmx = args[0];
                 string destinationFile = args[1];
                 float scale = 1.0f;
+                float zOffset = 0;
                 //TiledMapSave.LayerVisibleBehavior LayerVisibleBehaviorValue = TiledMapSave.LayerVisibleBehavior.Ignore;
                 if (args.Length >= 3)
                 {
                     ParseOptionalCommandLineArgs(args, out scale);
                 }
+
                 //TiledMapSave.LayerVisibleBehaviorValue = LayerVisibleBehaviorValue;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
                 // Convert once in case of any exceptions
@@ -44,7 +46,7 @@ namespace TmxToTilb
                 TmxFileCopier.FixupImageSources(tms);
 
                 System.Console.WriteLine(string.Format("Saving \"{0}\".", destinationFile));
-                ReducedTileMapInfo rtmi = ReducedTileMapInfo.FromTiledMapSave(tms, scale,
+                ReducedTileMapInfo rtmi = ReducedTileMapInfo.FromTiledMapSave(tms, scale, zOffset,
                     FileManager.GetDirectory(sourceTmx), FileReferenceType.NoDirectory);
 
                 using(FileStream fileStream = File.OpenWrite(destinationFile))
