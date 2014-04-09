@@ -56,6 +56,15 @@
             this.AddLayerPropertyButton = new System.Windows.Forms.Button();
             this.LayerPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.LayerPropertyGridContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.LevelsTab = new System.Windows.Forms.TabPage();
+            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.LevelLabel = new System.Windows.Forms.Label();
+            this.NonLevelsListBox = new System.Windows.Forms.ListBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.LevelsListBox = new System.Windows.Forms.ListBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.TilesetsTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -71,6 +80,11 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.LevelsTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
+            this.splitContainer4.Panel1.SuspendLayout();
+            this.splitContainer4.Panel2.SuspendLayout();
+            this.splitContainer4.SuspendLayout();
             this.SuspendLayout();
             // 
             // TilesetsListBox
@@ -78,9 +92,11 @@
             this.TilesetsListBox.ContextMenuStrip = this.TilesetListContextMenu;
             this.TilesetsListBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TilesetsListBox.FormattingEnabled = true;
+            this.TilesetsListBox.ItemHeight = 20;
             this.TilesetsListBox.Location = new System.Drawing.Point(0, 0);
+            this.TilesetsListBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TilesetsListBox.Name = "TilesetsListBox";
-            this.TilesetsListBox.Size = new System.Drawing.Size(180, 472);
+            this.TilesetsListBox.Size = new System.Drawing.Size(273, 735);
             this.TilesetsListBox.TabIndex = 6;
             this.TilesetsListBox.SelectedIndexChanged += new System.EventHandler(this.TilesetsListBox_SelectedIndexChanged);
             // 
@@ -95,8 +111,9 @@
             this.XnaControl.DesiredFramesPerSecond = 30F;
             this.XnaControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.XnaControl.Location = new System.Drawing.Point(0, 0);
+            this.XnaControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.XnaControl.Name = "XnaControl";
-            this.XnaControl.Size = new System.Drawing.Size(621, 294);
+            this.XnaControl.Size = new System.Drawing.Size(937, 458);
             this.XnaControl.TabIndex = 5;
             this.XnaControl.Text = "graphicsDeviceControl1";
             this.XnaControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.XnaControl_MouseClick);
@@ -111,8 +128,9 @@
             this.LoadedTmxLabel.AutoSize = true;
             this.LoadedTmxLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.LoadedTmxLabel.Location = new System.Drawing.Point(0, 0);
+            this.LoadedTmxLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LoadedTmxLabel.Name = "LoadedTmxLabel";
-            this.LoadedTmxLabel.Size = new System.Drawing.Size(86, 13);
+            this.LoadedTmxLabel.Size = new System.Drawing.Size(124, 20);
             this.LoadedTmxLabel.TabIndex = 4;
             this.LoadedTmxLabel.Text = "No TMX Loaded";
             // 
@@ -120,9 +138,10 @@
             // 
             this.StatusLabel.AutoSize = true;
             this.StatusLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.StatusLabel.Location = new System.Drawing.Point(0, 521);
+            this.StatusLabel.Location = new System.Drawing.Point(0, 802);
+            this.StatusLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(66, 13);
+            this.StatusLabel.Size = new System.Drawing.Size(99, 20);
             this.StatusLabel.TabIndex = 7;
             this.StatusLabel.Text = "Status Label";
             // 
@@ -130,20 +149,23 @@
             // 
             this.tabControl1.Controls.Add(this.TilesetsTab);
             this.tabControl1.Controls.Add(this.LayersTab);
+            this.tabControl1.Controls.Add(this.LevelsTab);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 13);
+            this.tabControl1.Location = new System.Drawing.Point(0, 20);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(827, 508);
+            this.tabControl1.Size = new System.Drawing.Size(1240, 782);
             this.tabControl1.TabIndex = 8;
             // 
             // TilesetsTab
             // 
             this.TilesetsTab.Controls.Add(this.splitContainer2);
-            this.TilesetsTab.Location = new System.Drawing.Point(4, 22);
+            this.TilesetsTab.Location = new System.Drawing.Point(4, 29);
+            this.TilesetsTab.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TilesetsTab.Name = "TilesetsTab";
-            this.TilesetsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.TilesetsTab.Size = new System.Drawing.Size(819, 482);
+            this.TilesetsTab.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.TilesetsTab.Size = new System.Drawing.Size(1232, 749);
             this.TilesetsTab.TabIndex = 0;
             this.TilesetsTab.Text = "Tilesets";
             this.TilesetsTab.UseVisualStyleBackColor = true;
@@ -152,7 +174,8 @@
             // 
             this.splitContainer2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer2.Location = new System.Drawing.Point(4, 5);
+            this.splitContainer2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitContainer2.Name = "splitContainer2";
             // 
             // splitContainer2.Panel1
@@ -162,8 +185,9 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer2.Size = new System.Drawing.Size(813, 476);
-            this.splitContainer2.SplitterDistance = 184;
+            this.splitContainer2.Size = new System.Drawing.Size(1224, 739);
+            this.splitContainer2.SplitterDistance = 277;
+            this.splitContainer2.SplitterWidth = 6;
             this.splitContainer2.TabIndex = 7;
             this.splitContainer2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
             // 
@@ -172,6 +196,7 @@
             this.splitContainer3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitContainer3.Name = "splitContainer3";
             this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -189,17 +214,18 @@
             this.splitContainer3.Panel2.Controls.Add(this.RemoveTilesetPropertyButton);
             this.splitContainer3.Panel2.Controls.Add(this.AddTilesetPropertyButton);
             this.splitContainer3.Panel2.Controls.Add(this.TilesetTilePropertyGrid);
-            this.splitContainer3.Size = new System.Drawing.Size(625, 476);
-            this.splitContainer3.SplitterDistance = 298;
+            this.splitContainer3.Size = new System.Drawing.Size(941, 739);
+            this.splitContainer3.SplitterDistance = 462;
+            this.splitContainer3.SplitterWidth = 6;
             this.splitContainer3.TabIndex = 6;
             // 
             // EntitiesComboBox
             // 
             this.EntitiesComboBox.FormattingEnabled = true;
-            this.EntitiesComboBox.Location = new System.Drawing.Point(295, 5);
-            this.EntitiesComboBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.EntitiesComboBox.Location = new System.Drawing.Point(442, 8);
+            this.EntitiesComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.EntitiesComboBox.Name = "EntitiesComboBox";
-            this.EntitiesComboBox.Size = new System.Drawing.Size(161, 21);
+            this.EntitiesComboBox.Size = new System.Drawing.Size(240, 28);
             this.EntitiesComboBox.TabIndex = 9;
             this.EntitiesComboBox.SelectedValueChanged += new System.EventHandler(this.EntitiesComboBox_SelectedValueChanged);
             this.EntitiesComboBox.Click += new System.EventHandler(this.EntitiesComboBox_Click);
@@ -207,36 +233,38 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(230, 6);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(345, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 13);
+            this.label1.Size = new System.Drawing.Size(91, 20);
             this.label1.TabIndex = 8;
             this.label1.Text = "Entity Type:";
             // 
             // NameTextBox
             // 
             this.NameTextBox.AcceptsReturn = true;
-            this.NameTextBox.Location = new System.Drawing.Point(47, 4);
+            this.NameTextBox.Location = new System.Drawing.Point(70, 6);
+            this.NameTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.NameTextBox.Name = "NameTextBox";
-            this.NameTextBox.Size = new System.Drawing.Size(172, 20);
+            this.NameTextBox.Size = new System.Drawing.Size(256, 26);
             this.NameTextBox.TabIndex = 7;
             // 
             // NameLabel
             // 
             this.NameLabel.AutoSize = true;
-            this.NameLabel.Location = new System.Drawing.Point(3, 7);
+            this.NameLabel.Location = new System.Drawing.Point(4, 11);
+            this.NameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.NameLabel.Name = "NameLabel";
-            this.NameLabel.Size = new System.Drawing.Size(38, 13);
+            this.NameLabel.Size = new System.Drawing.Size(55, 20);
             this.NameLabel.TabIndex = 6;
             this.NameLabel.Text = "Name:";
             // 
             // HasCollisionsCheckBox
             // 
             this.HasCollisionsCheckBox.AutoSize = true;
-            this.HasCollisionsCheckBox.Location = new System.Drawing.Point(3, 27);
+            this.HasCollisionsCheckBox.Location = new System.Drawing.Point(4, 42);
+            this.HasCollisionsCheckBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.HasCollisionsCheckBox.Name = "HasCollisionsCheckBox";
-            this.HasCollisionsCheckBox.Size = new System.Drawing.Size(91, 17);
+            this.HasCollisionsCheckBox.Size = new System.Drawing.Size(134, 24);
             this.HasCollisionsCheckBox.TabIndex = 5;
             this.HasCollisionsCheckBox.Text = "Has Collisions";
             this.HasCollisionsCheckBox.UseVisualStyleBackColor = true;
@@ -245,9 +273,10 @@
             // RemoveTilesetPropertyButton
             // 
             this.RemoveTilesetPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.RemoveTilesetPropertyButton.Location = new System.Drawing.Point(114, 138);
+            this.RemoveTilesetPropertyButton.Location = new System.Drawing.Point(171, 213);
+            this.RemoveTilesetPropertyButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RemoveTilesetPropertyButton.Name = "RemoveTilesetPropertyButton";
-            this.RemoveTilesetPropertyButton.Size = new System.Drawing.Size(105, 23);
+            this.RemoveTilesetPropertyButton.Size = new System.Drawing.Size(158, 35);
             this.RemoveTilesetPropertyButton.TabIndex = 4;
             this.RemoveTilesetPropertyButton.Text = "Remove Property";
             this.RemoveTilesetPropertyButton.UseVisualStyleBackColor = true;
@@ -256,9 +285,10 @@
             // AddTilesetPropertyButton
             // 
             this.AddTilesetPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AddTilesetPropertyButton.Location = new System.Drawing.Point(3, 138);
+            this.AddTilesetPropertyButton.Location = new System.Drawing.Point(4, 213);
+            this.AddTilesetPropertyButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.AddTilesetPropertyButton.Name = "AddTilesetPropertyButton";
-            this.AddTilesetPropertyButton.Size = new System.Drawing.Size(105, 23);
+            this.AddTilesetPropertyButton.Size = new System.Drawing.Size(158, 35);
             this.AddTilesetPropertyButton.TabIndex = 3;
             this.AddTilesetPropertyButton.Text = "Add Property";
             this.AddTilesetPropertyButton.UseVisualStyleBackColor = true;
@@ -271,9 +301,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TilesetTilePropertyGrid.ContextMenuStrip = this.TilesetPropertiesMenuStrip;
             this.TilesetTilePropertyGrid.HelpVisible = false;
-            this.TilesetTilePropertyGrid.Location = new System.Drawing.Point(0, 51);
+            this.TilesetTilePropertyGrid.Location = new System.Drawing.Point(0, 78);
+            this.TilesetTilePropertyGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TilesetTilePropertyGrid.Name = "TilesetTilePropertyGrid";
-            this.TilesetTilePropertyGrid.Size = new System.Drawing.Size(621, 82);
+            this.TilesetTilePropertyGrid.Size = new System.Drawing.Size(937, 127);
             this.TilesetTilePropertyGrid.TabIndex = 0;
             this.TilesetTilePropertyGrid.ToolbarVisible = false;
             // 
@@ -285,10 +316,11 @@
             // LayersTab
             // 
             this.LayersTab.Controls.Add(this.splitContainer1);
-            this.LayersTab.Location = new System.Drawing.Point(4, 22);
+            this.LayersTab.Location = new System.Drawing.Point(4, 29);
+            this.LayersTab.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.LayersTab.Name = "LayersTab";
-            this.LayersTab.Padding = new System.Windows.Forms.Padding(3);
-            this.LayersTab.Size = new System.Drawing.Size(819, 482);
+            this.LayersTab.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.LayersTab.Size = new System.Drawing.Size(1232, 749);
             this.LayersTab.TabIndex = 1;
             this.LayersTab.Text = "Layers";
             this.LayersTab.UseVisualStyleBackColor = true;
@@ -297,7 +329,8 @@
             // 
             this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer1.Location = new System.Drawing.Point(4, 5);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -309,8 +342,9 @@
             this.splitContainer1.Panel2.Controls.Add(this.RemoveLayerPropertyButton);
             this.splitContainer1.Panel2.Controls.Add(this.AddLayerPropertyButton);
             this.splitContainer1.Panel2.Controls.Add(this.LayerPropertyGrid);
-            this.splitContainer1.Size = new System.Drawing.Size(813, 476);
-            this.splitContainer1.SplitterDistance = 209;
+            this.splitContainer1.Size = new System.Drawing.Size(1224, 739);
+            this.splitContainer1.SplitterDistance = 315;
+            this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 8;
             // 
             // LayersListBox
@@ -319,9 +353,10 @@
             this.LayersListBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LayersListBox.HideSelection = false;
             this.LayersListBox.Location = new System.Drawing.Point(0, 0);
+            this.LayersListBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.LayersListBox.Name = "LayersListBox";
             this.LayersListBox.ShowRootLines = false;
-            this.LayersListBox.Size = new System.Drawing.Size(205, 472);
+            this.LayersListBox.Size = new System.Drawing.Size(311, 735);
             this.LayersListBox.TabIndex = 7;
             this.LayersListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LayersListBox_MouseClick);
             // 
@@ -333,9 +368,10 @@
             // RemoveLayerPropertyButton
             // 
             this.RemoveLayerPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.RemoveLayerPropertyButton.Location = new System.Drawing.Point(114, 446);
+            this.RemoveLayerPropertyButton.Location = new System.Drawing.Point(171, 695);
+            this.RemoveLayerPropertyButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RemoveLayerPropertyButton.Name = "RemoveLayerPropertyButton";
-            this.RemoveLayerPropertyButton.Size = new System.Drawing.Size(105, 23);
+            this.RemoveLayerPropertyButton.Size = new System.Drawing.Size(158, 35);
             this.RemoveLayerPropertyButton.TabIndex = 2;
             this.RemoveLayerPropertyButton.Text = "Remove Property";
             this.RemoveLayerPropertyButton.UseVisualStyleBackColor = true;
@@ -344,9 +380,10 @@
             // AddLayerPropertyButton
             // 
             this.AddLayerPropertyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AddLayerPropertyButton.Location = new System.Drawing.Point(3, 446);
+            this.AddLayerPropertyButton.Location = new System.Drawing.Point(4, 695);
+            this.AddLayerPropertyButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.AddLayerPropertyButton.Name = "AddLayerPropertyButton";
-            this.AddLayerPropertyButton.Size = new System.Drawing.Size(105, 23);
+            this.AddLayerPropertyButton.Size = new System.Drawing.Size(158, 35);
             this.AddLayerPropertyButton.TabIndex = 1;
             this.AddLayerPropertyButton.Text = "Add Property";
             this.AddLayerPropertyButton.UseVisualStyleBackColor = true;
@@ -360,8 +397,9 @@
             this.LayerPropertyGrid.ContextMenuStrip = this.LayerPropertyGridContextMenu;
             this.LayerPropertyGrid.HelpVisible = false;
             this.LayerPropertyGrid.Location = new System.Drawing.Point(0, 0);
+            this.LayerPropertyGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.LayerPropertyGrid.Name = "LayerPropertyGrid";
-            this.LayerPropertyGrid.Size = new System.Drawing.Size(586, 444);
+            this.LayerPropertyGrid.Size = new System.Drawing.Size(880, 692);
             this.LayerPropertyGrid.TabIndex = 0;
             this.LayerPropertyGrid.ToolbarVisible = false;
             this.LayerPropertyGrid.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.LayerPropertyGrid_SelectedGridItemChanged);
@@ -372,15 +410,115 @@
             this.LayerPropertyGridContextMenu.Name = "LayerListContextMenu";
             this.LayerPropertyGridContextMenu.Size = new System.Drawing.Size(61, 4);
             // 
+            // LevelsTab
+            // 
+            this.LevelsTab.Controls.Add(this.splitContainer4);
+            this.LevelsTab.Location = new System.Drawing.Point(4, 29);
+            this.LevelsTab.Name = "LevelsTab";
+            this.LevelsTab.Size = new System.Drawing.Size(1232, 749);
+            this.LevelsTab.TabIndex = 2;
+            this.LevelsTab.Text = "Levels";
+            this.LevelsTab.UseVisualStyleBackColor = true;
+            // 
+            // splitContainer4
+            // 
+            this.splitContainer4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer4.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer4.Name = "splitContainer4";
+            // 
+            // splitContainer4.Panel1
+            // 
+            this.splitContainer4.Panel1.Controls.Add(this.NonLevelsListBox);
+            this.splitContainer4.Panel1.Controls.Add(this.label3);
+            this.splitContainer4.Panel1.Controls.Add(this.LevelsListBox);
+            this.splitContainer4.Panel1.Controls.Add(this.label2);
+            // 
+            // splitContainer4.Panel2
+            // 
+            this.splitContainer4.Panel2.Controls.Add(this.comboBox1);
+            this.splitContainer4.Panel2.Controls.Add(this.label4);
+            this.splitContainer4.Panel2.Controls.Add(this.LevelLabel);
+            this.splitContainer4.Size = new System.Drawing.Size(1232, 749);
+            this.splitContainer4.SplitterDistance = 277;
+            this.splitContainer4.TabIndex = 0;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(144, 94);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(348, 28);
+            this.comboBox1.TabIndex = 2;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(3, 90);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(135, 32);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "CSV File:";
+            // 
+            // LevelLabel
+            // 
+            this.LevelLabel.AutoSize = true;
+            this.LevelLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LevelLabel.Location = new System.Drawing.Point(3, 21);
+            this.LevelLabel.Name = "LevelLabel";
+            this.LevelLabel.Size = new System.Drawing.Size(290, 32);
+            this.LevelLabel.TabIndex = 0;
+            this.LevelLabel.Text = "Level1.tmx Properties";
+            // 
+            // NonLevelsListBox
+            // 
+            this.NonLevelsListBox.FormattingEnabled = true;
+            this.NonLevelsListBox.ItemHeight = 20;
+            this.NonLevelsListBox.Location = new System.Drawing.Point(10, 347);
+            this.NonLevelsListBox.Name = "NonLevelsListBox";
+            this.NonLevelsListBox.Size = new System.Drawing.Size(375, 224);
+            this.NonLevelsListBox.TabIndex = 12;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(3, 304);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(197, 40);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "Non Levels";
+            // 
+            // LevelsListBox
+            // 
+            this.LevelsListBox.FormattingEnabled = true;
+            this.LevelsListBox.ItemHeight = 20;
+            this.LevelsListBox.Location = new System.Drawing.Point(10, 57);
+            this.LevelsListBox.Name = "LevelsListBox";
+            this.LevelsListBox.Size = new System.Drawing.Size(375, 224);
+            this.LevelsListBox.TabIndex = 10;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(3, 13);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(382, 40);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "Levels In GameScreen";
+            // 
             // TmxEditorControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.LoadedTmxLabel);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "TmxEditorControl";
-            this.Size = new System.Drawing.Size(827, 534);
+            this.Size = new System.Drawing.Size(1240, 822);
             this.tabControl1.ResumeLayout(false);
             this.TilesetsTab.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
@@ -397,6 +535,13 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.LevelsTab.ResumeLayout(false);
+            this.splitContainer4.Panel1.ResumeLayout(false);
+            this.splitContainer4.Panel1.PerformLayout();
+            this.splitContainer4.Panel2.ResumeLayout(false);
+            this.splitContainer4.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
+            this.splitContainer4.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -431,5 +576,14 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ContextMenuStrip TilesetPropertiesMenuStrip;
         private System.Windows.Forms.ContextMenuStrip TilesetListContextMenu;
+        private System.Windows.Forms.TabPage LevelsTab;
+        private System.Windows.Forms.SplitContainer splitContainer4;
+        private System.Windows.Forms.ListBox NonLevelsListBox;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ListBox LevelsListBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label LevelLabel;
     }
 }
