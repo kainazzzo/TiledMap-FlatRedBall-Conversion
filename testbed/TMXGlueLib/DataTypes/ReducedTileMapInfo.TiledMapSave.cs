@@ -18,8 +18,28 @@ namespace TMXGlueLib.DataTypes
             toReturn.LeftQuadCoordinate = spriteSave.X - spriteSave.ScaleX;
             toReturn.BottomQuadCorodinate = spriteSave.Y - spriteSave.ScaleY;
 
-            toReturn.LeftTexturePixel = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt(spriteSave.LeftTextureCoordinate * textureWidth);
-            toReturn.TopTexturePixel = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt(spriteSave.TopTextureCoordinate * textureHeight);
+            
+            bool isRotated = spriteSave.RotationZ != 0;
+            if (isRotated)
+            {
+                toReturn.FlipFlags = (byte)(toReturn.FlipFlags | ReducedQuadInfo.FlippedDiagonallyFlag);
+            }
+
+            var leftTextureCoordinate = System.Math.Min( spriteSave.LeftTextureCoordinate, spriteSave.RightTextureCoordinate);
+            var topTextureCoordinate = System.Math.Min(spriteSave.TopTextureCoordinate, spriteSave.BottomTextureCoordinate);
+
+            if (spriteSave.LeftTextureCoordinate > spriteSave.RightTextureCoordinate)
+            {
+                toReturn.FlipFlags = (byte)(toReturn.FlipFlags | ReducedQuadInfo.FlippedHorizontallyFlag);
+            }
+            
+            if(spriteSave.TopTextureCoordinate > spriteSave.BottomTextureCoordinate)
+            {
+                toReturn.FlipFlags = (byte)(toReturn.FlipFlags | ReducedQuadInfo.FlippedVerticallyFlag);
+            }
+            
+            toReturn.LeftTexturePixel = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt(leftTextureCoordinate * textureWidth);
+            toReturn.TopTexturePixel = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt(topTextureCoordinate * textureHeight);
 
             toReturn.Name = spriteSave.Name;
 

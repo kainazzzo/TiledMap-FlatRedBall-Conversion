@@ -24,7 +24,7 @@ namespace TmxToScnx
 
             foreach (Tileset tileset in tms.Tilesets)
             {
-                foreach (mapTilesetImage image in tileset.Image)
+                foreach (TilesetImage image in tileset.Images)
                 {
                     System.Console.WriteLine("Image source: {0}", image.source);
                     string sourcepath = tmxPath + image.source;
@@ -63,7 +63,7 @@ namespace TmxToScnx
             {
                 foreach (Tileset tileset in tms.Tilesets)
                 {
-                    foreach (mapTilesetImage image in tileset.Image)
+                    foreach (TilesetImage image in tileset.Images)
                     {
                         image.source = image.sourceFileName;
                     }

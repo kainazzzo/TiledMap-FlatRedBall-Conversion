@@ -33,6 +33,8 @@ namespace TmxToScnx
                 TiledMapSave.LayerVisibleBehaviorValue = parsedArgs.LayerVisibleBehavior;
                 TiledMapSave.Offset = parsedArgs.Offset;
                 TiledMapSave tms = TiledMapSave.FromFile(parsedArgs.SourceFile);
+                tms.CorrectImageSizes(FileManager.GetDirectory(parsedArgs.SourceFile));
+
                 // Convert once in case of any exceptions
 
                 System.Console.WriteLine("{0} converted successfully.", parsedArgs.SourceFile);
@@ -64,62 +66,72 @@ namespace TmxToScnx
             if (extension == "scnx")
             {
 
-                System.Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
-
-                SceneSave spriteEditorScene = tms.ToSceneSave(parsedArgs.Scale);
-
-                spriteEditorScene.FileName = parsedArgs.DestinationFile;
-                spriteEditorScene.ScenePath = FileManager.GetDirectory(parsedArgs.DestinationFile);
-                spriteEditorScene.AssetsRelativeToSceneFile = true;
-                var result = spriteEditorScene.GetMissingFiles();
-                foreach(var missing in result)
-                {
-                    System.Console.Error.WriteLine("Missing file: " + spriteEditorScene.ScenePath + missing);
-                }
-                spriteEditorScene.Save(parsedArgs.DestinationFile.Trim());
+                SaveScnx(parsedArgs, tms);
             }
             else if (extension == "tilb")
             {
-                System.Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
-                // all files should have been copied over, and since we're using the .scnx files,
-                // we are going to use the destination instead of the source.
-
-                FileReferenceType referenceType = FileReferenceType.NoDirectory;
-
-                if (parsedArgs.CopyImages == false)
-                {
-                    referenceType = FileReferenceType.Absolute;
-                }
-
-                ReducedTileMapInfo rtmi = 
-                    ReducedTileMapInfo.FromTiledMapSave(tms, parsedArgs.Scale, parsedArgs.Offset.Item3, FileManager.GetDirectory(parsedArgs.DestinationFile), referenceType);
-
-                if (parsedArgs.CopyImages == false)
-                {
-                    foreach (var item in rtmi.Layers)
-                    {
-                        item.Texture = FileManager.MakeRelative(item.Texture, FileManager.GetDirectory(parsedArgs.SourceFile));
-                    }
-                }
-
-                if (System.IO.File.Exists(parsedArgs.DestinationFile))
-                {
-                    System.IO.File.Delete(parsedArgs.DestinationFile);
-                }
-
-                using (Stream outputStream =System.IO.File.OpenWrite(parsedArgs.DestinationFile))
-                using (BinaryWriter binaryWriter = new BinaryWriter(outputStream))
-                {
-                    rtmi.WriteTo(binaryWriter);
-                    System.Console.WriteLine("Saved \"{0}\".", parsedArgs.DestinationFile);
-
-                }
+                SaveTilb(parsedArgs, tms);
 
             }
             else
             {
                 System.Console.WriteLine("The following extension is not understood: " + extension);
             }
+        }
+
+        private static void SaveTilb(TmxToScnxCommandLineArgs parsedArgs, TiledMapSave tms)
+        {
+            System.Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
+            // all files should have been copied over, and since we're using the .scnx files,
+            // we are going to use the destination instead of the source.
+
+            FileReferenceType referenceType = FileReferenceType.NoDirectory;
+
+            if (parsedArgs.CopyImages == false)
+            {
+                referenceType = FileReferenceType.Absolute;
+            }
+
+            ReducedTileMapInfo rtmi =
+                ReducedTileMapInfo.FromTiledMapSave(tms, parsedArgs.Scale, parsedArgs.Offset.Item3, FileManager.GetDirectory(parsedArgs.DestinationFile), referenceType);
+
+            if (parsedArgs.CopyImages == false)
+            {
+                foreach (var item in rtmi.Layers)
+                {
+                    item.Texture = FileManager.MakeRelative(item.Texture, FileManager.GetDirectory(parsedArgs.SourceFile));
+                }
+            }
+
+            if (System.IO.File.Exists(parsedArgs.DestinationFile))
+            {
+                System.IO.File.Delete(parsedArgs.DestinationFile);
+            }
+
+            using (Stream outputStream = System.IO.File.OpenWrite(parsedArgs.DestinationFile))
+            using (BinaryWriter binaryWriter = new BinaryWriter(outputStream))
+            {
+                rtmi.WriteTo(binaryWriter);
+                System.Console.WriteLine("Saved \"{0}\".", parsedArgs.DestinationFile);
+
+            }
+        }
+
+        private static void SaveScnx(TmxToScnxCommandLineArgs parsedArgs, TiledMapSave tms)
+        {
+            System.Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
+
+            SceneSave spriteEditorScene = tms.ToSceneSave(parsedArgs.Scale);
+
+            spriteEditorScene.FileName = parsedArgs.DestinationFile;
+            spriteEditorScene.ScenePath = FileManager.GetDirectory(parsedArgs.DestinationFile);
+            spriteEditorScene.AssetsRelativeToSceneFile = true;
+            var result = spriteEditorScene.GetMissingFiles();
+            foreach (var missing in result)
+            {
+                System.Console.Error.WriteLine("Missing file: " + spriteEditorScene.ScenePath + missing);
+            }
+            spriteEditorScene.Save(parsedArgs.DestinationFile.Trim());
         }
     }
 }

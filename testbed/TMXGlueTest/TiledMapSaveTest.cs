@@ -374,9 +374,9 @@ namespace TMXGlueTest
                                     Tileheight = 32,
                                     Spacing = 1,
                                     Margin = 1,
-                                    Image = new mapTilesetImage[]
+                                    Images = new TilesetImage[]
                                         {
-                                            new mapTilesetImage
+                                            new TilesetImage
                                                 {
                                                     height = 199,
                                                     width = 199,
@@ -573,9 +573,9 @@ namespace TMXGlueTest
                             new Tileset
                                 {
                                     Firstgid = 1,
-                                    Image = new mapTilesetImage[]
+                                    Images = new TilesetImage[]
                                         {
-                                            new mapTilesetImage
+                                            new TilesetImage
                                                 {
                                                     height = 64,
                                                     width = 64,

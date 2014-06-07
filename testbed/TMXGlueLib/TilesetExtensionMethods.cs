@@ -19,14 +19,14 @@ namespace TMXGlueLib
         {
             xIndex = 0;
             yIndex = 0;
-            if (tileset.Image.Length != 0)
+            if (tileset.Images.Length != 0)
             {
                 // We're assuming the first image, not sure why we'd have multiple images in one tileset....or at least we won't 
                 // supportthat yet.
-                var image = tileset.Image[0];
+                var image = tileset.Images[0];
 
-                int effectiveImageWidth = tileset.Image[0].width;
-                int effectiveImageHeight = tileset.Image[0].height;
+                int effectiveImageWidth = tileset.Images[0].width;
+                int effectiveImageHeight = tileset.Images[0].height;
 
                 if (xCoordinate < effectiveImageWidth && yCoordinate < effectiveImageHeight)
                 {
@@ -52,14 +52,14 @@ namespace TMXGlueLib
 
         public static int GetNumberOfTilesWide(this Tileset tileset)
         {
-            if (tileset.Image.Length == 0)
+            if (tileset.Images.Length == 0)
             {
                 return 0;
             }
             else
             {
                 return GetNumberOfTilesWide(
-                    tileset.Image[0].width, tileset.Margin, tileset.Tilewidth, tileset.Spacing);
+                    tileset.Images[0].width, tileset.Margin, tileset.Tilewidth, tileset.Spacing);
             }
         }
 
@@ -130,14 +130,14 @@ namespace TMXGlueLib
 
         public static int GetNumberOfTilesTall(this Tileset tileset)
         {
-            if (tileset.Image.Length == 0)
+            if (tileset.Images.Length == 0)
             {
                 return 0;
             }
             else
             {
                 return GetNumberOfTilesWide(
-                    tileset.Image[0].height, tileset.Margin, tileset.Tileheight, tileset.Spacing);
+                    tileset.Images[0].height, tileset.Margin, tileset.Tileheight, tileset.Spacing);
             }
         }
 

@@ -97,7 +97,11 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
             }
         }
 
-
+        public float Rotation
+        {
+            get;
+            set;
+        }
 
         public TilePropertyHighlight(SystemManagers managers)
         {

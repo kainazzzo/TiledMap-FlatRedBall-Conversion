@@ -272,8 +272,8 @@ namespace TmxEditor.Controllers
             if (newTile == null)
             {
                 if (worldX > -1 && worldY > -1 &&
-                    worldX < AppState.Self.CurrentTileset.Image[0].width &&
-                    worldY < AppState.Self.CurrentTileset.Image[0].height)
+                    worldX < AppState.Self.CurrentTileset.Images[0].width &&
+                    worldY < AppState.Self.CurrentTileset.Images[0].height)
                 {
                     newTile = new mapTilesetTile();
                     newTile.id = id;
@@ -362,9 +362,9 @@ namespace TmxEditor.Controllers
 
         private void SetTilesetSpriteTexture()
         {
-            if (CurrentTileset != null && CurrentTileset.Image != null && CurrentTileset.Image.Length != 0)
+            if (CurrentTileset != null && CurrentTileset.Images != null && CurrentTileset.Images.Length != 0)
             {
-                var image = CurrentTileset.Image[0];
+                var image = CurrentTileset.Images[0];
 
                 string fileName = image.source;
                 string absoluteFile = ProjectManager.Self.MakeAbsolute(fileName);

@@ -7,6 +7,7 @@ using TMXGlueLib.DataTypes;
 using FlatRedBall.IO;
 using TmxToScnx;
 using System.IO;
+using System.Reflection;
 
 namespace TmxToTilb
 {
@@ -23,6 +24,13 @@ namespace TmxToTilb
 
             try
             {
+
+                Assembly assembly = Assembly.GetEntryAssembly();
+                AssemblyName assemblyName = assembly.GetName();
+                Version version = assemblyName.Version;
+
+                Console.WriteLine("TMX to TILB converter version " + version.ToString());
+
                 string sourceTmx = args[0];
                 string destinationFile = args[1];
                 float scale = 1.0f;
@@ -35,6 +43,9 @@ namespace TmxToTilb
 
                 //TiledMapSave.LayerVisibleBehaviorValue = LayerVisibleBehaviorValue;
                 TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
+
+                tms.CorrectImageSizes(FileManager.GetDirectory(sourceTmx));
+
                 // Convert once in case of any exceptions
                 //SpriteEditorScene save = tms.ToSceneSave(scale);
 

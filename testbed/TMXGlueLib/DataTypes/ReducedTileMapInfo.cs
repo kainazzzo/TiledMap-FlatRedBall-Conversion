@@ -18,11 +18,17 @@ namespace TMXGlueLib.DataTypes
 
     public partial class ReducedQuadInfo
     {
+        public const byte FlippedHorizontallyFlag = 8;
+        public const byte FlippedVerticallyFlag = 4;
+        public const byte FlippedDiagonallyFlag = 2;
+
         public float LeftQuadCoordinate;
         public float BottomQuadCorodinate;
 
         public ushort LeftTexturePixel;
         public ushort TopTexturePixel;
+
+        public byte FlipFlags;
 
         public string Name;
 
@@ -32,11 +38,12 @@ namespace TMXGlueLib.DataTypes
 
             toReturn.LeftQuadCoordinate = reader.ReadSingle();
             toReturn.BottomQuadCorodinate = reader.ReadSingle();
-
             toReturn.LeftTexturePixel = reader.ReadUInt16();
             toReturn.TopTexturePixel = reader.ReadUInt16();
 
             toReturn.Name = reader.ReadString();
+
+            toReturn.FlipFlags = reader.ReadByte();
 
             return toReturn;
         }
@@ -50,6 +57,8 @@ namespace TMXGlueLib.DataTypes
             writer.Write(TopTexturePixel);
 
             writer.Write(Name);
+
+            writer.Write(FlipFlags);
         }
 
 

@@ -22,7 +22,7 @@ using System.Linq;
 // 
 namespace TMXGlueLib
 {
-
+    #region TiledMapSave Class
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     [XmlRoot(ElementName = "map", Namespace = "", IsNullable = false)]
@@ -180,9 +180,9 @@ namespace TMXGlueLib
 
             foreach (var tileset in this.Tilesets)
             {
-                if (tileset != null && tileset.Image.Length != 0)
+                if (tileset != null && tileset.Images.Length != 0)
                 {
-                    var image = tileset.Image[0];
+                    var image = tileset.Images[0];
 
                     string fileName = image.source;
 
@@ -198,6 +198,9 @@ namespace TMXGlueLib
         }
     }
 
+    #endregion
+
+    #region property Class
     public partial class property
     {
         [XmlAttribute()]
@@ -276,10 +279,12 @@ namespace TMXGlueLib
             return name + " = " + value;
         }
     }
+    #endregion
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class mapTilesetImage
+    [XmlRoot(ElementName = "mapTilesetImage", Namespace = "", IsNullable = false)]
+    public partial class TilesetImage
     {
 
         private string sourceField;

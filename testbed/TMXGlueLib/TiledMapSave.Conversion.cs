@@ -16,12 +16,14 @@ using FlatRedBall.Math.Geometry;
 
 namespace TMXGlueLib
 {
+    #region FileReferenceType enum
     public enum FileReferenceType
     {
         NoDirectory,
         Absolute,
         Relative
     }
+    #endregion
 
     public partial class TiledMapSave
     {
@@ -246,6 +248,36 @@ namespace TMXGlueLib
             sb.AppendLine();
         }
 
+        /// <summary>
+        /// Sets all Image width/height values inside all Tilesets according to actual
+        /// texture sizes.  The reason this is needed is because the user could have chnaged
+        /// the size of the images (like resized a PNG) and not opened/resaved the file in Tiled.
+        /// Therefore, the image size may be incorrect in the TMX.
+        /// </summary>
+        /// <param name="directory">The directory of the TMX, which is used to load images which typically use relative paths.</param>
+        public void CorrectImageSizes(string directory)
+        {
+            foreach (var tileset in this.Tilesets)
+            {
+                foreach (var image in tileset.Images)
+                {
+                    string absolutePath = image.source;
+
+                    if (FileManager.IsRelative(absolutePath))
+                    {
+                        absolutePath = directory + absolutePath;
+                    }
+
+                    if (System.IO.File.Exists(absolutePath))
+                    {
+                        var dimensions = ImageHeader.GetDimensions(absolutePath);
+
+                        image.width = dimensions.Width;
+                        image.height = dimensions.Height;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Compares the stripped name of properties - removing the type
@@ -694,8 +726,8 @@ namespace TMXGlueLib
                 sprite.Visible = false;
             }
 
-            int imageWidth = tileSet.Image[0].width;
-            int imageHeight = tileSet.Image[0].height;
+            int imageWidth = tileSet.Images[0].width;
+            int imageHeight = tileSet.Images[0].height;
             int tileWidth = tileSet.Tilewidth;
             int spacing = tileSet.Spacing;
             int tileHeight = tileSet.Tileheight;
@@ -707,12 +739,12 @@ namespace TMXGlueLib
 
             if (referenceType == FileReferenceType.NoDirectory)
             {
-                sprite.Texture = tileSet.Image[0].sourceFileName;
+                sprite.Texture = tileSet.Images[0].sourceFileName;
             }
             else if (referenceType == FileReferenceType.Absolute)
             {
                 string directory = FileManager.GetDirectory(this.FileName);
-                sprite.Texture = FileManager.RemoveDotDotSlash( directory + tileSet.Image[0].source );
+                sprite.Texture = FileManager.RemoveDotDotSlash( directory + tileSet.Images[0].source );
 
             }
             else
@@ -720,11 +752,12 @@ namespace TMXGlueLib
                 throw new NotImplementedException();
             }
 
-            uint nameRelativeToStartOfTileset = gid - tileSet.Firstgid + 1;
+            uint tileTextureRelativeToStartOfTileset = 
+                (0x0fffffff & gid) - tileSet.Firstgid + 1;
 
-            if (tileSet.TileDictionary.ContainsKey(nameRelativeToStartOfTileset))
+            if (tileSet.TileDictionary.ContainsKey(tileTextureRelativeToStartOfTileset))
             {
-                var dictionary = tileSet.TileDictionary[nameRelativeToStartOfTileset].PropertyDictionary;
+                var dictionary = tileSet.TileDictionary[tileTextureRelativeToStartOfTileset].PropertyDictionary;
 
                 foreach (var kvp in dictionary)
                 {
@@ -807,11 +840,61 @@ namespace TMXGlueLib
 
         public void SetSpriteTextureCoordinates(uint gid, SpriteSave sprite, Tileset tileSet, int imageWidth, int imageHeight, int tileWidth, int spacing, int tileHeight, int margin)
         {
+            var gidWithoutRotation = gid & 0x0fffffff;
+
+            const uint FlippedHorizontallyFlag = 0x80000000;
+            const uint FlippedVerticallyFlag   = 0x40000000;
+            const uint FlippedDiagonallyFlag   = 0x20000000;
+
+            bool flipHorizontally = (gid & FlippedHorizontallyFlag) == FlippedHorizontallyFlag;
+            bool flipVertically = (gid & FlippedVerticallyFlag) == FlippedVerticallyFlag;
+            bool flipDiagonally = (gid & FlippedDiagonallyFlag) == FlippedDiagonallyFlag;
+
             // Calculate pixel coordinates in the texture sheet
-            int leftPixelCoord = CalculateXCoordinate(gid - tileSet.Firstgid, imageWidth, tileWidth, spacing, margin);
-            int topPixelCoord = CalculateYCoordinate(gid - tileSet.Firstgid, imageWidth, tileWidth, tileHeight, spacing, margin);
+            int leftPixelCoord = CalculateXCoordinate(gidWithoutRotation - tileSet.Firstgid, imageWidth, tileWidth, spacing, margin);
+            int topPixelCoord = CalculateYCoordinate(gidWithoutRotation - tileSet.Firstgid, imageWidth, tileWidth, tileHeight, spacing, margin);
             int rightPixelCoord = leftPixelCoord + tileWidth;
             int bottomPixelCoord = topPixelCoord + tileHeight;
+
+            if ((flipHorizontally && flipDiagonally == false) ||
+                (flipVertically && flipDiagonally))
+            {
+                var temp = rightPixelCoord;
+                rightPixelCoord = leftPixelCoord;
+                leftPixelCoord = temp;
+            }
+
+            if ((flipVertically && flipDiagonally == false) ||
+                (flipHorizontally && flipDiagonally))
+            {
+                var temp = topPixelCoord;
+                topPixelCoord = bottomPixelCoord;
+                bottomPixelCoord = temp;
+                
+            }
+
+            //if (flipDiagonally)
+            //{
+            //    // this turns:
+            //    // 1---2
+            //    // |   |
+            //    // 3---4
+
+            //    // into:
+            //    // 1---3
+            //    // |   |
+            //    // 2---4
+
+            //    int newLeft = topPixelCoord;
+            //    int newRight = bottomPixelCoord;
+            //    int newTop = leftPixelCoord;
+            //    int newBottom = rightPixelCoord;
+
+            //    topPixelCoord = newTop;
+            //    bottomPixelCoord = newBottom;
+            //    leftPixelCoord = newLeft;
+            //    rightPixelCoord = newRight;
+            //}
 
             // Calculate relative texture coordinates based on pixel coordinates
             var changeVal = LessOrGreaterDesired.Greater;
@@ -832,6 +915,12 @@ namespace TMXGlueLib
 
             sprite.RightTextureCoordinate = GetTextureCoordinate(rightPixelCoord, imageWidth, changeVal);
             sprite.BottomTextureCoordinate = GetTextureCoordinate(bottomPixelCoord, imageHeight, changeVal);
+
+            if (flipDiagonally)
+            {
+                sprite.RotationZ = Microsoft.Xna.Framework.MathHelper.PiOver2;
+                sprite.FlipHorizontal = true;
+            }
         }
 
         public Tileset GetTilesetForGid(uint gid)

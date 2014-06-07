@@ -14,7 +14,7 @@ namespace TMXGlueLib
     public class Tileset
 // ReSharper restore InconsistentNaming
     {
-        private mapTilesetImage[] _imageField;
+        private TilesetImage[] _imageField;
 
         private mapTilesetTileOffset[] _tileOffsetField;
 
@@ -89,11 +89,11 @@ namespace TMXGlueLib
                 if (xts.image != null)
                 {
 
-                    Image = new mapTilesetImage[xts.image.Length];
+                    Images = new TilesetImage[xts.image.Length];
 
                     Parallel.For(0, xts.image.Length, count =>
                     {
-                        this.Image[count] = new mapTilesetImage
+                        this.Images[count] = new TilesetImage
                         {
                             source = xts.image[count].source,
                             height = xts.image[count].height != 0 ? xts.image[count].height : xts.tileheight,
@@ -130,7 +130,7 @@ namespace TMXGlueLib
 
         /// <remarks/>
         [XmlElement("image", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 2)]
-        public mapTilesetImage[] Image
+        public TilesetImage[] Images
         {
             get
             {
