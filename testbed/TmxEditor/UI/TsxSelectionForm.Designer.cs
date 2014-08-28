@@ -51,7 +51,7 @@
             this.FromThisProjectTreeView.ShowLines = false;
             this.FromThisProjectTreeView.ShowPlusMinus = false;
             this.FromThisProjectTreeView.ShowRootLines = false;
-            this.FromThisProjectTreeView.Size = new System.Drawing.Size(348, 131);
+            this.FromThisProjectTreeView.Size = new System.Drawing.Size(657, 144);
             this.FromThisProjectTreeView.TabIndex = 1;
             this.FromThisProjectTreeView.DoubleClick += new System.EventHandler(this.FromThisProjectTreeView_DoubleClick);
             // 
@@ -63,7 +63,7 @@
             this.groupBox1.Controls.Add(this.FromThisProjectRadioButton);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(348, 67);
+            this.groupBox1.Size = new System.Drawing.Size(657, 67);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Select TSX Source:";
@@ -100,7 +100,7 @@
             this.FromThisProjectPanel.Controls.Add(this.FromThisProjectTreeView);
             this.FromThisProjectPanel.Location = new System.Drawing.Point(3, 76);
             this.FromThisProjectPanel.Name = "FromThisProjectPanel";
-            this.FromThisProjectPanel.Size = new System.Drawing.Size(348, 131);
+            this.FromThisProjectPanel.Size = new System.Drawing.Size(657, 144);
             this.FromThisProjectPanel.TabIndex = 3;
             // 
             // FromFilePanel
@@ -111,14 +111,14 @@
             this.FromFilePanel.Controls.Add(this.FromFileTextBox);
             this.FromFilePanel.Location = new System.Drawing.Point(3, 78);
             this.FromFilePanel.Name = "FromFilePanel";
-            this.FromFilePanel.Size = new System.Drawing.Size(348, 29);
+            this.FromFilePanel.Size = new System.Drawing.Size(657, 29);
             this.FromFilePanel.TabIndex = 4;
             this.FromFilePanel.Visible = false;
             // 
             // FromFileButton
             // 
             this.FromFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FromFileButton.Location = new System.Drawing.Point(318, 1);
+            this.FromFileButton.Location = new System.Drawing.Point(627, 1);
             this.FromFileButton.Name = "FromFileButton";
             this.FromFileButton.Size = new System.Drawing.Size(27, 23);
             this.FromFileButton.TabIndex = 1;
@@ -132,13 +132,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.FromFileTextBox.Location = new System.Drawing.Point(3, 3);
             this.FromFileTextBox.Name = "FromFileTextBox";
-            this.FromFileTextBox.Size = new System.Drawing.Size(309, 20);
+            this.FromFileTextBox.Size = new System.Drawing.Size(618, 20);
             this.FromFileTextBox.TabIndex = 0;
             // 
             // OkayButton
             // 
             this.OkayButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OkayButton.Location = new System.Drawing.Point(195, 217);
+            this.OkayButton.Location = new System.Drawing.Point(504, 230);
             this.OkayButton.Name = "OkayButton";
             this.OkayButton.Size = new System.Drawing.Size(75, 23);
             this.OkayButton.TabIndex = 5;
@@ -150,7 +150,7 @@
             // 
             this.CancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Location = new System.Drawing.Point(276, 217);
+            this.CancelButton.Location = new System.Drawing.Point(585, 230);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(75, 23);
             this.CancelButton.TabIndex = 6;
@@ -162,7 +162,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(353, 252);
+            this.ClientSize = new System.Drawing.Size(662, 265);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.OkayButton);
             this.Controls.Add(this.FromFilePanel);

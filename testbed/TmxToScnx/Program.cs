@@ -35,28 +35,74 @@ namespace TmxToScnx
                 TiledMapSave tms = TiledMapSave.FromFile(parsedArgs.SourceFile);
                 tms.CorrectImageSizes(FileManager.GetDirectory(parsedArgs.SourceFile));
 
-                // Convert once in case of any exceptions
+                bool succeeded = true;
 
-                System.Console.WriteLine("{0} converted successfully.", parsedArgs.SourceFile);
+                bool hasMultiTextureLayers = GetIfHasMultiTextureLayers(tms);
 
-                if (parsedArgs.CopyImages)
+                if(hasMultiTextureLayers)
                 {
-                    TmxFileCopier.CopyTmxTilesetImagesToDestination(parsedArgs.SourceFile, parsedArgs.DestinationFile, tms);
+                    string error = "This map uses multiple textures on one layer which is not supported.";
+                    System.Console.Error.WriteLine(error);
                 }
 
-                // Fix up the image sources to be relative to the newly copied ones.
-                // I don't know why we're doing this, but it wipes out the old relative 
-                // directory structure.  We should not do this...
-                //TmxFileCopier.FixupImageSources(tms);
+                succeeded = !hasMultiTextureLayers;
 
-                PerformSave(parsedArgs, tms);
+                if (succeeded)
+                {
+                    System.Console.WriteLine("{0} converted successfully.", parsedArgs.SourceFile);
+                }
+                if (succeeded)
+                {
+                    if (parsedArgs.CopyImages)
+                    {
+                        TmxFileCopier.CopyTmxTilesetImagesToDestination(parsedArgs.SourceFile, parsedArgs.DestinationFile, tms);
+                    }
 
-                System.Console.WriteLine("Done.");
+                    // Fix up the image sources to be relative to the newly copied ones.
+                    // I don't know why we're doing this, but it wipes out the old relative 
+                    // directory structure.  We should not do this...
+                    //TmxFileCopier.FixupImageSources(tms);
+
+                    PerformSave(parsedArgs, tms);
+
+                    System.Console.WriteLine("Done.");
+                }
             }
             catch (Exception ex)
             {
                 System.Console.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
             }
+        }
+
+        private static bool GetIfHasMultiTextureLayers(TiledMapSave tms)
+        {
+            foreach(var layer in tms.Layers)
+            {
+                Tileset tileset = null;
+
+                
+                foreach(var dataItem in layer.data)
+                {
+                    foreach(var tile in dataItem.tiles)
+                    {
+                        var tilesetForThis = tms.GetTilesetForGid(tile);
+
+                        if(tileset == null)
+                        {
+                            tileset = tilesetForThis;
+                        }
+                        else if (tilesetForThis != null && tileset != tilesetForThis)
+                        {
+                            // early out for perf.
+                            return true;
+                        }
+                    }
+                }
+
+            }
+
+            return false;
+
         }
 
         private static void PerformSave(TmxToScnxCommandLineArgs parsedArgs, TiledMapSave tms)

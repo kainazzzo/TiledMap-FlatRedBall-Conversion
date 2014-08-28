@@ -184,7 +184,7 @@ namespace TMXGlueLib
                 {
                     var image = tileset.Images[0];
 
-                    string fileName = image.source;
+                    string fileName = image.Source;
 
                     // keep it relative
                     referencedFiles.Add(fileName);
@@ -290,8 +290,8 @@ namespace TMXGlueLib
         private string sourceField;
 
         /// <remarks/>
-        [XmlAttribute()]
-        public string source
+        [XmlAttribute("source")]
+        public string Source
         {
             get
             {
@@ -312,13 +312,13 @@ namespace TMXGlueLib
         {
             get
             {
-                if (!string.IsNullOrEmpty(source) && source.Contains("\\"))
+                if (!string.IsNullOrEmpty(Source) && Source.Contains("\\"))
                 {
-                    return source.Substring(source.LastIndexOf('\\') + 1);
+                    return Source.Substring(Source.LastIndexOf('\\') + 1);
                 }
                 else
                 {
-                    return source;
+                    return Source;
                 }
             }
         }
@@ -328,13 +328,13 @@ namespace TMXGlueLib
         {
             get
             {
-                if (!string.IsNullOrEmpty(source) && source.Contains("\\"))
+                if (!string.IsNullOrEmpty(Source) && Source.Contains("\\"))
                 {
-                    return source.Substring(0, source.LastIndexOf('\\'));
+                    return Source.Substring(0, Source.LastIndexOf('\\'));
                 }
                 else
                 {
-                    return source;
+                    return Source;
                 }
             }
         }

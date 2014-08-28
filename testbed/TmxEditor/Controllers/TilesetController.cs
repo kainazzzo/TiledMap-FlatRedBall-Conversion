@@ -17,8 +17,6 @@ namespace TmxEditor.Controllers
         public const string HasCollisionVariableName = "HasCollision";
         public const string EntityToCreatePropertyName = "EntityToCreate";
 
-
-
         #region Fields
 
         mapTilesetTile mCurrentTilesetTile;
@@ -324,9 +322,9 @@ namespace TmxEditor.Controllers
 
                 bool changesOccurred = false;
 
-                bool hasName = string.IsNullOrEmpty(mNameTextBox.Text) == false;
+                bool hasNameEnteredName = string.IsNullOrEmpty(mNameTextBox.Text) == false;
 
-                if (hasName)
+                if (hasNameEnteredName)
                 {
                     if (existingProperty == null)
                     {
@@ -335,11 +333,15 @@ namespace TmxEditor.Controllers
                         existingProperty = AddProperty(CurrentTilesetTile, "Name", "string", raiseChangedEvent);
                     }
 
-                    // ...and now that we've added, let's modify it:
-                    existingProperty.value = mNameTextBox.Text;
-                    changesOccurred = true;
+                    // let's see if they've modified it, for performance reasons:
+                    if (existingProperty.value != mNameTextBox.Text)
+                    {
+                        // ...and now that we've added, let's modify it:
+                        existingProperty.value = mNameTextBox.Text;
+                        changesOccurred = true;
+                    }
                 }
-                else if (hasName == false && existingProperty != null)
+                else if (hasNameEnteredName == false && existingProperty != null)
                 {
                     CurrentTilesetTile.properties.Remove(existingProperty);
 

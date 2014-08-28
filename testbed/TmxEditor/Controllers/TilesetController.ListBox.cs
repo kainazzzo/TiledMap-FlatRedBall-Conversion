@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TmxEditor.Managers;
 using TmxEditor.UI;
 using TMXGlueLib;
 
@@ -16,6 +17,7 @@ namespace TmxEditor.Controllers
         ListBox mTilesetsListBox;
 
         ToolStripMenuItem mSetSharedTileset;
+        ToolStripMenuItem mCreateSharedTileset;
         ToolStripMenuItem mAddNewTilesetMenuItem;
 
 
@@ -45,6 +47,10 @@ namespace TmxEditor.Controllers
             mSetSharedTileset = new ToolStripMenuItem();
             mSetSharedTileset.Text = "Set Shared Tileset";
             mSetSharedTileset.Click += HandleSetSharedTilesetClick;
+
+            mCreateSharedTileset = new ToolStripMenuItem();
+            mCreateSharedTileset.Text = "Export Tileset to .tsx";
+            mCreateSharedTileset.Click += HandleCreateSharedTilesetClick;
 
             mAddNewTilesetMenuItem = new ToolStripMenuItem();
             mAddNewTilesetMenuItem.Text = "Add new tileset";
@@ -95,9 +101,6 @@ namespace TmxEditor.Controllers
 
         void HandleSetSharedTilesetClick(object sender, EventArgs e)
         {
-
-
-
             string fileName;
             bool succeeded;
             GetTilesetFromFileOrOptions(out fileName, out succeeded);
@@ -106,6 +109,33 @@ namespace TmxEditor.Controllers
             {
                 SetSharedTsx(fileName);
             }
+        }
+
+        private void HandleCreateSharedTilesetClick(object sender, EventArgs e)
+        {
+
+            string directory = FileManager.GetDirectory( AppState.Self.CurrentTiledMapSave.FileName );
+
+            CreateSharedTileset(directory);
+
+            if (AnyTileMapChange != null)
+            {
+                AnyTileMapChange(this, null);
+            }
+
+            RefreshListBox(CurrentTileset);
+
+        }
+
+        private void CreateSharedTileset(string destinationDirectory)
+        {
+            SharedTilesetManager.ConvertToSharedTileset(CurrentTileset, AppState.Self.CurrentTiledMapSave, destinationDirectory);
+
+            if (AnyTileMapChange != null)
+            {
+                AnyTileMapChange(this, null);
+            }
+            RefreshListBox(CurrentTileset);
         }
 
         private void GetTilesetFromFileOrOptions(out string fileName, out bool succeeded)
@@ -177,19 +207,31 @@ namespace TmxEditor.Controllers
 
         void HandleTilesetClick(object sender, EventArgs e)
         {
+            PopulateRightClickMenu();
+        }
+
+        private void PopulateRightClickMenu()
+        {
             bool isAnythingSelected = CurrentTileset != null;
 
             mTilesetsListBox.ContextMenuStrip.Items.Clear();
 
             if (isAnythingSelected)
             {
-                mTilesetsListBox.ContextMenuStrip.Items.Add(mSetSharedTileset);
+                bool isShared = !string.IsNullOrEmpty(CurrentTileset.Source);
+
+                if(isShared)
+                {
+                    mTilesetsListBox.ContextMenuStrip.Items.Add(mSetSharedTileset);
+                }
+                else
+                {
+                    mTilesetsListBox.ContextMenuStrip.Items.Add(mCreateSharedTileset);
+                }
 
             }
 
             mTilesetsListBox.ContextMenuStrip.Items.Add(mAddNewTilesetMenuItem);
-
-
         }
 
         void HandleTilesetSelect(object sender, EventArgs e)
@@ -226,6 +268,9 @@ namespace TmxEditor.Controllers
                     mTilesetsListBox.Items.Add(tileset);
                 }
             }
+
+
+            PopulateRightClickMenu();
         }
 
         #endregion

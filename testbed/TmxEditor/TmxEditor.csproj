@@ -82,6 +82,7 @@
     <Compile Include="GraphicalDisplay\Tilesets\TilePropertyHighlight.cs" />
     <Compile Include="Controllers\TilesetController.cs" />
     <Compile Include="Managers\CopyPasteManager.cs" />
+    <Compile Include="Managers\SharedTilesetManager.cs" />
     <Compile Include="PropertyGridDisplayers\DisplayerExtensionMethods.cs" />
     <Compile Include="PropertyGridDisplayers\MapLayerDisplayer.cs" />
     <Compile Include="PropertyGridDisplayers\TilesetTileDisplayer.cs" />

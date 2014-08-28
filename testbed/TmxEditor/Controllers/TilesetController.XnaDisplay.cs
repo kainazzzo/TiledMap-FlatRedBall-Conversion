@@ -366,7 +366,7 @@ namespace TmxEditor.Controllers
             {
                 var image = CurrentTileset.Images[0];
 
-                string fileName = image.source;
+                string fileName = image.Source;
                 string absoluteFile = ProjectManager.Self.MakeAbsolute(fileName);
                 mSprite.Visible = true;
 

@@ -56,6 +56,15 @@ namespace TMXGlueLib
             }
         }
 
+        [XmlIgnore]
+        public bool IsShared
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(Source);
+            }
+        }
+
         private void LoadValuesFromSource()
         {
             if (!string.IsNullOrEmpty(this._sourceField))
@@ -77,7 +86,7 @@ namespace TMXGlueLib
                         fileAttemptedToLoad = FileManager.RelativeDirectory + _sourceField;
                     }
 
-                    string message = "Could not find the shared tsx file " + fileAttemptedToLoad + 
+                    string message = "Could not find the shared tsx file \n" + fileAttemptedToLoad + 
                         "\nIf this is a relative file name, then the loader will use " +
                         "the FileManager's RelativeDirectory to make the file absolute.  Therefore, be sure to set the FileManger's RelativeDirectory to the file represented by " +
                         "this fileset before setting this property if setting this property manually.";
@@ -95,7 +104,7 @@ namespace TMXGlueLib
                     {
                         this.Images[count] = new TilesetImage
                         {
-                            source = xts.image[count].source,
+                            Source = xts.image[count].source,
                             height = xts.image[count].height != 0 ? xts.image[count].height : xts.tileheight,
                             width = xts.image[count].width != 0 ? xts.image[count].width : xts.tilewidth
                         };

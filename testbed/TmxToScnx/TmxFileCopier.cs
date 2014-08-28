@@ -26,8 +26,7 @@ namespace TmxToScnx
             {
                 foreach (TilesetImage image in tileset.Images)
                 {
-                    System.Console.WriteLine("Image source: {0}", image.source);
-                    string sourcepath = tmxPath + image.source;
+                    string sourcepath = tmxPath + image.Source;
                     if (tileset.Source != null)
                     {
                         if (tileset.SourceDirectory != "." && !tileset.SourceDirectory.Contains(":"))
@@ -50,7 +49,9 @@ namespace TmxToScnx
                     {
                         System.Console.WriteLine("Copying \"{0}\" to \"{1}\".", sourcepath, destinationFullPath);
 
-                        File.Copy(sourcepath, destinationFullPath, true);
+                        string fileWithoutDotDotSlash = FileManager.RemoveDotDotSlash(sourcepath);
+
+                        File.Copy(fileWithoutDotDotSlash, destinationFullPath, true);
                     }
                 }
             }
@@ -65,7 +66,7 @@ namespace TmxToScnx
                 {
                     foreach (TilesetImage image in tileset.Images)
                     {
-                        image.source = image.sourceFileName;
+                        image.Source = image.sourceFileName;
                     }
                 }
             }

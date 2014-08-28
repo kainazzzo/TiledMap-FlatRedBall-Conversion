@@ -380,7 +380,7 @@ namespace TMXGlueTest
                                                 {
                                                     height = 199,
                                                     width = 199,
-                                                    source = "nothing"
+                                                    Source = "nothing"
                                                 }
                                         },
                                 }
@@ -579,7 +579,7 @@ namespace TMXGlueTest
                                                 {
                                                     height = 64,
                                                     width = 64,
-                                                    source =
+                                                    Source =
                                                         "../../../../../Program Files (x86)/Tiled/examples/tmw_desert_spacing.png"
                                                 }
                                         },

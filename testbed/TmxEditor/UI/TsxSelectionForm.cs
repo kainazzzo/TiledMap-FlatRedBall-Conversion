@@ -81,8 +81,25 @@ namespace TmxEditor.UI
 
         private void OkayButton_Click(object sender, EventArgs e)
         {
-            DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Close();
+            string whyIsntValid = null;
+            if (FromThisProjectRadioButton.Checked)
+            {
+                if(FromThisProjectTreeView.SelectedNode == null)
+                {
+                    whyIsntValid = "You must select a tileset";  
+                }
+            }
+
+            if(!string.IsNullOrEmpty(whyIsntValid))
+            {
+                MessageBox.Show(whyIsntValid);    
+            }
+            else
+            {
+                DialogResult = System.Windows.Forms.DialogResult.OK;
+                this.Close();
+            }
+
         }
 
         private void CancelButton_Click(object sender, EventArgs e)

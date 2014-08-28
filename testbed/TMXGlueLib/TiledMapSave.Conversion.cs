@@ -261,7 +261,7 @@ namespace TMXGlueLib
             {
                 foreach (var image in tileset.Images)
                 {
-                    string absolutePath = image.source;
+                    string absolutePath = image.Source;
 
                     if (FileManager.IsRelative(absolutePath))
                     {
@@ -744,7 +744,7 @@ namespace TMXGlueLib
             else if (referenceType == FileReferenceType.Absolute)
             {
                 string directory = FileManager.GetDirectory(this.FileName);
-                sprite.Texture = FileManager.RemoveDotDotSlash( directory + tileSet.Images[0].source );
+                sprite.Texture = FileManager.RemoveDotDotSlash( directory + tileSet.Images[0].Source );
 
             }
             else
