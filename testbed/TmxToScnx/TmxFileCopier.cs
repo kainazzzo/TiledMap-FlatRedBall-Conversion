@@ -26,24 +26,10 @@ namespace TmxToScnx
             {
                 foreach (TilesetImage image in tileset.Images)
                 {
-                    string sourcepath = tmxPath + image.Source;
-                    if (tileset.Source != null)
-                    {
-                        if (tileset.SourceDirectory != "." && !tileset.SourceDirectory.Contains(":"))
-                        {
-                            sourcepath = tmxPath + tileset.SourceDirectory.Replace("\\", "/") + "/" + image.sourceFileName;
-                            sourcepath = FileManager.GetDirectory(sourcepath) + image.sourceFileName;
-                        }
-                        else if (tileset.SourceDirectory.Contains(":"))
-                        {
-                            sourcepath = tileset.SourceDirectory + "/" + image.sourceFileName;
-                        }
-                        else
-                        {
-                            sourcepath = tmxPath + image.sourceFileName;
-                        }
-                    }
+                    string sourcepath = GetImageSourcePath(tmxPath, tileset, image);
+
                     string destinationFullPath = destinationPath + image.sourceFileName;
+
                     if (!sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase) && 
                         !FileManager.GetDirectory(destinationFullPath).Equals(FileManager.GetDirectory(sourcepath)))
                     {
@@ -51,10 +37,41 @@ namespace TmxToScnx
 
                         string fileWithoutDotDotSlash = FileManager.RemoveDotDotSlash(sourcepath);
 
-                        File.Copy(fileWithoutDotDotSlash, destinationFullPath, true);
+                        try
+                        {
+
+                            File.Copy(fileWithoutDotDotSlash, destinationFullPath, true);
+                        }
+                        catch(Exception e)
+                        {
+                            System.Console.WriteLine("Could not copy \"{0}\" to \"{1}\" \n{2}.", sourcepath, destinationFullPath, e.ToString());
+
+                        }
                     }
                 }
             }
+        }
+
+        private static string GetImageSourcePath(string tmxPath, Tileset tileset, TilesetImage image)
+        {
+            string sourcepath = tmxPath + image.Source;
+            if (tileset.Source != null)
+            {
+                if (tileset.SourceDirectory != "." && !tileset.SourceDirectory.Contains(":"))
+                {
+                    sourcepath = tmxPath + tileset.SourceDirectory.Replace("\\", "/") + "/" + image.sourceFileName;
+                    sourcepath = FileManager.GetDirectory(sourcepath) + image.sourceFileName;
+                }
+                else if (tileset.SourceDirectory.Contains(":"))
+                {
+                    sourcepath = tileset.SourceDirectory + "/" + image.sourceFileName;
+                }
+                else
+                {
+                    sourcepath = tmxPath + image.sourceFileName;
+                }
+            }
+            return sourcepath;
         }
 
         public static void FixupImageSources(TiledMapSave tms)

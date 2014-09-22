@@ -24,6 +24,8 @@ namespace TmxEditor
 
         SystemManagers mManagers;
         string mCurrentFileName;
+        private List<string> _entities;
+
         #endregion
 
         #region Events
@@ -52,7 +54,6 @@ namespace TmxEditor
 
         }
 
-        private List<string> _entities;
 
         public List<string> Entities
         {
@@ -185,6 +186,32 @@ namespace TmxEditor
             TimeManager.Self.Activity();
         }
 
+        public void UpdateTilesetDisplay()
+        {
+
+            TilesetController.Self.UpdateXnaDisplayToTileset();
+
+            TilesetController.Self.Displayer.UpdateDisplayedProperties();
+            TilesetController.Self.Displayer.PropertyGrid.Refresh();
+        }
+
+
+        public void AddTab(string tabName, System.Windows.Controls.UserControl wpfControl)
+        {
+            this.tabControl1.TabPages.Add(tabName);
+            var newlyAdded = tabControl1.TabPages[tabControl1.TabPages.Count - 1];
+
+            // Instantiate the host:
+            System.Windows.Forms.Integration.ElementHost wpfHost;
+            wpfHost = new System.Windows.Forms.Integration.ElementHost();
+            wpfHost.Dock = DockStyle.Fill;
+            // Set the host’s child to the WPF control
+            wpfHost.Child = wpfControl;
+
+            newlyAdded.Controls.Add(wpfHost);
+        }
+        
+
         internal void LoadTilesetProperties(string fileName)
         {
             if (!string.IsNullOrEmpty(fileName))
@@ -254,15 +281,6 @@ namespace TmxEditor
             {
                 TilesetDisplayRightClick(this, e);
             }
-        }
-
-        public void UpdateTilesetDisplay()
-        {
-
-            TilesetController.Self.UpdateXnaDisplayToTileset();
-
-            TilesetController.Self.Displayer.UpdateDisplayedProperties();
-            TilesetController.Self.Displayer.PropertyGrid.Refresh();
         }
 
         private void HasCollisionsCheckBox_CheckedChanged(object sender, EventArgs e)

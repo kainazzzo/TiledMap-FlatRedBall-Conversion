@@ -27,7 +27,8 @@ namespace TMXGlueLib
             {
                 if (_sourceField != null && _sourceField.Contains("\\"))
                 {
-                    return _sourceField.Substring(0, _sourceField.LastIndexOf('\\'));
+                    // add 1 to include the ending directory
+                    return _sourceField.Substring(0, _sourceField.LastIndexOf('\\') + 1);
                 }
                 else
                 {

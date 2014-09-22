@@ -52,7 +52,7 @@ namespace TMXGlueLib
 
         public static int GetNumberOfTilesWide(this Tileset tileset)
         {
-            if (tileset.Images.Length == 0)
+            if (tileset.Images.Length == 0 || tileset.Tilewidth == 0)
             {
                 return 0;
             }
@@ -66,6 +66,13 @@ namespace TMXGlueLib
 
         public static int GetNumberOfTilesWide(int imageWidth, int margin, int tileWidth, int spacing)
         {
+
+            if (tileWidth == 0)
+            {
+                throw new Exception("The tileWidth must not be 0");
+            }
+
+
             // The following logic
             // deserves an explanation:
             // Consider a simple tileset

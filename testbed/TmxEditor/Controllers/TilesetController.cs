@@ -128,23 +128,25 @@ namespace TmxEditor.Controllers
 
         void HandleLoadedFile(string fileName)
         {
-            FillListBox();
+            RefreshAll();
+        }
 
-            ClearAllHighlights();
+        private void RefreshAll()
+        {
+            mTilesetsListBox.Invoke((MethodInvoker)delegate
+            {
+                FillListBox();
 
-            mSprite.Visible = false;
-            mOutlineRectangle.Visible = false;
+                ClearAllHighlights();
+
+                mSprite.Visible = false;
+                mOutlineRectangle.Visible = false;
+            });
         }
 
         void HandleLoadedAndMergedProperties(string fileName)
         {
-            FillListBox();
-
-            ClearAllHighlights();
-
-            mSprite.Visible = false;
-            mOutlineRectangle.Visible = false;
-
+            RefreshAll();
 
         }
 
@@ -175,6 +177,13 @@ namespace TmxEditor.Controllers
 
         internal void EntitiesComboBoxChanged(string entityToCreate)
         {
+            ////////////Early Out//////////////////////
+            if(CurrentTilesetTile == null)
+            {
+                return;
+            }
+            ///////////End Early Out///////////////////
+
             var tileset = AppState.Self.CurrentMapTilesetTile;
 
             var existingProperty = GetExistingProperty(EntityToCreatePropertyName, CurrentTilesetTile);

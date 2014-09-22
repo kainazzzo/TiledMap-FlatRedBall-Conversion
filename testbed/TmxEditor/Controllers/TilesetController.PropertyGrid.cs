@@ -111,10 +111,17 @@ namespace TmxEditor.Controllers
 
         public property GetExistingProperty(string propertyName, mapTilesetTile tile)
         {
+
             Func<property, bool> predicate = item =>
             {
-                return item.StrippedNameLower == propertyName.ToLowerInvariant();
-
+                if (propertyName != null)
+                {
+                    return item.StrippedNameLower == propertyName.ToLowerInvariant();
+                }
+                else
+                {
+                    return false;
+                }
             };
 
             return tile.properties.FirstOrDefault(predicate);

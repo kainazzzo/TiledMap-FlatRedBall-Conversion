@@ -49,8 +49,11 @@
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,6 +62,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
     <Reference Include="XnaAndWinforms, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\Gum\XnaAndWinforms.dll</HintPath>
@@ -66,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppState.cs" />
+    <Compile Include="Behaviors\InputBindingsManager.cs" />
     <Compile Include="Controllers\LayersController.cs" />
     <Compile Include="Controllers\Singleton.cs" />
     <Compile Include="Controllers\TilesetController.ListBox.cs" />
@@ -105,12 +111,16 @@
     <Compile Include="UI\NewPropertyWindow.Designer.cs">
       <DependentUpon>NewPropertyWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\TilesetWindow.xaml.cs">
+      <DependentUpon>TilesetWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\TsxSelectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\TsxSelectionForm.Designer.cs">
       <DependentUpon>TsxSelectionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\TilesetViewModel.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -172,6 +182,11 @@
     <Content Include="Libraries\Gum\ContentLibrary.dll" />
     <Content Include="Libraries\Gum\InputLibrary.dll" />
     <Content Include="Libraries\Gum\XnaAndWinforms.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\TilesetWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

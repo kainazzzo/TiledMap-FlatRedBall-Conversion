@@ -63,6 +63,7 @@ namespace TmxEditor.Controllers
             mCursor = new InputLibrary.Cursor();
             mCursor.Initialize(mControl);
             mCameraPanningLogic = new CameraPanningLogic(mControl, managers, mCursor, mKeyboard);
+            mManagers.Renderer.Camera.CameraCenterOnScreen = CameraCenterOnScreen.TopLeft;
             mManagers.Renderer.SamplerState = Microsoft.Xna.Framework.Graphics.SamplerState.PointClamp;
 
             mControl.KeyDown += HandleXnaControlKeyDown;
@@ -287,9 +288,9 @@ namespace TmxEditor.Controllers
 
         void HandleWindowResize()
         {
-
-            Camera.X = (int)(mManagers.Renderer.GraphicsDevice.Viewport.Width / 2.0f);
-            Camera.Y = (int)(mManagers.Renderer.GraphicsDevice.Viewport.Height / 2.0f);
+            // No need to handle this now that the camera is positioned top left
+            //Camera.X = (int)(mManagers.Renderer.GraphicsDevice.Viewport.Width / 2.0f);
+            //Camera.Y = (int)(mManagers.Renderer.GraphicsDevice.Viewport.Height / 2.0f);
         }
 
         void MoveToTopLeftOfDisplay()
@@ -367,12 +368,39 @@ namespace TmxEditor.Controllers
                 var image = CurrentTileset.Images[0];
 
                 string fileName = image.Source;
-                string absoluteFile = ProjectManager.Self.MakeAbsolute(fileName);
+
+                if (!string.IsNullOrEmpty(CurrentTileset.SourceDirectory) && CurrentTileset.SourceDirectory != ".")
+                {
+
+                    fileName = CurrentTileset.SourceDirectory + fileName;
+                }
+
+
+                string absoluteFile = fileName;
+                if (FlatRedBall.IO.FileManager.IsRelative(fileName))
+                {
+                    absoluteFile = FlatRedBall.IO.FileManager.RemoveDotDotSlash(ProjectManager.Self.MakeAbsolute(fileName));
+                }
+                
                 mSprite.Visible = true;
 
                 if (System.IO.File.Exists(absoluteFile))
                 {
-                    mSprite.Texture = LoaderManager.Self.Load(absoluteFile, mManagers);
+                    try
+                    {
+                        mSprite.Texture = LoaderManager.Self.Load(absoluteFile, mManagers);
+                    }
+                    catch(Exception e)
+                    {
+                        MessageBox.Show("Error loading file:\n" + e.ToString());
+                    }
+
+                    if(mSprite.Texture != null)
+                    {
+                        mSprite.Width = mSprite.Texture.Width;
+                        mSprite.Height = mSprite.Texture.Height;
+
+                    }
                 }
 
                 mOutlineRectangle.Visible = true;

@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using TmxEditor.Managers;
 using TmxEditor.UI;
+using TmxEditor.ViewModels;
 using TMXGlueLib;
 
 namespace TmxEditor.Controllers
@@ -35,6 +36,8 @@ namespace TmxEditor.Controllers
 
         #endregion
 
+        public Func<string> GetTsxDirectoryRelativeToTmx;
+
         #region Methods
 
         private void InitializeListBox(ListBox tilesetsListBox)
@@ -43,6 +46,7 @@ namespace TmxEditor.Controllers
             mTilesetsListBox.SelectedIndexChanged += new EventHandler(HandleTilesetSelect);
 
             mTilesetsListBox.Click += HandleTilesetClick;
+            mTilesetsListBox.MouseClick += HandleTilesetMouseClick;
 
             mSetSharedTileset = new ToolStripMenuItem();
             mSetSharedTileset.Text = "Set Shared Tileset";
@@ -57,16 +61,22 @@ namespace TmxEditor.Controllers
             mAddNewTilesetMenuItem.Click += HandleAddNewTilesetClick;
         }
 
+        private void HandleTilesetMouseClick(object sender, MouseEventArgs e)
+        {
+            PopulateRightClickMenu();
+        }
+
         private void HandleAddNewTilesetClick(object sender, EventArgs e)
         {
             string fileName;
             bool succeeded;
-            GetTilesetFromFileOrOptions(out fileName, out succeeded);
+            GetTilesetFromFileOrOptions(canBeImageFile:true, fileName: out fileName, succeeded: out succeeded);
 
             if (fileName != null)
             {
                 Tileset newTileset = new Tileset();
-                // We're going to add this to the end, so we need to see what the last tileset is, get its ID and count, and start this tileset at that number
+                // We're going to add this to the end, so we need to see what the last tileset is,
+                // get its ID and count, and start this tileset at that number
 
                 var lastTileset = AppState.Self.CurrentTiledMapSave.Tilesets.LastOrDefault();
 
@@ -81,20 +91,101 @@ namespace TmxEditor.Controllers
 
                 string oldRelative = FileManager.RelativeDirectory;
                 FileManager.RelativeDirectory = AppState.Self.TmxFolder;
-                newTileset.Source = FileManager.MakeRelative( fileName, AppState.Self.TmxFolder);
+
+                bool isFileTmx = FileManager.GetExtension(fileName) == "tmx";
+
+                bool shouldContinue = true;
+
+                if (isFileTmx)
+                {
+
+                    newTileset.Source = FileManager.MakeRelative(fileName, AppState.Self.TmxFolder);
+                }
+                else
+                {
+
+
+                    TilesetWindow window = new TilesetWindow();
+                    TilesetViewModel viewModel = new TilesetViewModel();
+
+                    viewModel.Name = FileManager.RemovePath(FileManager.RemoveExtension(fileName));
+
+
+                    window.DataContext = viewModel;
+
+                    var result = window.ShowDialog();
+
+                    if(result.HasValue && result.Value)
+                    {
+                        shouldContinue = true;
+
+                        string sourceToSet = fileName;
+
+                        if (viewModel.CopyFile && !FileManager.IsRelativeTo(fileName, AppState.Self.TmxFolder))
+                        {
+                            try
+                            {
+                                sourceToSet = AppState.Self.TmxFolder + FileManager.RemovePath(fileName);
+                                System.IO.File.Copy(fileName, sourceToSet, overwrite: true);
+
+                            }
+                            catch (Exception copyException)
+                            {
+                                MessageBox.Show("Error copying file:\n" + copyException.Message);
+                                shouldContinue = false;
+                            }
+
+                        }
+                        if (shouldContinue)
+                        {
+
+                            sourceToSet = FileManager.MakeRelative(sourceToSet, AppState.Self.TmxFolder);
+
+                            newTileset.Images = new TilesetImage[1];
+                            newTileset.Name = viewModel.Name;
+                            newTileset.Tilewidth = viewModel.TileWidth;
+                            newTileset.Tileheight = viewModel.TileHeight;
+                            newTileset.Margin = viewModel.Margin;
+                            newTileset.Spacing = viewModel.Spacing;
+
+                            var tilesetImage = new TilesetImage();
+                            tilesetImage.Source = sourceToSet;
+
+
+                            // We could use either the original file or the copied file.
+                            // I'll use the original since it's in scope and shouldn't matter
+                            var dimensions = ImageHeader.GetDimensions(fileName);
+
+
+                            tilesetImage.width = dimensions.Width;
+                            tilesetImage.height = dimensions.Height;
+
+
+                            newTileset.Images[0] = tilesetImage;
+                        }
+                    }
+                    else
+                    {
+                        shouldContinue = false;
+
+                    }
+                }
                 FileManager.RelativeDirectory = oldRelative;
 
-                AppState.Self.CurrentTiledMapSave.Tilesets.Add(newTileset);
-
-                // refresh everything:
-                RefreshListBox(newTileset);
-                mTilesetsListBox.SelectedItem = newTileset;
-
-                UpdateXnaDisplayToTileset();
-                // and make sure the apps are notified about the change
-                if (AnyTileMapChange != null)
+                if (shouldContinue)
                 {
-                    AnyTileMapChange(this, null);
+                    AppState.Self.CurrentTiledMapSave.Tilesets.Add(newTileset);
+
+                    // refresh everything:
+                    RefreshListBox(newTileset);
+                    mTilesetsListBox.SelectedItem = newTileset;
+
+                    UpdateXnaDisplayToTileset();
+                    // and make sure the apps are notified about the change
+                    if (AnyTileMapChange != null)
+                    {
+                        AnyTileMapChange(this, null);
+                    }
                 }
             }
         }
@@ -103,7 +194,7 @@ namespace TmxEditor.Controllers
         {
             string fileName;
             bool succeeded;
-            GetTilesetFromFileOrOptions(out fileName, out succeeded);
+            GetTilesetFromFileOrOptions(canBeImageFile:false, fileName:out fileName, succeeded:out succeeded);
 
             if (succeeded)
             {
@@ -114,7 +205,20 @@ namespace TmxEditor.Controllers
         private void HandleCreateSharedTilesetClick(object sender, EventArgs e)
         {
 
-            string directory = FileManager.GetDirectory( AppState.Self.CurrentTiledMapSave.FileName );
+            string directory = null;
+
+            if (GetTsxDirectoryRelativeToTmx == null)
+            {
+                directory = FileManager.GetDirectory(AppState.Self.CurrentTiledMapSave.FileName);
+
+            }
+            else
+            {
+                directory = FileManager.GetDirectory(AppState.Self.CurrentTiledMapSave.FileName) +
+                    GetTsxDirectoryRelativeToTmx();
+
+                directory = FileManager.RemoveDotDotSlash(directory);
+            }
 
             CreateSharedTileset(directory);
 
@@ -138,7 +242,7 @@ namespace TmxEditor.Controllers
             RefreshListBox(CurrentTileset);
         }
 
-        private void GetTilesetFromFileOrOptions(out string fileName, out bool succeeded)
+        private void GetTilesetFromFileOrOptions(bool canBeImageFile, out string fileName, out bool succeeded)
         {
             bool doOptionsExist = AppState.Self.ProvidedContext.AvailableTsxFiles.Count != 0;
 
@@ -151,7 +255,16 @@ namespace TmxEditor.Controllers
             }
             else
             {
-                succeeded = TsxSelectionForm.TryGetTsxFileNameFromDisk(out fileName);
+                string additionalFilter = null;
+
+
+                if(canBeImageFile)
+                {
+                    additionalFilter = "Tileset or Image File|*.tsx;*.png";
+                }
+
+                succeeded = TsxSelectionForm.TryGetTsxFileNameFromDisk(out fileName, additionalFilter);
+
             }
         }
 
@@ -259,6 +372,7 @@ namespace TmxEditor.Controllers
 
         private void FillListBox()
         {
+
             mTilesetsListBox.Items.Clear();
             // this could be an empty .tmx.  Support that.
             if (ProjectManager.Self.TiledMapSave.Tilesets != null)

@@ -112,7 +112,7 @@ namespace TmxEditor.UI
         private void FromFileButton_Click(object sender, EventArgs e)
         {
             string fileName;
-            bool succeeded = TsxSelectionForm.TryGetTsxFileNameFromDisk(out fileName);
+            bool succeeded = TsxSelectionForm.TryGetTsxFileNameFromDisk(out fileName, null);
 
             if (succeeded)
             {
@@ -123,11 +123,18 @@ namespace TmxEditor.UI
         }
 
 
-        public static bool TryGetTsxFileNameFromDisk(out string fileName)
+        public static bool TryGetTsxFileNameFromDisk(out string fileName, string alternativeFilter)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
-            openFileDialog.Filter = "Tileset Files|*.tsx";
+            if(!string.IsNullOrEmpty(alternativeFilter))
+            {
+                openFileDialog.Filter = alternativeFilter;
+            }
+            else
+            {
+                openFileDialog.Filter = "Tileset Files|*.tsx";
+            }
 
             fileName = null;
             bool succeeded = false;

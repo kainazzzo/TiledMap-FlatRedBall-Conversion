@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToScnx", "TmxToScnx\TmxToScnx.csproj", "{EAA9B407-D6C9-46AC-82D4-F1861D235883}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToNntx", "TmxToNntx\TmxToNntx.csproj", "{6C27074B-84C2-495D-87AE-A66C1346680B}"
@@ -12,8 +14,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToCSV", "TmxToCSV\TmxToCSV.csproj", "{8A145E54-EF69-4B3B-8B3A-0D2223B85F00}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMXGlueLib", "TMXGlueLib\TMXGlueLib.csproj", "{8600173A-6281-45E1-8076-54366E42CBDE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmxToTilb", "TmxToTilb\TmxToTilb.csproj", "{8E4CB10A-D352-4562-8AC7-F92530A44AAA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMXGlueTest", "TMXGlueTest\TMXGlueTest.csproj", "{0682CA8A-5359-4237-AA0D-0305C9C527FB}"
 EndProject
@@ -29,9 +29,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleLogging", "SimpleLogging\SimpleLogging.csproj", "{3CBD96B2-9916-470D-ACFB-2EA5C9A6ED2D}"
 EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = TestBed.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -168,26 +165,6 @@ Global
 		{8600173A-6281-45E1-8076-54366E42CBDE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{8600173A-6281-45E1-8076-54366E42CBDE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{8600173A-6281-45E1-8076-54366E42CBDE}.Release|x86.ActiveCfg = Release|Any CPU
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Debug|x86.ActiveCfg = Debug|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Debug|x86.Build.0 = Debug|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.DebugProfile|Any CPU.ActiveCfg = Debug|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.DebugProfile|Mixed Platforms.ActiveCfg = Debug|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.DebugProfile|Mixed Platforms.Build.0 = Debug|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.DebugProfile|x86.ActiveCfg = Debug|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.DebugProfile|x86.Build.0 = Debug|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Profile|Any CPU.ActiveCfg = Release|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Profile|Mixed Platforms.ActiveCfg = Release|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Profile|Mixed Platforms.Build.0 = Release|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Profile|x86.ActiveCfg = Release|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Profile|x86.Build.0 = Release|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Release|Any CPU.ActiveCfg = Release|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Release|Mixed Platforms.Build.0 = Release|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Release|x86.ActiveCfg = Release|x86
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA}.Release|x86.Build.0 = Release|x86
 		{0682CA8A-5359-4237-AA0D-0305C9C527FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0682CA8A-5359-4237-AA0D-0305C9C527FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0682CA8A-5359-4237-AA0D-0305C9C527FB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -234,13 +211,15 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{EAA9B407-D6C9-46AC-82D4-F1861D235883} = {5D587683-F894-4627-93C9-3F13EC005A86}
 		{6C27074B-84C2-495D-87AE-A66C1346680B} = {5D587683-F894-4627-93C9-3F13EC005A86}
 		{09CC5544-0DA9-47EB-96A8-52D0F0DC461A} = {5D587683-F894-4627-93C9-3F13EC005A86}
 		{8A145E54-EF69-4B3B-8B3A-0D2223B85F00} = {5D587683-F894-4627-93C9-3F13EC005A86}
-		{8E4CB10A-D352-4562-8AC7-F92530A44AAA} = {5D587683-F894-4627-93C9-3F13EC005A86}
-		{EAA9B407-D6C9-46AC-82D4-F1861D235883} = {5D587683-F894-4627-93C9-3F13EC005A86}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = TestBed.vsmdi
 	EndGlobalSection
 EndGlobal
