@@ -143,7 +143,17 @@ namespace TMXGlueLib.DataTypes
 
         public uint NumberOfLayers;
 
-        public int VersionNumber;
+
+        // Version 0:
+        // Initial version when versioning was tracked.
+        // Version 1:
+        // Added:
+        //  int NumberCellsWide;
+        //  int NumberCellsTall;
+        public int VersionNumber = 1;
+
+        public int NumberCellsWide;
+        public int NumberCellsTall;
 
         public List<ReducedLayerInfo> Layers = new List<ReducedLayerInfo>();
 
@@ -164,6 +174,13 @@ namespace TMXGlueLib.DataTypes
             for (int i = 0; i < toReturn.NumberOfLayers; i++)
             {
                 toReturn.Layers.Add(ReducedLayerInfo.ReadFrom(reader));
+            }
+
+            // Version 1:
+            if(toReturn.VersionNumber > 0)
+            {
+                toReturn.NumberCellsWide = reader.ReadInt32();
+                toReturn.NumberCellsTall = reader.ReadInt32();
             }
 
 
@@ -187,6 +204,14 @@ namespace TMXGlueLib.DataTypes
             {
                 this.Layers[i].WriteTo(writer);
             }
+
+            // Version 1:
+            if(VersionNumber > 0)
+            {
+                writer.Write(NumberCellsWide);
+                writer.Write(NumberCellsTall);
+            }
+
         }
 
         public static ReducedTileMapInfo FromFile(string fileName)

@@ -359,8 +359,8 @@ namespace TMXGlueTest
         {
             var map = new TiledMapSave
                 {
-                    height = 3,
-                    width = 2,
+                    Height = 3,
+                    Width = 2,
                     tileheight = 32,
                     tilewidth = 32,
                     orientation = "orthogonal",
@@ -564,8 +564,8 @@ namespace TMXGlueTest
             TiledMapSave.Offset = new Tuple<float, float, float>(0f, 0f, 0f);
             var target = new TiledMapSave()
                 {
-                    height = 64,
-                    width = 64,
+                    Height = 64,
+                    Width = 64,
                     tileheight = 32,
                     tilewidth = 32,
                     Tilesets = new List<Tileset>()

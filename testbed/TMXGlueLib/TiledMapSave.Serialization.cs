@@ -136,17 +136,21 @@ namespace TMXGlueLib
             set;
         }
 
-        /// <remarks/>
-        [XmlAttribute()]
-        public int width
+        /// <summary>
+        /// The number of cells this map has on the X axis.
+        /// </summary>
+        [XmlAttribute("width")]
+        public int Width
         {
             get;
             set;
         }
 
-        /// <remarks/>
-        [XmlAttribute()]
-        public int height
+        /// <summary>
+        /// The number of cells this map has on the Y axis.
+        /// </summary>
+        [XmlAttribute("height")]
+        public int Height
         {
             get;
             set;

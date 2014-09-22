@@ -21,11 +21,7 @@ namespace TmxToScnx
 
             try
             {
-                Assembly assembly = Assembly.GetEntryAssembly();
-                AssemblyName assemblyName = assembly.GetName();
-                Version version = assemblyName.Version;
-
-                Console.WriteLine("TMX to SCNX converter version " + version.ToString());
+                PrintVersionInformation();
 
                 TmxToScnxCommandLineArgs parsedArgs = new TmxToScnxCommandLineArgs();
                 parsedArgs.ParseOptionalCommandLineArgs(args);
@@ -72,6 +68,15 @@ namespace TmxToScnx
             {
                 System.Console.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
             }
+        }
+
+        private static void PrintVersionInformation()
+        {
+            Assembly assembly = Assembly.GetEntryAssembly();
+            AssemblyName assemblyName = assembly.GetName();
+            Version version = assemblyName.Version;
+
+            Console.WriteLine("TMX to SCNX converter version " + version.ToString());
         }
 
         private static bool GetIfHasMultiTextureLayers(TiledMapSave tms)

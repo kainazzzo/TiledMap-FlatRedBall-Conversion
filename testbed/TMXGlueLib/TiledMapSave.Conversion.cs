@@ -538,8 +538,8 @@ namespace TMXGlueLib
 
                             //int tileWidth = requireTile ? tileSet.tilewidth : tilewidth;
                             //int tileHeight = requireTile ? tileSet.tileheight : tileheight;
-                            int x = count % this.width;
-                            int y = count / this.width;
+                            int x = count % this.Width;
+                            int y = count / this.Width;
 
                             float nodex;
                             float nodey;
@@ -771,7 +771,7 @@ namespace TMXGlueLib
             }
 
             SetSpriteTextureCoordinates(gid, sprite, tileSet, imageWidth, imageHeight, tileWidth, spacing, tileHeight, margin);
-            CalculateWorldCoordinates(layercount, tileIndex, tileWidth, tileHeight, this.width, out sprite.X, out sprite.Y, out sprite.Z);
+            CalculateWorldCoordinates(layercount, tileIndex, tileWidth, tileHeight, this.Width, out sprite.X, out sprite.Y, out sprite.Z);
 
             sprite.ScaleX = tileWidth / 2.0f;
             sprite.ScaleY = tileHeight / 2.0f;
@@ -805,8 +805,8 @@ namespace TMXGlueLib
 
         public void CalculateWorldCoordinates(int layercount, int count, int tileWidth, int tileHeight, int layerWidth, out float x, out float y, out float z)
         {
-            int normalizedX = count % this.width;
-            int normalizedY = count / this.width;
+            int normalizedX = count % this.Width;
+            int normalizedY = count / this.Width;
             CalculateWorldCoordinates(layercount, normalizedX, normalizedY, tileWidth, tileHeight, layerWidth, out x, out y, out z);
         }
 

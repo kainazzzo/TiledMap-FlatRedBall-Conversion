@@ -83,6 +83,9 @@ namespace TMXGlueLib.DataTypes
         {
             var toReturn = new ReducedTileMapInfo();
 
+            toReturn.NumberCellsTall = tiledMapSave.Height;
+            toReturn.NumberCellsWide = tiledMapSave.Width;
+
             var ses = tiledMapSave.ToSceneSave(scale, referenceType);
 
             ses.SpriteList.Sort((first, second) => first.Z.CompareTo(second.Z));
