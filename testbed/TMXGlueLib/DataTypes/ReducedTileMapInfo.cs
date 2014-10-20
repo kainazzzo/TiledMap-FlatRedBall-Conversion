@@ -23,7 +23,7 @@ namespace TMXGlueLib.DataTypes
         public const byte FlippedDiagonallyFlag = 2;
 
         public float LeftQuadCoordinate;
-        public float BottomQuadCorodinate;
+        public float BottomQuadCoordinate;
 
         public ushort LeftTexturePixel;
         public ushort TopTexturePixel;
@@ -37,7 +37,7 @@ namespace TMXGlueLib.DataTypes
             ReducedQuadInfo toReturn = new ReducedQuadInfo();
 
             toReturn.LeftQuadCoordinate = reader.ReadSingle();
-            toReturn.BottomQuadCorodinate = reader.ReadSingle();
+            toReturn.BottomQuadCoordinate = reader.ReadSingle();
             toReturn.LeftTexturePixel = reader.ReadUInt16();
             toReturn.TopTexturePixel = reader.ReadUInt16();
 
@@ -52,7 +52,7 @@ namespace TMXGlueLib.DataTypes
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(LeftQuadCoordinate);
-            writer.Write(BottomQuadCorodinate);
+            writer.Write(BottomQuadCoordinate);
             writer.Write(LeftTexturePixel);
             writer.Write(TopTexturePixel);
 
@@ -64,7 +64,7 @@ namespace TMXGlueLib.DataTypes
 
         public override string ToString()
         {
-            return Name + " " + LeftQuadCoordinate + " " + BottomQuadCorodinate;
+            return Name + " " + LeftQuadCoordinate + " " + BottomQuadCoordinate;
         }
     }
 
@@ -75,7 +75,6 @@ namespace TMXGlueLib.DataTypes
     public class ReducedLayerInfo
     {
         public string Texture;
-
         public string Name;
 
         public uint NumberOfQuads;
@@ -84,7 +83,11 @@ namespace TMXGlueLib.DataTypes
 
         public List<ReducedQuadInfo> Quads = new List<ReducedQuadInfo>();
 
-        public static ReducedLayerInfo ReadFrom(BinaryReader reader)
+        // Version 2:
+        public int TextureId;
+
+
+        public static ReducedLayerInfo ReadFrom(BinaryReader reader, int version)
         {
             ReducedLayerInfo toReturn = new ReducedLayerInfo();
 
@@ -101,10 +104,15 @@ namespace TMXGlueLib.DataTypes
                 toReturn.Quads.Add( ReducedQuadInfo.ReadFrom(reader));
             }
 
+            if(version >= 2)
+            {
+                toReturn.TextureId = reader.ReadInt32();
+            }
+
             return toReturn;
         }
 
-        public void WriteTo(BinaryWriter writer)
+        public void WriteTo(BinaryWriter writer, int version)
         {
             writer.Write(Z);
 
@@ -120,6 +128,10 @@ namespace TMXGlueLib.DataTypes
                 Quads[i].WriteTo(writer);
             }
 
+            if (version >= 2)
+            {
+                writer.Write(TextureId);
+            }
         }
 
         public override string ToString()
@@ -150,7 +162,7 @@ namespace TMXGlueLib.DataTypes
         // Added:
         //  int NumberCellsWide;
         //  int NumberCellsTall;
-        public int VersionNumber = 1;
+        public int VersionNumber = 2;
 
         public int NumberCellsWide;
         public int NumberCellsTall;
@@ -173,7 +185,8 @@ namespace TMXGlueLib.DataTypes
 
             for (int i = 0; i < toReturn.NumberOfLayers; i++)
             {
-                toReturn.Layers.Add(ReducedLayerInfo.ReadFrom(reader));
+
+                toReturn.Layers.Add(ReducedLayerInfo.ReadFrom(reader, toReturn.VersionNumber));
             }
 
             // Version 1:
@@ -202,7 +215,7 @@ namespace TMXGlueLib.DataTypes
 
             for (int i = 0; i < NumberOfLayers; i++)
             {
-                this.Layers[i].WriteTo(writer);
+                this.Layers[i].WriteTo(writer, VersionNumber);
             }
 
             // Version 1:

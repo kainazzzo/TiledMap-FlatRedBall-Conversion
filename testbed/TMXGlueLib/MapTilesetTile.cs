@@ -49,6 +49,20 @@ namespace TMXGlueLib
                 set;
             }
 
+
+            [XmlElement("animation")]
+            public TileAnimation Animation
+            {
+                get;
+                set;
+            }
+
+
+            public mapTilesetTile()
+            {
+            }
+
+
             public override string ToString()
             {
                 string toReturn = id.ToString();

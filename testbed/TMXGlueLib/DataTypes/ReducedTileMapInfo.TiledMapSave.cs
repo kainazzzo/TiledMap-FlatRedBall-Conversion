@@ -16,7 +16,7 @@ namespace TMXGlueLib.DataTypes
         {
             ReducedQuadInfo toReturn = new ReducedQuadInfo();
             toReturn.LeftQuadCoordinate = spriteSave.X - spriteSave.ScaleX;
-            toReturn.BottomQuadCorodinate = spriteSave.Y - spriteSave.ScaleY;
+            toReturn.BottomQuadCoordinate = spriteSave.Y - spriteSave.ScaleY;
 
             
             bool isRotated = spriteSave.RotationZ != 0;
@@ -95,7 +95,68 @@ namespace TMXGlueLib.DataTypes
 
             Dictionary<string, Point> loadedTextures = new Dictionary<string, Point>();
 
+            SetCellWidthAndHeight(tiledMapSave, directory, toReturn, ses, loadedTextures);
 
+            SetQuadWidthAndHeight(toReturn, ses);
+
+            float z = float.NaN;
+
+            for(int i = 0; i < ses.SpriteList.Count; i++)
+            {
+            //foreach (SpriteSave spriteSave in ses.SpriteList)
+            //{
+                SpriteSave spriteSave = ses.SpriteList[i];
+
+                if (spriteSave.Z != z)
+                {
+                    z = spriteSave.Z;
+                    reducedLayerInfo = new ReducedLayerInfo();
+                    reducedLayerInfo.Z = spriteSave.Z;
+                    reducedLayerInfo.Texture = spriteSave.Texture;
+
+                    int layerIndex =  FlatRedBall.Math.MathFunctions.RoundToInt(z - zOffset);
+                    var mapLayer = tiledMapSave.Layers[layerIndex];
+
+
+                    // This should have data:
+
+                    var idOfTexture = mapLayer.data[0].tiles.FirstOrDefault(item=>item != 0);
+                    Tileset tileSet = tiledMapSave.GetTilesetForGid(idOfTexture);
+                    var tilesetIndex = tiledMapSave.Tilesets.IndexOf(tileSet);
+
+                    reducedLayerInfo.Name = mapLayer.Name;
+                    reducedLayerInfo.TextureId = tilesetIndex;
+                    toReturn.Layers.Add(reducedLayerInfo);
+                }
+
+                Point point = GetTextureDimensions(directory, loadedTextures, spriteSave);
+
+                ReducedQuadInfo quad = ReducedQuadInfo.FromSpriteSave(spriteSave, point.X, point.Y);
+
+
+                reducedLayerInfo.Quads.Add(quad);
+
+            }
+
+            return toReturn;
+
+
+
+        }
+
+        private static void SetQuadWidthAndHeight(ReducedTileMapInfo toReturn, SceneSave ses)
+        {
+            if (ses.SpriteList.Count != 0)
+            {
+                SpriteSave spriteSave = ses.SpriteList[0];
+
+                toReturn.QuadWidth = spriteSave.ScaleX * 2;
+                toReturn.QuadHeight = spriteSave.ScaleY * 2;
+            }
+        }
+
+        private static void SetCellWidthAndHeight(TiledMapSave tiledMapSave, string directory, ReducedTileMapInfo toReturn, SceneSave ses, Dictionary<string, Point> loadedTextures)
+        {
             if (ses.SpriteList.Count != 0)
             {
                 SpriteSave spriteSave = ses.SpriteList[0];
@@ -114,51 +175,7 @@ namespace TMXGlueLib.DataTypes
                     toReturn.CellHeightInPixels = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt((spriteSave.BottomTextureCoordinate - spriteSave.TopTextureCoordinate) * point.Y);
                     toReturn.CellWidthInPixels = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt((spriteSave.RightTextureCoordinate - spriteSave.LeftTextureCoordinate) * point.X);
                 }
-
-                toReturn.QuadWidth = spriteSave.ScaleX * 2;
-                toReturn.QuadHeight = spriteSave.ScaleY * 2;
             }
-
-            int indexInLayer = 0;
-            int layerIndex = 0;
-            float z = float.NaN;
-
-            for(int i = 0; i < ses.SpriteList.Count; i++)
-            {
-            //foreach (SpriteSave spriteSave in ses.SpriteList)
-            //{
-                SpriteSave spriteSave = ses.SpriteList[i];
-
-                if (spriteSave.Z != z)
-                {
-                    indexInLayer = 0;
-
-                    z = spriteSave.Z;
-                    reducedLayerInfo = new ReducedLayerInfo();
-                    reducedLayerInfo.Z = spriteSave.Z;
-                    reducedLayerInfo.Texture = spriteSave.Texture;
-
-                    // This doesn't work if the map has a non-zero Z offset:
-                    reducedLayerInfo.Name = tiledMapSave.Layers[ FlatRedBall.Math.MathFunctions.RoundToInt(z - zOffset)].Name;
-                    //reducedLayerInfo.Name = tiledMapSave.Layers[layerIndex].Name;
-
-                    toReturn.Layers.Add(reducedLayerInfo);
-                    layerIndex++;
-                }
-
-                Point point = GetTextureDimensions(directory, loadedTextures, spriteSave);
-
-                ReducedQuadInfo quad = ReducedQuadInfo.FromSpriteSave(spriteSave, point.X, point.Y);
-
-
-                reducedLayerInfo.Quads.Add(quad);
-
-            }
-
-            return toReturn;
-
-
-
         }
 
 

@@ -469,6 +469,12 @@ namespace TMXGlueLib
         /// This can span multiple tilesets.
         /// </summary>
         private List<uint> _ids = null;
+        
+        
+        /// <summary>
+        /// Represents all of the tiles in this layer.  A tile with index 0 means there is no tile there.  Non-zero values
+        /// mean that the value is painted.  Painted values are global IDs of tiles.
+        /// </summary>
         [XmlIgnore]
         public List<uint> tiles
         {

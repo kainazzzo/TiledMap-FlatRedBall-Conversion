@@ -44,6 +44,7 @@ namespace TMXGlueLib
         public static LayerVisibleBehavior LayerVisibleBehaviorValue = LayerVisibleBehavior.Ignore;
         public static int MaxDegreeOfParallelism = 1;
 
+        const string animationColumnName = "EmbeddedAnimation (List<FlatRedBall.Content.AnimationChain.AnimationFrameSaveBase>)";
 
 
         private static Tuple<float, float, float> _offset = new Tuple<float, float, float>(0f, 0f, 0f);
@@ -76,10 +77,10 @@ namespace TMXGlueLib
         public string ToCSVString(CSVPropertyType type = CSVPropertyType.Tile, string layerName = null)
         {
             var sb = new StringBuilder();
-            IEnumerable<string> columnNames = GetColumnNames(type, layerName);
-            var enumerable = columnNames as IList<string> ?? columnNames.ToList();
-            WriteColumnHeader(sb, enumerable);
-            WriteColumnValues(sb, enumerable, type, layerName);
+            IEnumerable<string> columnsAsEnumerable = GetColumnNames(type, layerName);
+            var columnList = columnsAsEnumerable as IList<string> ?? columnsAsEnumerable.ToList();
+            WriteColumnHeader(sb, columnList);
+            WriteColumnValues(sb, columnList, type, layerName);
 
             return sb.ToString();
         }
@@ -93,29 +94,14 @@ namespace TMXGlueLib
             switch (type)
             {
                 case CSVPropertyType.Tile:
-                    foreach (Tileset tileSet in this.Tilesets)
-                    {
-                        if (tileSet.Tiles != null)
-                        {
-                            foreach (mapTilesetTile tile in tileSet.Tiles.Where(t=>t.PropertyDictionary.Count > 0))
-                            {
-                                var propertyDictionary = tile.PropertyDictionary;
-
-                                WriteValuesFromDictionary(sb, null, propertyDictionary, 0, 0, columnNames);
-                            }
-                        }
-                    }
+                    WriteColumnValuesForTile(sb, columnNames);
                     break;
                 case CSVPropertyType.Layer:
 
-                    this.Layers.Where(
-                        l =>
-                        layerName == null ||
-                        (l.Name != null && l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase))).ToList()
-                        .ForEach(l => WriteValuesFromDictionary(sb, null, l.PropertyDictionary, 0, 0, columnNames));
+                    WriteColumnValuesForLayer(sb, columnNames, layerName);
                     break;
                 case CSVPropertyType.Map:
-                    WriteValuesFromDictionary(sb, null, PropertyDictionary, 0, 0, columnNames);
+                    WriteValuesFromDictionary(sb, null, PropertyDictionary, columnNames, null);
                     break;
                 case CSVPropertyType.Object:
                     this.objectgroup.Where(
@@ -124,43 +110,151 @@ namespace TMXGlueLib
                         (og.name != null && og.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
                         .SelectMany(o => o.@object, (o, c) => new { group = o, obj = c, X = c.x, Y = c.y })
                         .ToList()
-                        .ForEach(o => WriteValuesFromDictionary(sb, o.group.PropertyDictionary, o.obj.PropertyDictionary, o.X, o.Y, columnNames));
+                        .ForEach(o => WriteValuesFromDictionary(sb, o.group.PropertyDictionary, o.obj.PropertyDictionary, columnNames, null));
                     break;
+            }
+        }
+
+        private void WriteColumnValuesForLayer(StringBuilder sb, IList<string> columnNames, string layerName)
+        {
+            var availableItems = 
+            this.Layers.Where(
+                l =>
+                layerName == null ||
+                (l.Name != null && l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase))).ToList();
+
+            foreach(var l in availableItems)
+            {
+                WriteValuesFromDictionary(sb, null, l.PropertyDictionary, columnNames, null);
+            }
+                
+        }
+
+        private void WriteColumnValuesForTile(StringBuilder sb, IList<string> columnNames)
+        {
+            for (int i = 0; i < this.Tilesets.Count; i++)
+            {
+                Tileset tileSet = this.Tilesets[i];
+
+                if (tileSet.Tiles != null)
+                {
+                    Func<mapTilesetTile, bool> predicate =
+                        t => t.PropertyDictionary.Count > 0 || 
+                        (t.Animation != null && t.Animation.Frames != null && t.Animation.Frames.Count > 0);
+
+                    foreach (mapTilesetTile tile in tileSet.Tiles.Where(predicate))
+                    {
+                        var propertyDictionary = tile.PropertyDictionary;
+
+                        WriteValuesFromDictionary(sb, null, propertyDictionary, columnNames, tile.Animation, i);
+                    }
+                }
             }
         }
 
         static int numberOfUnnamedTiles = 0;
 
-        private void WriteValuesFromDictionary(StringBuilder sb, IDictionary<string, string> pDictionary, IDictionary<string, string> iDictionary, int x, int y, IEnumerable<string> columnNames)
+        private void WriteValuesFromDictionary(StringBuilder sb, IDictionary<string, string> pDictionary, 
+            IDictionary<string, string> iDictionary, IEnumerable<string> columnNames, TileAnimation animation, int tilesetIndex = 0)
         {
-            // January 26, 2014
-            // I spent quite a while
-            // trying to figure out why
-            // my TMX wasn't making a CSV
-            // properly, but then I should
-            // comment it.  The general idea
-            // is that each tile will be represented
-            // as a row in the CSV.  The CSV will be deserialized
-            // to a dictionary, and the Name value is the Key.  Therefore
-            // each tile must have a Name value so that it can be referenced
-            // in the resulting dictionary.  If there is no Name value, then we're 
-            // going to skip the tile.
-            // Update January 26, 2014
-            // I got confused about this
-            // and was able to solve it by
-            // digging into the source, but
-            // others won't have this benefit,
-            // and those who do know this may forget
-            // (as I did).  So let's make this easier
-            // to work with by generating a name if one
-            // doesn't exist.  This makes it much easier
-            // to figure out the intended usage of this plugin.
-            //if (doesDictionaryContainNameValue)
-            //{
+            string nameValue = GetNameValue(iDictionary);
 
+            List<string> row = new List<string>();
+            row.Add(nameValue);
+
+            bool hasAnimation = columnNames.Contains("EmbeddedAnimation");
+
+            if (hasAnimation)
+            {
+                AddAnimationFrameAtIndex(animation, row, 0, tilesetIndex);
+            }
+            AppendCustomProperties(pDictionary, iDictionary, columnNames, row, false);
+
+            AppendRowToStringBuilder(sb, row);
+
+            if(animation != null && animation.Frames != null)
+            {
+
+                for(int i = 1; i< animation.Frames.Count; i++)
+                {
+                    row = new List<string>();
+                    row.Add(""); // Name column
+
+
+                    if (hasAnimation)
+                    {
+                        AddAnimationFrameAtIndex(animation, row, i, tilesetIndex);
+                    }
+                    AppendCustomProperties(pDictionary, iDictionary, columnNames, row, true);
+                    AppendRowToStringBuilder(sb, row);
+                }
+            }
+
+
+
+        }
+
+        private void AddAnimationFrameAtIndex(TileAnimation animation, List<string> row, int animationIndex, int tilesetIndex)
+        {
+            if (animation != null && animation.Frames != null && animation.Frames.Count > animationIndex)
+            {
+                // public int TileId
+                // public int Duration
+
+                var frame = animation.Frames[animationIndex];
+
+                int leftCoordinate = 0;
+                int rightCoordinate = 16;
+                int topCoordinate = 0;
+                int bottomCoordinate = 16;
+
+                var frameId = (uint)frame.TileId;
+                // not sure why, but need to add 1:
+                frameId++;
+
+                GetPixelCoordinatesFromGid(frameId, this.Tilesets[tilesetIndex],
+                    out leftCoordinate, out topCoordinate, out rightCoordinate, out bottomCoordinate);
+
+                row.Add(string.Format(
+                    "new FlatRedBall.Content.AnimationChain.AnimationFrameSaveBase(TextureName={0}, " + 
+                    "FrameLength={1}, LeftCoordinate={2}, RightCoordinate={3}, TopCoordinate={4}, BottomCoordinate={5})", tilesetIndex, 
+                    frame.Duration/1000.0f, leftCoordinate, rightCoordinate, topCoordinate, bottomCoordinate));
+            }
+            else
+            {
+                row.Add(null);
+            }
+        }
+
+        private static void AppendRowToStringBuilder(StringBuilder sb, List<string> row)
+        {
+            bool isFirst = true;
+            foreach (var originalValue in row)
+            {
+                string value = originalValue;
+
+                if (!isFirst)
+                {
+                    sb.Append(",");
+
+                }
+                if (value != null)
+                {
+                    value = value.Replace("\"", "\"\"");
+                }
+
+                sb.AppendFormat("\"{0}\"", value);
+                isFirst = false;
+            }
+            sb.AppendLine();
+
+        }
+
+        private static string GetNameValue(IDictionary<string, string> iDictionary)
+        {
             string nameValue = null;
 
-            bool doesDictionaryContainNameValue = 
+            bool doesDictionaryContainNameValue =
                 iDictionary.Any(p => property.GetStrippedName(p.Key).Equals("name", StringComparison.CurrentCultureIgnoreCase));
 
             if (doesDictionaryContainNameValue)
@@ -172,47 +266,55 @@ namespace TMXGlueLib
                 nameValue = "UnnamedTile" + numberOfUnnamedTiles;
                 numberOfUnnamedTiles++;
             }
+            return nameValue;
+        }
 
-            sb.Append(nameValue);
-
+        private static void AppendCustomProperties(IDictionary<string, string> pDictionary, IDictionary<string, string> iDictionary, IEnumerable<string> columnNames, List<string> row, bool forceEmpty)
+        {
             foreach (string columnName in columnNames)
             {
                 string strippedColumnName = property.GetStrippedName(columnName);
 
+                bool isAnimation =
+                    strippedColumnName.Equals("embeddedanimation", StringComparison.CurrentCultureIgnoreCase);
 
-                if (!strippedColumnName.Equals("name", StringComparison.CurrentCultureIgnoreCase))
+                bool isCustomProperty = !isAnimation &&
+                    !strippedColumnName.Equals("name", StringComparison.CurrentCultureIgnoreCase);
+
+
+
+                if (isCustomProperty)
                 {
-                    if (iDictionary.Any(p => property.GetStrippedName(p.Key).Equals(strippedColumnName, StringComparison.CurrentCultureIgnoreCase)))
+                    if (!forceEmpty && iDictionary.Any(p => property.GetStrippedName(p.Key).Equals(strippedColumnName, StringComparison.CurrentCultureIgnoreCase)))
                     {
                         var value =
                             iDictionary.First(p => property.GetStrippedName(p.Key).Equals(strippedColumnName, StringComparison.CurrentCultureIgnoreCase)).Value;
 
-                        if (value != null)
-                        {
-                            value = value.Replace("\"", "\"\"");
-                        }
-
-                        sb.AppendFormat(",\"{0}\"", value);
+                        row.Add(value);
                     }
-                    else if (pDictionary != null && pDictionary.Any(p => p.Key.Equals(strippedColumnName, StringComparison.CurrentCultureIgnoreCase)))
+                    // Victor Chelaru
+                    // October 12, 2014
+                    // Not sure what pDictionary
+                    // is, but it looks like it's
+                    // only used for "object" CSVs.
+                    // My first question is - do we need
+                    // to use stripped names here?  Also, do
+                    // we even want to support object dictionaries
+                    // in the future?  How does this fit in with the
+                    // new "level" pattern.
+                    else if (!forceEmpty && pDictionary != null && pDictionary.Any(p => p.Key.Equals(strippedColumnName, StringComparison.CurrentCultureIgnoreCase)))
                     {
                         var value =
                             pDictionary.First(p => p.Key.Equals(strippedColumnName, StringComparison.CurrentCultureIgnoreCase)).Value;
 
-                        if (value != null)
-                        {
-                            value = value.Replace("\"", "\"\"");
-                        }
-
-                        sb.AppendFormat(",\"{0}\"", value);
+                        row.Add(value);
                     }
                     else
                     {
-                        sb.Append(",");
+                        row.Add(null);
                     }
                 }
             }
-            sb.AppendLine();
         }
 
         private static void WriteColumnHeader(StringBuilder sb, IEnumerable<string> columnNames)
@@ -305,11 +407,7 @@ namespace TMXGlueLib
             switch (type)
             {
                 case CSVPropertyType.Tile:
-                    return
-                        this.Tilesets.SelectMany(t => t.Tiles)
-                            .SelectMany(tile => tile.PropertyDictionary)
-                            .Select(d => d.Key)
-                            .Distinct(comparer);
+                    return GetColumnNamesForTile(comparer);
                 case CSVPropertyType.Layer:
                     return
                         this.Layers.Where(
@@ -338,6 +436,25 @@ namespace TMXGlueLib
                                    .Select(d => d.Key), comparer)));
             }
             return columnNames;
+        }
+
+        private IEnumerable<string> GetColumnNamesForTile(CaseInsensitivePropertyEqualityComparer comparer)
+        {
+            List<string> toReturn = new List<string>();
+
+            // animations should come first:
+
+
+            toReturn.Add(animationColumnName);
+            
+            toReturn.AddRange( this.Tilesets.SelectMany(t => t.Tiles)
+                    .SelectMany(tile => tile.PropertyDictionary)
+                    .Select(d => d.Key)
+                    .Distinct(comparer)
+                    .ToList());
+
+            return toReturn;
+                
         }
 
         public ShapeCollectionSave ToShapeCollectionSave(string layerName)
@@ -744,6 +861,15 @@ namespace TMXGlueLib
             else if (referenceType == FileReferenceType.Absolute)
             {
                 string directory = FileManager.GetDirectory(this.FileName);
+
+                if(!string.IsNullOrEmpty(tileSet.SourceDirectory) && tileSet.SourceDirectory != ".")
+                {
+                    directory += tileSet.SourceDirectory;
+
+                    directory = FileManager.RemoveDotDotSlash(directory);
+
+                }
+
                 sprite.Texture = FileManager.RemoveDotDotSlash( directory + tileSet.Images[0].Source );
 
             }
@@ -770,7 +896,7 @@ namespace TMXGlueLib
                 }
             }
 
-            SetSpriteTextureCoordinates(gid, sprite, tileSet, imageWidth, imageHeight, tileWidth, spacing, tileHeight, margin);
+            SetSpriteTextureCoordinates(gid, sprite, tileSet);
             CalculateWorldCoordinates(layercount, tileIndex, tileWidth, tileHeight, this.Width, out sprite.X, out sprite.Y, out sprite.Z);
 
             sprite.ScaleX = tileWidth / 2.0f;
@@ -838,40 +964,29 @@ namespace TMXGlueLib
             z += Offset.Item3;
         }
 
-        public void SetSpriteTextureCoordinates(uint gid, SpriteSave sprite, Tileset tileSet, int imageWidth, int imageHeight, int tileWidth, int spacing, int tileHeight, int margin)
+        public void SetSpriteTextureCoordinates(uint gid, SpriteSave sprite, Tileset tileSet)
         {
+            int imageWidth = tileSet.Images[0].width;
+            int imageHeight = tileSet.Images[0].height;
+            int tileWidth = tileSet.Tilewidth;
+            int spacing = tileSet.Spacing;
+            int tileHeight = tileSet.Tileheight;
+            int margin = tileSet.Margin;
+
+
+            int leftPixelCoord;
+            int topPixelCoord;
+            int rightPixelCoord;
+            int bottomPixelCoord;
+            GetPixelCoordinatesFromGid(gid, tileSet, 
+                out leftPixelCoord, out topPixelCoord, out rightPixelCoord, out bottomPixelCoord);
+
+
+            bool flipDiagonally;
             var gidWithoutRotation = gid & 0x0fffffff;
+            const uint FlippedDiagonallyFlag = 0x20000000;
+            flipDiagonally = (gid & FlippedDiagonallyFlag) == FlippedDiagonallyFlag;
 
-            const uint FlippedHorizontallyFlag = 0x80000000;
-            const uint FlippedVerticallyFlag   = 0x40000000;
-            const uint FlippedDiagonallyFlag   = 0x20000000;
-
-            bool flipHorizontally = (gid & FlippedHorizontallyFlag) == FlippedHorizontallyFlag;
-            bool flipVertically = (gid & FlippedVerticallyFlag) == FlippedVerticallyFlag;
-            bool flipDiagonally = (gid & FlippedDiagonallyFlag) == FlippedDiagonallyFlag;
-
-            // Calculate pixel coordinates in the texture sheet
-            int leftPixelCoord = CalculateXCoordinate(gidWithoutRotation - tileSet.Firstgid, imageWidth, tileWidth, spacing, margin);
-            int topPixelCoord = CalculateYCoordinate(gidWithoutRotation - tileSet.Firstgid, imageWidth, tileWidth, tileHeight, spacing, margin);
-            int rightPixelCoord = leftPixelCoord + tileWidth;
-            int bottomPixelCoord = topPixelCoord + tileHeight;
-
-            if ((flipHorizontally && flipDiagonally == false) ||
-                (flipVertically && flipDiagonally))
-            {
-                var temp = rightPixelCoord;
-                rightPixelCoord = leftPixelCoord;
-                leftPixelCoord = temp;
-            }
-
-            if ((flipVertically && flipDiagonally == false) ||
-                (flipHorizontally && flipDiagonally))
-            {
-                var temp = topPixelCoord;
-                topPixelCoord = bottomPixelCoord;
-                bottomPixelCoord = temp;
-                
-            }
 
             //if (flipDiagonally)
             //{
@@ -920,6 +1035,51 @@ namespace TMXGlueLib
             {
                 sprite.RotationZ = Microsoft.Xna.Framework.MathHelper.PiOver2;
                 sprite.FlipHorizontal = true;
+            }
+        }
+
+        private static void GetPixelCoordinatesFromGid(uint gid, Tileset tileSet, 
+            out int leftPixelCoord, out int topPixelCoord, out int rightPixelCoord, out int bottomPixelCoord)
+        {
+            int imageWidth = tileSet.Images[0].width;
+            int imageHeight = tileSet.Images[0].height;
+            int tileWidth = tileSet.Tilewidth;
+            int spacing = tileSet.Spacing;
+            int tileHeight = tileSet.Tileheight;
+            int margin = tileSet.Margin;
+
+
+            var gidWithoutRotation = gid & 0x0fffffff;
+
+            const uint FlippedHorizontallyFlag = 0x80000000;
+            const uint FlippedVerticallyFlag = 0x40000000;
+            const uint FlippedDiagonallyFlag = 0x20000000;
+
+            bool flipHorizontally = (gid & FlippedHorizontallyFlag) == FlippedHorizontallyFlag;
+            bool flipVertically = (gid & FlippedVerticallyFlag) == FlippedVerticallyFlag;
+            bool flipDiagonally = (gid & FlippedDiagonallyFlag) == FlippedDiagonallyFlag;
+
+            // Calculate pixel coordinates in the texture sheet
+            leftPixelCoord = CalculateXCoordinate(gidWithoutRotation - tileSet.Firstgid, imageWidth, tileWidth, spacing, margin);
+            topPixelCoord = CalculateYCoordinate(gidWithoutRotation - tileSet.Firstgid, imageWidth, tileWidth, tileHeight, spacing, margin);
+            rightPixelCoord = leftPixelCoord + tileWidth;
+            bottomPixelCoord = topPixelCoord + tileHeight;
+
+            if ((flipHorizontally && flipDiagonally == false) ||
+                (flipVertically && flipDiagonally))
+            {
+                var temp = rightPixelCoord;
+                rightPixelCoord = leftPixelCoord;
+                leftPixelCoord = temp;
+            }
+
+            if ((flipVertically && flipDiagonally == false) ||
+                (flipHorizontally && flipDiagonally))
+            {
+                var temp = topPixelCoord;
+                topPixelCoord = bottomPixelCoord;
+                bottomPixelCoord = temp;
+
             }
         }
 
