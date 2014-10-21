@@ -144,8 +144,17 @@ namespace TMXGlueLib
 
                     foreach (mapTilesetTile tile in tileSet.Tiles.Where(predicate))
                     {
-                        var propertyDictionary = tile.PropertyDictionary;
+                        Dictionary<string, string> propertyDictionary = new Dictionary<string, string>(tile.PropertyDictionary);
 
+                        bool needsName = propertyDictionary.Count != 0 ||
+                            (tile.Animation != null && tile.Animation.Frames != null && tile.Animation.Frames.Count != 0);
+
+                        if(needsName && propertyDictionary.Keys.Any(item=> property.GetStrippedName(item).ToLowerInvariant() == "name") == false)
+                        {
+                            var globalId = tile.id + tileSet.Firstgid;
+                            // This has properties, but no name, so let's give it a name!
+                            propertyDictionary.Add("Name (required, string)", "Unnamed" + globalId);
+                        }
                         WriteValuesFromDictionary(sb, null, propertyDictionary, columnNames, tile.Animation, i);
                     }
                 }
@@ -189,9 +198,6 @@ namespace TMXGlueLib
                     AppendRowToStringBuilder(sb, row);
                 }
             }
-
-
-
         }
 
         private void AddAnimationFrameAtIndex(TileAnimation animation, List<string> row, int animationIndex, int tilesetIndex)
@@ -442,9 +448,10 @@ namespace TMXGlueLib
         {
             List<string> toReturn = new List<string>();
 
-            // animations should come first:
+            // Name is required and always available
+            toReturn.Add("Name (string, required)");
 
-
+            // And animation is required too
             toReturn.Add(animationColumnName);
             
             toReturn.AddRange( this.Tilesets.SelectMany(t => t.Tiles)
@@ -894,6 +901,11 @@ namespace TMXGlueLib
                         sprite.Name = kvp.Value;
                     }
                 }
+            }
+
+            if(string.IsNullOrEmpty(sprite.Name))
+            {
+                sprite.Name = "Unnamed" + gid;
             }
 
             SetSpriteTextureCoordinates(gid, sprite, tileSet);
