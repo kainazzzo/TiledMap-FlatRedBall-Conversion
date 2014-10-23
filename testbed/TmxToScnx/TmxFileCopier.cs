@@ -7,12 +7,14 @@ namespace TmxToScnx
 {
     public class TmxFileCopier
     {
-        public static void CopyTmxTilesetImagesToDestination(string sourceTmx, string destinationScnx, TiledMapSave tms)
+        public static bool CopyTmxTilesetImagesToDestination(string sourceTmx, string destinationScnx, TiledMapSave tms)
         {
+            bool success = true;
             //////////Early Out///////////////////
             if (tms.Tilesets == null)
             {
-                return;
+                // Not sure if we should consider this a success or failure
+                return success;
             }
             ////////End Early Out////////////////
 
@@ -26,35 +28,76 @@ namespace TmxToScnx
             {
                 foreach (TilesetImage image in tileset.Images)
                 {
-                    string sourcepath = GetImageSourcePath(tmxPath, tileset, image);
+                    bool didCopySucceed = CopyTilesetImage(tmxPath, destinationPath, tileset, image);
 
-                    string destinationFullPath = destinationPath + image.sourceFileName;
-
-                    if (!sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase) && 
-                        !FileManager.GetDirectory(destinationFullPath).Equals(FileManager.GetDirectory(sourcepath)))
+                    if(!didCopySucceed)
                     {
-                        System.Console.WriteLine("Copying \"{0}\" to \"{1}\".", sourcepath, destinationFullPath);
-
-                        string fileWithoutDotDotSlash = FileManager.RemoveDotDotSlash(sourcepath);
-
-                        try
-                        {
-
-                            File.Copy(fileWithoutDotDotSlash, destinationFullPath, true);
-                        }
-                        catch(Exception e)
-                        {
-                            System.Console.WriteLine("Could not copy \"{0}\" to \"{1}\" \n{2}.", sourcepath, destinationFullPath, e.ToString());
-
-                        }
+                        success = false;
                     }
                 }
             }
+
+            return success;
+        }
+
+        private static bool CopyTilesetImage(string tmxPath, string destinationPath, Tileset tileset, TilesetImage image)
+        {
+            string sourcepath = GetImageSourcePath(tmxPath, tileset, image);
+
+            string whyCantCopy = null;
+
+            if(!System.IO.File.Exists(sourcepath))
+            {
+                whyCantCopy = "Could not find the file\n" + sourcepath + "\nwhich is referenced by the tileset " + tileset.Name + " in the tmx\n" + tmxPath;
+            }
+
+            if (!string.IsNullOrEmpty(whyCantCopy))
+            {
+                System.Console.Error.WriteLine(whyCantCopy);
+            }
+            else
+            {
+
+                string destinationFullPath = destinationPath + image.sourceFileName;
+
+                if (!sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase) &&
+                    !FileManager.GetDirectory(destinationFullPath).Equals(FileManager.GetDirectory(sourcepath)))
+                {
+                    System.Console.WriteLine("Copying \"{0}\" to \"{1}\".", sourcepath, destinationFullPath);
+
+                    string fileWithoutDotDotSlash = FileManager.RemoveDotDotSlash(sourcepath);
+
+                    try
+                    {
+
+                        File.Copy(fileWithoutDotDotSlash, destinationFullPath, true);
+                    }
+                    catch (Exception e)
+                    {
+                        System.Console.Error.WriteLine("Could not copy \"{0}\" to \"{1}\" \n{2}.", sourcepath, destinationFullPath, e.ToString());
+
+                    }
+                }
+            }
+
+            bool succeeded = string.IsNullOrEmpty(whyCantCopy);
+
+            return succeeded;
         }
 
         private static string GetImageSourcePath(string tmxPath, Tileset tileset, TilesetImage image)
         {
-            string sourcepath = tmxPath + image.Source;
+            // The image may be absolute, so only prepend the tmx path if the image is relative
+            string sourcepath;
+
+            if (FileManager.IsRelative(image.Source))
+            {
+                sourcepath = tmxPath + image.Source;
+            }
+            else
+            {
+                sourcepath = image.Source;
+            }
             if (tileset.Source != null)
             {
                 if (tileset.SourceDirectory != "." && !tileset.SourceDirectory.Contains(":"))

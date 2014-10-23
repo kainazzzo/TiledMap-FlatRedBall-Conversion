@@ -92,11 +92,11 @@ namespace TmxEditor.Controllers
                 string oldRelative = FileManager.RelativeDirectory;
                 FileManager.RelativeDirectory = AppState.Self.TmxFolder;
 
-                bool isFileTmx = FileManager.GetExtension(fileName) == "tmx";
+                bool isFileTsx = FileManager.GetExtension(fileName) == "tsx";
 
                 bool shouldContinue = true;
 
-                if (isFileTmx)
+                if (isFileTsx)
                 {
 
                     newTileset.Source = FileManager.MakeRelative(fileName, AppState.Self.TmxFolder);

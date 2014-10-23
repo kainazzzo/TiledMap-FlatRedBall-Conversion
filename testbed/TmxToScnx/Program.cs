@@ -51,7 +51,13 @@ namespace TmxToScnx
                 {
                     if (parsedArgs.CopyImages)
                     {
-                        TmxFileCopier.CopyTmxTilesetImagesToDestination(parsedArgs.SourceFile, parsedArgs.DestinationFile, tms);
+                        bool didCopySucceed = 
+                            TmxFileCopier.CopyTmxTilesetImagesToDestination(parsedArgs.SourceFile, parsedArgs.DestinationFile, tms);
+
+                        if(!didCopySucceed)
+                        {
+                            succeeded = false;
+                        }
                     }
 
                     // Fix up the image sources to be relative to the newly copied ones.
