@@ -20,8 +20,7 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
 
         #endregion
 
-
-        public ICollection<IPositionedSizedObject> Children
+        public List<IPositionedSizedObject> Children
         {
             get;
             private set;

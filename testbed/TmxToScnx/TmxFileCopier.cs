@@ -98,6 +98,9 @@ namespace TmxToScnx
             {
                 sourcepath = image.Source;
             }
+
+            sourcepath = FileManager.RemoveDotDotSlash(sourcepath);
+
             if (tileset.Source != null)
             {
                 if (tileset.SourceDirectory != "." && !tileset.SourceDirectory.Contains(":"))
