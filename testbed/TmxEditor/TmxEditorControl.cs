@@ -140,6 +140,9 @@ namespace TmxEditor
 
                 string targetFntFileName = CreateAndSaveFonts();
 
+                // Implement the default content loader since we're not providing
+                // a custom one:
+                LoaderManager.Self.ContentLoader = new ContentLoader();
                 LoaderManager.Self.Initialize(null, targetFntFileName, XnaControl.Services, mManagers);
                 ToolComponentManager.Self.ReactToXnaInitialize(mManagers);
             }
