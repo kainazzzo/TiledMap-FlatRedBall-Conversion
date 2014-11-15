@@ -142,7 +142,9 @@ namespace TmxEditor
 
                 // Implement the default content loader since we're not providing
                 // a custom one:
-                LoaderManager.Self.ContentLoader = new ContentLoader();
+                var contentLoader = new ContentLoader();
+                contentLoader.SystemManagers = mManagers;
+                LoaderManager.Self.ContentLoader = contentLoader;
                 LoaderManager.Self.Initialize(null, targetFntFileName, XnaControl.Services, mManagers);
                 ToolComponentManager.Self.ReactToXnaInitialize(mManagers);
             }
