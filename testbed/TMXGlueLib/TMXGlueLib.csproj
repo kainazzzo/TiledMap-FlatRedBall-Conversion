@@ -80,6 +80,7 @@
     <Compile Include="TileAnimationFrame.cs" />
     <Compile Include="TiledMapSave.Serialization.cs" />
     <Compile Include="TiledMapSave.Conversion.cs" />
+    <Compile Include="TiledMapToShapeCollectionConverter.cs" />
     <Compile Include="TilesetExtensionMethods.cs" />
   </ItemGroup>
   <ItemGroup>

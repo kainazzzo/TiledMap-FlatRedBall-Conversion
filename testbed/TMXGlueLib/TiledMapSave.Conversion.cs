@@ -67,12 +67,7 @@ namespace TMXGlueLib
             return scene.ToScene(contentManagerName);
         }
 
-        public ShapeCollection ToShapeCollection(string layerName=null)
-        {
-            var scs = ToShapeCollectionSave(layerName);
 
-            return scs.ToShapeCollection();
-        }
 
         public string ToCSVString(CSVPropertyType type = CSVPropertyType.Tile, string layerName = null)
         {
@@ -464,153 +459,7 @@ namespace TMXGlueLib
                 
         }
 
-        public ShapeCollectionSave ToShapeCollectionSave(string layerName)
-        {
-            MapLayer mapLayer = null;
-            if (!string.IsNullOrEmpty(layerName))
-            {
-                mapLayer = this.Layers.FirstOrDefault(l => l.Name.Equals(layerName));
-            }
-            var shapes = new ShapeCollectionSave();
-
-            if ((mapLayer != null && !mapLayer.IsVisible && mapLayer.VisibleBehavior == LayerVisibleBehavior.Skip) ||
-                this.objectgroup == null || this.objectgroup.Length == 0)
-            {
-                return shapes;
-            }
-
-            foreach (mapObjectgroup group in this.objectgroup)
-            {
-                if (group.@object != null && !string.IsNullOrEmpty(group.name) && (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
-                {
-                    foreach (mapObjectgroupObject @object in group.@object)
-                    {
-                        if (@object.polygon != null)
-                        {
-                            foreach (mapObjectgroupObjectPolygon polygon in @object.polygon)
-                            {
-                                // TODO: Make this a rectangle object
-                                PolygonSave p = ConvertTmxObjectToFrbPolygonSave(@object.Name, @group.width, @group.height,
-                                    @object.x, @object.y, polygon.points, true);
-                                if (p != null)
-                                {
-                                    shapes.PolygonSaves.Add(p);
-                                }
-                            }
-                        }
-
-                        if (@object.polyline != null)
-                        {
-                            foreach (mapObjectgroupObjectPolyline polyline in @object.polyline)
-                            {
-                                PolygonSave p = ConvertTmxObjectToFrbPolygonSave(@object.Name, @group.width, @group.height,
-                                    @object.x, @object.y, polyline.points, false);
-                                if (p != null)
-                                {
-                                    shapes.PolygonSaves.Add(p);
-                                }
-                            }
-                        }
-
-                        if (@object.polygon == null && @object.polyline == null)
-                        {
-                            PolygonSave p = ConvertTmxObjectToFrbPolygonSave(@object.Name, @group.width, @group.height, @object.x, @object.y, @object.width, @object.height);
-                            if (p != null)
-                            {
-                                shapes.PolygonSaves.Add(p);
-                            }
-                        }
-                    }
-                }
-            }
-            return shapes;
-        }
-
-        private PolygonSave ConvertTmxObjectToFrbPolygonSave(string name, int groupWidth, int groupHeight, int x, int y, int w, int h)
-        {
-            var pointsSb = new StringBuilder();
-
-            pointsSb.Append("0,0");
-
-            pointsSb.AppendFormat(" {0},{1}", w, 0);
-            pointsSb.AppendFormat(" {0},{1}", w, h);
-            pointsSb.AppendFormat(" {0},{1}", 0, h);
-
-
-            return ConvertTmxObjectToFrbPolygonSave(name, groupWidth, groupHeight, x, y, pointsSb.ToString(), true);
-        }
-
-        private PolygonSave ConvertTmxObjectToFrbPolygonSave(string name, int w, int h, int x, int y, string points, bool connectBackToStart)
-        {
-            if (string.IsNullOrEmpty(points))
-            {
-                return null;
-            }
-            var polygon = new PolygonSave();
-            string[] pointString = points.Split(" ".ToCharArray());
-            float z;
-            float newx;
-            float newy;
-            float fx = x;
-            float fy = y;
-
-            polygon.Name = name;
-
-            if ("orthogonal".Equals(this.orientation))
-            {
-                fx -= tilewidth / 2.0f;
-                fy -= tileheight + (tileheight / 2.0f);
-            }
-            else if ("isometric".Equals(this.orientation))
-            {
-                fx -= tilewidth / 4.0f;
-                fy -= tileheight / 2.0f;
-            }
-
-            CalculateWorldCoordinates(0, fx / tileheight, fy / tileheight, this.tilewidth, this.tileheight, w * tilewidth, out newx, out newy, out z);
-            polygon.X = newx - tilewidth / 2.0f;
-            polygon.Y = newy - tileheight / 2.0f;
-            var pointsArr = new Point[pointString.Length + (connectBackToStart ? 1 : 0)];
-
-            int count = 0;
-            foreach (string pointStr in pointString)
-            {
-                string[] xy = pointStr.Split(",".ToCharArray());
-                int relativeX = Convert.ToInt32(xy[0]);
-                int relativeY = Convert.ToInt32(xy[1]);
-
-                float normalizedX = relativeX / (float)tileheight;
-                float normalizedY = relativeY / (float)tileheight;
-
-                CalculateWorldCoordinates(0, normalizedX, normalizedY, this.tilewidth, this.tileheight, w * tilewidth, out newx, out newy, out z);
-
-                pointsArr[count].X = newx;
-                pointsArr[count].Y = newy;
-
-
-
-                ++count;
-            }
-
-            if (connectBackToStart)
-            {
-                string[] xy = pointString[0].Split(",".ToCharArray());
-                int relativeX = Convert.ToInt32(xy[0]);
-                int relativeY = Convert.ToInt32(xy[1]);
-
-                float normalizedX = relativeX / (float)tileheight;
-                float normalizedY = relativeY / (float)tileheight;
-
-                CalculateWorldCoordinates(0, normalizedX, normalizedY, this.tilewidth, this.tileheight, w * tilewidth, out newx, out newy, out z);
-
-                pointsArr[count].X = newx;
-                pointsArr[count].Y = newy;
-            }
-            polygon.Points = pointsArr;
-
-            return polygon;
-        }
-
+        
         public NodeNetwork ToNodeNetwork(bool requireTile = true)
         {
             return ToNodeNetwork(true, true, true, requireTile);
@@ -948,7 +797,7 @@ namespace TMXGlueLib
             CalculateWorldCoordinates(layercount, normalizedX, normalizedY, tileWidth, tileHeight, layerWidth, out x, out y, out z);
         }
 
-        private void CalculateWorldCoordinates(int layercount, float normalizedX, float normalizedY, int tileWidth, int tileHeight, int layerWidth, out float x, out float y, out float z)
+        public void CalculateWorldCoordinates(int layercount, float normalizedX, float normalizedY, int tileWidth, int tileHeight, int layerWidth, out float x, out float y, out float z)
         {
             if (this.orientation == null || this.orientation.Equals("orthogonal"))
             {

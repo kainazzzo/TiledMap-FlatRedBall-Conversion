@@ -795,6 +795,13 @@ namespace TMXGlueLib
                 this.heightField = value;
             }
         }
+
+        [XmlAttribute("rotation")]
+        public float Rotation
+        {
+            get;
+            set;
+        }
     }
 
     /// <remarks/>
