@@ -358,132 +358,17 @@ namespace TMXGlueTest
         [TestMethod]
         public void ToShapeCollectionSaveOrthogonalTest()
         {
-            var map = new TiledMapSave
+            var map = CreateTileMapSaveObjects(new
             {
-                Height = 3,
-                Width = 2,
-                tileheight = 32,
-                tilewidth = 32,
-                orientation = "orthogonal",
-                Tilesets = new List<Tileset>
-                {
-                    new Tileset
-                    {
-                        Firstgid = 1u,
-                        Name = "test",
-                        Tilewidth = 32,
-                        Tileheight = 32,
-                        Spacing = 1,
-                        Margin = 1,
-                        Images = new[]
-                        {
-                            new TilesetImage
-                            {
-                                height = 199,
-                                width = 199,
-                                Source = "nothing"
-                            }
-                        },
+                Height = 3, Width = 2, tileheight = 32, tilewidth = 32,
+                objects = new dynamic[] { new { X = 0, Y = 0, Width = 64, Height = 32 },
+                    new { X=9, Y=45, points=new [] {"0,0 42,0 23,23"} },
+                    new { X=6, Y=66, polylines=new []{ "0,0 7,19 42,19 52,-1"}},
+                    new { X=8, Y=13, Width=14, Height=12},
+                    new { X=38, Y=14, Width=17, Height=12}
                     }
-                },
-                Layers = new List<MapLayer>
-                {
-                    new MapLayer
-                    {
-                        Name = "Layer1",
-                        width = 2,
-                        height = 3,
-                        data = new[]
-                        {
-                            new mapLayerData
-                            {
-                                dataTiles = new[]
-                                {
-                                    new mapLayerDataTile
-                                    {
-                                        gid = "1"
-                                    },
-                                    new mapLayerDataTile
-                                    {
-                                        gid = "3"
-                                    },
-                                    new mapLayerDataTile
-                                    {
-                                        gid = "9"
-                                    },
-                                    new mapLayerDataTile
-                                    {
-                                        gid = "11"
-                                    },
-                                    new mapLayerDataTile
-                                    {
-                                        gid = "17"
-                                    },
-                                    new mapLayerDataTile
-                                    {
-                                        gid = "19"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                objectgroup = new[]
-                {
-                    new mapObjectgroup
-                    {
-                        name = "Objects",
-                        @object = new[]
-                        {
-                            new mapObjectgroupObject
-                            {
-                                x = 0,
-                                y = 0,
-                                width = 64,
-                                height = 32
-                            },
-                            new mapObjectgroupObject
-                            {
-                                x = 9,
-                                y = 45,
-                                polygon = new[]
-                                {
-                                    new mapObjectgroupObjectPolygon
-                                    {
-                                        points = "0,0 42,0 23,23"
-                                    }
-                                }
-                            },
-                            new mapObjectgroupObject
-                            {
-                                x = 6,
-                                y = 66,
-                                polyline = new[]
-                                {
-                                    new mapObjectgroupObjectPolyline
-                                    {
-                                        points = "0,0 7,19 42,19 52,-1"
-                                    }
-                                }
-                            },
-                            new mapObjectgroupObject
-                            {
-                                x = 8,
-                                y = 13,
-                                width = 14,
-                                height = 12
-                            },
-                            new mapObjectgroupObject
-                            {
-                                x = 38,
-                                y = 14,
-                                width = 17,
-                                height = 12
-                            }
-                        }
-                    }
-                }
-            };
+            });
+
             var shapeCollectionSave = map.ToShapeCollectionSave(null);
 
             Assert.AreEqual(5, shapeCollectionSave.PolygonSaves.Count);
@@ -754,57 +639,6 @@ namespace TMXGlueTest
                 list.Add(item);
             }
             return list.ToArray();
-
-            var mapobjs = new[]
-            {
-                new mapObjectgroupObject
-                {
-                    x = 0,
-                    y = 0,
-                    width = 64,
-                    height = 32
-                },
-                new mapObjectgroupObject
-                {
-                    x = 9,
-                    y = 45,
-                    polygon = new[]
-                    {
-                        new mapObjectgroupObjectPolygon
-                        {
-                            points = "0,0 42,0 23,23"
-                        }
-                    }
-                },
-                new mapObjectgroupObject
-                {
-                    x = 6,
-                    y = 66,
-                    polyline = new[]
-                    {
-                        new mapObjectgroupObjectPolyline
-                        {
-                            points = "0,0 7,19 42,19 52,-1"
-                        }
-                    }
-                },
-                new mapObjectgroupObject
-                {
-                    x = 8,
-                    y = 13,
-                    width = 14,
-                    height = 12
-                },
-                new mapObjectgroupObject
-                {
-                    x = 38,
-                    y = 14,
-                    width = 17,
-                    height = 12
-                }
-            };
-
-
         }
 
         /// <summary>
