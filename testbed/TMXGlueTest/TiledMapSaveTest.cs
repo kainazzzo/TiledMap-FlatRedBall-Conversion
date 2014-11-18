@@ -87,13 +87,12 @@ namespace TMXGlueTest
             };
 
             var expected =
-                "Name (required),name2,name1,name3\r\nlayer1,\"val2\",\"val\",\r\nlayer2,,\"val\",\"val3\"\r\n";
-            // TODO: Initialize to an appropriate value
+                "Name (required),name1,name2,name3\r\n\"layer1\",\"val\",\"val2\",\"\"\r\n\"layer2\",\"val\",\"\",\"val3\"\r\n";
             var actual = target.ToCSVString(type, null);
             Assert.AreEqual(expected, actual);
 
             string layerName = "layer1";
-            expected = "Name (required),name2,name1\r\nlayer1,\"val2\",\"val\"\r\n";
+            expected = "Name (required),name1,name2\r\n\"layer1\",\"val\",\"val2\"\r\n";
             actual = target.ToCSVString(type, layerName);
             Assert.AreEqual(expected, actual);
 
@@ -108,8 +107,8 @@ namespace TMXGlueTest
         {
             var target = new TiledMapSave
                 {
-                    Tilesets = new List<Tileset>()
-                        {
+                    Tilesets = new List<Tileset>
+                    {
                             new Tileset
                                 {
                                     Firstgid = 1,
@@ -230,7 +229,7 @@ namespace TMXGlueTest
                 };
 
             string expected =
-                "Name (required),tileset1Tile1PropertyName,commonPropertyName,tileset1Tile2PropertyName,tileset2Tile1PropertyName\r\ntileset1Tile1,\"tileset1Tile1PropertyValue\",\"commonPropertyValueTileset1Tile1\",,\r\ntileset1Tile2,,\"commonPropertyValueTileset1Tile2\",\"tileset1Tile2PropertyValue\",\r\ntileset2Tile1,,\"commonPropertyValueTileset2Tile1\",,\"tileset2Tile1PropertyValue\"\r\n";
+                "Name (required),EmbeddedAnimation (List<FlatRedBall.Content.AnimationChain.AnimationFrameSaveBase>),tileset1Tile1PropertyName,commonPropertyName,tileset1Tile2PropertyName,tileset2Tile1PropertyName\r\n\"tileset1Tile1\",\"\",\"tileset1Tile1PropertyValue\",\"commonPropertyValueTileset1Tile1\",\"\",\"\"\r\n\"tileset1Tile2\",\"\",\"\",\"commonPropertyValueTileset1Tile2\",\"tileset1Tile2PropertyValue\",\"\"\r\n\"tileset2Tile1\",\"\",\"\",\"commonPropertyValueTileset2Tile1\",\"\",\"tileset2Tile1PropertyValue\"\r\n";
             string actual = target.ToCSVString(type: TiledMapSave.CSVPropertyType.Tile, layerName: null);
             Assert.AreEqual(expected, actual);
 
@@ -258,7 +257,7 @@ namespace TMXGlueTest
                         }
                 };
             string actual = target.ToCSVString(TiledMapSave.CSVPropertyType.Map);
-            const string expected = "Name (required),mapProperty2,mapProperty1\r\nmap,\"mapValue2\",\"mapValue1\"\r\n";
+            const string expected = "Name (required),mapProperty2,mapProperty1\r\n\"map\",\"mapValue2\",\"mapValue1\"\r\n";
 
             Assert.AreEqual(expected, actual);
         }
@@ -268,12 +267,12 @@ namespace TMXGlueTest
         {
             var target = new TiledMapSave
             {
-                objectgroup = new mapObjectgroup[2]
+                objectgroup = new[]
                     {
                         new mapObjectgroup
                             {
                                 name = "objectGroup1",
-                                @object= new mapObjectgroupObject[1]
+                                @object= new[]
                                     {
                                         new mapObjectgroupObject
                                             {
@@ -296,7 +295,7 @@ namespace TMXGlueTest
                             },
                         new mapObjectgroup
                             {
-                                    @object=new mapObjectgroupObject[1]
+                                    @object=new[]
                                         {
                                             new mapObjectgroupObject
                                                 {
@@ -321,7 +320,7 @@ namespace TMXGlueTest
             };
             string actual = target.ToCSVString(TiledMapSave.CSVPropertyType.Object);
             const string expected =
-                "Name (required),X (int),Y (int),prop1,prop2,prop3\r\nobject1,0,0,\"val1\",\"val2\",\r\nobject2,0,0,,\"val4\",\"val3\"\r\n";
+                "Name (required),X (int),Y (int),prop1,prop2,prop3\r\n\"object1\",\"\",\"\",\"val1\",\"val2\",\"\"\r\n\"object2\",\"\",\"\",\"\",\"val4\",\"val3\"\r\n";
 
             Assert.AreEqual(expected, actual);
         }
