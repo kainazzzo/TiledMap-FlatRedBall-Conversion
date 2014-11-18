@@ -360,13 +360,18 @@ namespace TMXGlueTest
         {
             var map = CreateTileMapSaveObjects(new
             {
-                Height = 3, Width = 2, tileheight = 32, tilewidth = 32,
-                objects = new dynamic[] { new { X = 0, Y = 0, Width = 64, Height = 32 },
-                    new { X=9, Y=45, points=new [] {"0,0 42,0 23,23"} },
-                    new { X=6, Y=66, polylines=new []{ "0,0 7,19 42,19 52,-1"}},
-                    new { X=8, Y=13, Width=14, Height=12},
-                    new { X=38, Y=14, Width=17, Height=12}
-                    }
+                Height = 3,
+                Width = 2,
+                tileheight = 32,
+                tilewidth = 32,
+                objects = new dynamic[]
+                {
+                    new {X = 0, Y = 0, Width = 64, Height = 32},
+                    new {X = 9, Y = 45, points = new[] {"0,0 42,0 23,23"}},
+                    new {X = 6, Y = 66, polylines = new[] {"0,0 7,19 42,19 52,-1"}},
+                    new {X = 8, Y = 13, Width = 14, Height = 12},
+                    new {X = 38, Y = 14, Width = 17, Height = 12}
+                }
             });
 
             var shapeCollectionSave = map.ToShapeCollectionSave(null);
