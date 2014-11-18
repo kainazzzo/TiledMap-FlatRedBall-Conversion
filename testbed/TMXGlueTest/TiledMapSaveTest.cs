@@ -4,9 +4,6 @@ using TMXGlueLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using FlatRedBall.Content.Math.Geometry;
-using FlatRedBall.Content;
-using FlatRedBall.Content.AI.Pathfinding;
 
 namespace TMXGlueTest
 {
@@ -16,7 +13,7 @@ namespace TMXGlueTest
     ///This is a test class for TiledMapSaveTest and is intended
     ///to contain all TiledMapSaveTest Unit Tests
     ///</summary>
-    [TestClass()]
+    [TestClass]
     public class TiledMapSaveTest
     {
         /// <summary>
@@ -61,26 +58,26 @@ namespace TMXGlueTest
         /// <summary>
         ///A test for ToCSVString
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void ToCSVStringLayerPropertyTest()
         {
             const TiledMapSave.CSVPropertyType type = TiledMapSave.CSVPropertyType.Layer;
             var target = new TiledMapSave
             {
-                Layers = new List<MapLayer> {new MapLayer()
+                Layers = new List<MapLayer> {new MapLayer
                 {
                     properties = new List<property>
                     {
-                        new property() {name = "name1", value = "val"},
-                        new property() {name = "name2", value = "val2"}
+                        new property {name = "name1", value = "val"},
+                        new property {name = "name2", value = "val2"}
                     },
                     Name="layer1"
-                }, new MapLayer()
-                    {
+                }, new MapLayer
+                {
                         properties = new List<property>
                         {
-                            new property() {name = "name1", value = "val"},
-                            new property() {name = "name3", value = "val3"}
+                            new property {name = "name1", value = "val"},
+                            new property {name = "name3", value = "val3"}
                         },
                         Name="layer2"
                     }}
@@ -88,7 +85,7 @@ namespace TMXGlueTest
 
             var expected =
                 "Name (required),name1,name2,name3\r\n\"layer1\",\"val\",\"val2\",\"\"\r\n\"layer2\",\"val\",\"\",\"val3\"\r\n";
-            var actual = target.ToCSVString(type, null);
+            var actual = target.ToCSVString(type);
             Assert.AreEqual(expected, actual);
 
             string layerName = "layer1";
@@ -102,7 +99,7 @@ namespace TMXGlueTest
         /// <summary>
         ///A test for ToCSVString
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void ToCSVStringTilesetPropertyTest()
         {
             var target = new TiledMapSave
@@ -192,19 +189,19 @@ namespace TMXGlueTest
                                         }
                                 }
                         },
-                    Layers = new List<MapLayer>()
-                        {
+                    Layers = new List<MapLayer>
+                    {
                             new MapLayer
                                 {
                                     height = 32,
                                     width = 96,
                                     Name = "layer1",
                                     visible = 1,
-                                    data = new mapLayerData[1]
+                                    data = new[]
                                         {
                                             new mapLayerData
                                                 {
-                                                    dataTiles = new mapLayerDataTile[3]
+                                                    dataTiles = new[]
                                                         {
                                                             new mapLayerDataTile
                                                                 {
@@ -230,14 +227,11 @@ namespace TMXGlueTest
 
             string expected =
                 "Name (required),EmbeddedAnimation (List<FlatRedBall.Content.AnimationChain.AnimationFrameSaveBase>),tileset1Tile1PropertyName,commonPropertyName,tileset1Tile2PropertyName,tileset2Tile1PropertyName\r\n\"tileset1Tile1\",\"\",\"tileset1Tile1PropertyValue\",\"commonPropertyValueTileset1Tile1\",\"\",\"\"\r\n\"tileset1Tile2\",\"\",\"\",\"commonPropertyValueTileset1Tile2\",\"tileset1Tile2PropertyValue\",\"\"\r\n\"tileset2Tile1\",\"\",\"\",\"commonPropertyValueTileset2Tile1\",\"\",\"tileset2Tile1PropertyValue\"\r\n";
-            string actual = target.ToCSVString(type: TiledMapSave.CSVPropertyType.Tile, layerName: null);
+            string actual = target.ToCSVString();
             Assert.AreEqual(expected, actual);
-
-            expected =
-                "Name (required),tileset1Tile1PropertyName,commonPropertyName,tileset1Tile2PropertyName,tileset2Tile1PropertyName\r\ntileset1Tile1,\"tileset1Tile1PropertyValue\",\"commonPropertyValueTileset1Tile1\",,\r\ntileset1Tile2,,\"commonPropertyValueTileset1Tile2\",\"tileset1Tile2PropertyValue\",\r\ntileset2Tile1,,\"commonPropertyValueTileset2Tile1\",,\"tileset2Tile1PropertyValue\"\r\n";
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ToCSVStringMapPropertyTest()
         {
             var target = new TiledMapSave
@@ -262,7 +256,7 @@ namespace TMXGlueTest
             Assert.AreEqual(expected, actual);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ToCSVStringObjectPropertyTest()
         {
             var target = new TiledMapSave
@@ -329,7 +323,7 @@ namespace TMXGlueTest
         /// <summary>
         ///A test for BuildPropertyDictionaryConcurrently
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void BuildPropertyDictionaryConcurrentlyTest()
         {
 
@@ -353,7 +347,7 @@ namespace TMXGlueTest
         /// <summary>
         ///A test for ToShapeCollectionSave
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void ToShapeCollectionSaveOrthogonalTest()
         {
             var map = new TiledMapSave
@@ -373,7 +367,7 @@ namespace TMXGlueTest
                                     Tileheight = 32,
                                     Spacing = 1,
                                     Margin = 1,
-                                    Images = new TilesetImage[]
+                                    Images = new[]
                                         {
                                             new TilesetImage
                                                 {
@@ -384,18 +378,18 @@ namespace TMXGlueTest
                                         },
                                 }
                         },
-                    Layers = new List<MapLayer>()
-                        {
+                    Layers = new List<MapLayer>
+                    {
                             new MapLayer
                                 {
                                     Name = "Layer1",
                                     width = 2,
                                     height = 3,
-                                    data = new mapLayerData[]
+                                    data = new[]
                                         {
                                             new mapLayerData
                                                 {
-                                                    dataTiles = new mapLayerDataTile[]
+                                                    dataTiles = new[]
                                                         {
                                                             new mapLayerDataTile
                                                                 {
@@ -426,12 +420,12 @@ namespace TMXGlueTest
                                         }
                                 }
                         },
-                    objectgroup = new mapObjectgroup[]
+                    objectgroup = new[]
                         {
                             new mapObjectgroup
                                 {
                                     name = "Objects",
-                                    @object = new mapObjectgroupObject[]
+                                    @object = new[]
                                         {
                                             new mapObjectgroupObject
                                                 {
@@ -444,7 +438,7 @@ namespace TMXGlueTest
                                                 {
                                                     x = 9,
                                                     y = 45,
-                                                    polygon = new mapObjectgroupObjectPolygon[]
+                                                    polygon = new[]
                                                         {
                                                             new mapObjectgroupObjectPolygon
                                                                 {
@@ -456,7 +450,7 @@ namespace TMXGlueTest
                                                 {
                                                     x = 6,
                                                     y = 66,
-                                                    polyline = new mapObjectgroupObjectPolyline[]
+                                                    polyline = new[]
                                                         {
                                                             new mapObjectgroupObjectPolyline
                                                                 {
@@ -557,22 +551,22 @@ namespace TMXGlueTest
         /// <summary>
         ///A test for ToSceneSave
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void ToSceneSaveOrthogonalTest()
         {
             TiledMapSave.Offset = new Tuple<float, float, float>(0f, 0f, 0f);
-            var target = new TiledMapSave()
-                {
+            var target = new TiledMapSave
+            {
                     Height = 64,
                     Width = 64,
                     tileheight = 32,
                     tilewidth = 32,
-                    Tilesets = new List<Tileset>()
-                        {
+                    Tilesets = new List<Tileset>
+                    {
                             new Tileset
                                 {
                                     Firstgid = 1,
-                                    Images = new TilesetImage[]
+                                    Images = new[]
                                         {
                                             new TilesetImage
                                                 {
@@ -639,16 +633,16 @@ namespace TMXGlueTest
                                     Tilewidth = 32
                                 }
                         },
-                    Layers = new List<MapLayer>()
-                        {
+                    Layers = new List<MapLayer>
+                    {
                             new MapLayer
                                 {
                                     Name = "layer1",
-                                    data = new mapLayerData[]
+                                    data = new[]
                                         {
-                                            new mapLayerData()
-                                                {
-                                                    dataTiles = new mapLayerDataTile[]
+                                            new mapLayerData
+                                            {
+                                                    dataTiles = new[]
                                                         {
                                                             new mapLayerDataTile
                                                                 {
@@ -665,7 +659,7 @@ namespace TMXGlueTest
                                                             new mapLayerDataTile
                                                                 {
                                                                     gid = "2"
-                                                                },
+                                                                }
                                                         }
                                                 }
                                         }
@@ -699,9 +693,11 @@ namespace TMXGlueTest
             Assert.AreEqual(-16f, tile.Y);
         }
 
+// ReSharper disable CSharpWarnings::CS1587
         /// <summary>
-        ///A test for ToNodeNetworkSave
+        /// A test for ToNodeNetworkSave
         ///</summary>
+// ReSharper restore CSharpWarnings::CS1587
         //[TestMethod()]
         //public void ToNodeNetworkSaveTest()
         //{
