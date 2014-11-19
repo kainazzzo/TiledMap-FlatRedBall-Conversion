@@ -81,21 +81,21 @@ namespace TMXGlueLib
 
 
 
-        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, int x, int y, int w, int h)
+        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, double x, double y, double w, double h)
         {
             var pointsSb = new StringBuilder();
 
             pointsSb.Append("0,0");
 
             pointsSb.AppendFormat(" {0},{1}", w, 0);
-            pointsSb.AppendFormat(" {0},{1}", w, -h);
-            pointsSb.AppendFormat(" {0},{1}", 0, -h);
+            pointsSb.AppendFormat(" {0},{1}", w, h);
+            pointsSb.AppendFormat(" {0},{1}", 0, h);
 
 
             return tiledMapSave.ConvertTmxObjectToFrbPolygonSave(name, x, y, pointsSb.ToString(), true);
         }
 
-        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, int x, int y, string points, bool connectBackToStart)
+        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, double x, double y, string points, bool connectBackToStart)
         {
             if (string.IsNullOrEmpty(points))
             {
@@ -144,8 +144,8 @@ namespace TMXGlueLib
                     var xy = p.Split(",".ToCharArray());
                     return new Point
                     {
-                        X = Convert.ToInt32(xy[0]),
-                        Y = Convert.ToInt32(xy[1])
+                        X = Convert.ToDouble(xy[0]),
+                        Y = -Convert.ToDouble(xy[1])
                     };
                 }).ToList();
 
@@ -155,8 +155,8 @@ namespace TMXGlueLib
             }
 
             polygon.Points = pointsList.ToArray();
-            polygon.X = x;
-            polygon.Y = -y;
+            polygon.X = (float)x;
+            polygon.Y = (float)-y;
 
             return polygon;
         }

@@ -631,13 +631,13 @@ namespace TMXGlueLib
 
         private mapObjectgroupObjectPolyline[] polylineField;
 
-        private int xField;
+        private double xField;
 
-        private int yField;
+        private double yField;
 
-        private int widthField;
+        private double widthField;
 
-        private int heightField;
+        private double heightField;
 
         private string _name;
 
@@ -710,7 +710,7 @@ namespace TMXGlueLib
 
         /// <remarks/>
         [XmlAttribute()]
-        public int x
+        public double x
         {
             get
             {
@@ -724,7 +724,7 @@ namespace TMXGlueLib
 
         /// <remarks/>
         [XmlAttribute()]
-        public int y
+        public double y
         {
             get
             {
@@ -738,7 +738,7 @@ namespace TMXGlueLib
 
         /// <remarks/>
         [XmlAttribute()]
-        public int width
+        public double width
         {
             get
             {
@@ -752,7 +752,7 @@ namespace TMXGlueLib
 
         /// <remarks/>
         [XmlAttribute()]
-        public int height
+        public double height
         {
             get
             {
