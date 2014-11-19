@@ -368,9 +368,7 @@ namespace TMXGlueTest
                 {
                     new {X = 10, Y = 10, Width = 64, Height = 32},
                     new {X = 9, Y = 45, points = new[] {"0,0 42,0 23,23"}},
-                    new {X = 6, Y = 66, polylines = new[] {"0,0 7,19 42,19 52,-1"}},
-                    new {X = 8, Y = 13, Width = 14, Height = 12},
-                    new {X = 38, Y = 14, Width = 17, Height = 12}
+                    new {X = 6, Y = 66, polylines = new[] {"0,0 7,19 42,19 52,-1"}}
                 }
             });
 
@@ -392,12 +390,32 @@ namespace TMXGlueTest
             Assert.AreEqual(0, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.ElementAt(4).X);
             Assert.AreEqual(0, shapeCollectionSave.PolygonSaves.ElementAt(0).Points.ElementAt(4).Y);
 
-            var shape = shapeCollectionSave.PolygonSaves.ElementAt(1);
-
+            var shape = shapeCollectionSave.PolygonSaves[1];
+            Assert.AreEqual(4, shape.Points.Length);
             Assert.AreEqual(9, shape.X);
             Assert.AreEqual(-45, shape.Y);
             Assert.AreEqual(0, shape.Points[0].X);
             Assert.AreEqual(0, shape.Points[0].Y);
+            Assert.AreEqual(42, shape.Points[1].X);
+            Assert.AreEqual(0, shape.Points[1].Y);
+            Assert.AreEqual(23, shape.Points[2].X);
+            Assert.AreEqual(-23, shape.Points[2].Y);
+            Assert.AreEqual(0, shape.Points[3].X);
+            Assert.AreEqual(0, shape.Points[3].Y);
+
+            shape = shapeCollectionSave.PolygonSaves[2];
+            Assert.AreEqual(4, shape.Points.Length);
+            Assert.AreEqual(6, shape.X);
+            Assert.AreEqual(-66, shape.Y);
+            Assert.AreEqual(0, shape.Points[0].X);
+            Assert.AreEqual(0, shape.Points[0].Y);
+            Assert.AreEqual(7, shape.Points[1].X);
+            Assert.AreEqual(-19, shape.Points[1].Y);
+            Assert.AreEqual(42, shape.Points[2].X);
+            Assert.AreEqual(-19, shape.Points[2].Y);
+            Assert.AreEqual(52, shape.Points[3].X);
+            Assert.AreEqual(1, shape.Points[3].Y);
+
 
             //Assert.AreEqual(-7, shapeCollectionSave.PolygonSaves.ElementAt(1).X);
             //Assert.AreEqual(-29, shapeCollectionSave.PolygonSaves.ElementAt(1).Y);
