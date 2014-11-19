@@ -43,7 +43,7 @@ namespace TMXGlueLib
                             foreach (mapObjectgroupObjectPolygon polygon in @object.polygon)
                             {
                                 // TODO: Make this a rectangle object
-                                PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name, @group.width, @group.height,
+                                PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name,
                                     @object.x, @object.y, polygon.points, true);
                                 if (p != null)
                                 {
@@ -56,7 +56,7 @@ namespace TMXGlueLib
                         {
                             foreach (mapObjectgroupObjectPolyline polyline in @object.polyline)
                             {
-                                PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name, @group.width, @group.height,
+                                PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name, 
                                     @object.x, @object.y, polyline.points, false);
                                 if (p != null)
                                 {
@@ -67,7 +67,7 @@ namespace TMXGlueLib
 
                         if (@object.polygon == null && @object.polyline == null)
                         {
-                            PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name, @group.width, @group.height, @object.x, @object.y, @object.width, @object.height);
+                            PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name, @object.x, @object.y, @object.width, @object.height);
                             if (p != null)
                             {
                                 shapes.PolygonSaves.Add(p);
@@ -81,91 +81,82 @@ namespace TMXGlueLib
 
 
 
-        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, int groupWidth, int groupHeight, int x, int y, int w, int h)
+        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, int x, int y, int w, int h)
         {
             var pointsSb = new StringBuilder();
 
             pointsSb.Append("0,0");
 
             pointsSb.AppendFormat(" {0},{1}", w, 0);
-            pointsSb.AppendFormat(" {0},{1}", w, h);
-            pointsSb.AppendFormat(" {0},{1}", 0, h);
+            pointsSb.AppendFormat(" {0},{1}", w, -h);
+            pointsSb.AppendFormat(" {0},{1}", 0, -h);
 
 
-            return tiledMapSave.ConvertTmxObjectToFrbPolygonSave(name, groupWidth, groupHeight, x, y, pointsSb.ToString(), true);
+            return tiledMapSave.ConvertTmxObjectToFrbPolygonSave(name, x, y, pointsSb.ToString(), true);
         }
 
-        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, int w, int h, int x, int y, string points, bool connectBackToStart)
+        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, int x, int y, string points, bool connectBackToStart)
         {
             if (string.IsNullOrEmpty(points))
             {
                 return null;
             }
+
             var polygon = new PolygonSave();
             string[] pointString = points.Split(" ".ToCharArray());
             float z;
-            float newx;
-            float newy;
-            float fx = x;
-            float fy = y;
 
             polygon.Name = name;
 
-            if ("orthogonal".Equals(tiledMapSave.orientation))
-            {
-                fx -= tiledMapSave.tilewidth / 2.0f;
-                fy -= tiledMapSave.tileheight + (tiledMapSave.tileheight / 2.0f);
-            }
-            else if ("isometric".Equals(tiledMapSave.orientation))
-            {
-                fx -= tiledMapSave.tilewidth / 4.0f;
-                fy -= tiledMapSave.tileheight / 2.0f;
-            }
+            // Nov. 19th, 2014 - Domenic:
+            // I am ripping this code apart a little, because shapes really should not involve tile sizes in their x/y calculations.
+            // I'm not sure why this was ever done this way, as TMX gives the X/Y and width/height already. The old way was basically to convert
+            // the x/y coordinates into tile based coordinates and then re-convert back to full x/y coordinates. This makes no sense any more to me.
+            //
+            // Having examined TMX format a little more, it seems that the x/y position is always specified
+            //
+            //float fx = x;
+            //float fy = y;
 
-            tiledMapSave.CalculateWorldCoordinates(
-                0, fx / tiledMapSave.tileheight, fy / tiledMapSave.tileheight, 
-                tiledMapSave.tilewidth, tiledMapSave.tileheight, 
-                w * tiledMapSave.tilewidth, out newx, out newy, out z);
+            //if ("orthogonal".Equals(tiledMapSave.orientation))
+            //{
+            //    fx -= tiledMapSave.tilewidth / 2.0f;
+            //    fy -= tiledMapSave.tileheight + (tiledMapSave.tileheight / 2.0f);
+            //}
+            //else if ("isometric".Equals(tiledMapSave.orientation))
+            //{
+            //    fx -= tiledMapSave.tilewidth / 4.0f;
+            //    fy -= tiledMapSave.tileheight / 2.0f;
+            //}
 
-            polygon.X = newx - tiledMapSave.tilewidth / 2.0f;
-            polygon.Y = newy - tiledMapSave.tileheight / 2.0f;
-            var pointsArr = new Point[pointString.Length + (connectBackToStart ? 1 : 0)];
+            //tiledMapSave.CalculateWorldCoordinates(
+            //    0, fx / tiledMapSave.tileheight, fy / tiledMapSave.tileheight, 
+            //    tiledMapSave.tilewidth, tiledMapSave.tileheight, 
+            //    w * tiledMapSave.tilewidth, out newx, out newy, out z);
 
-            int count = 0;
-            foreach (string pointStr in pointString)
-            {
-                string[] xy = pointStr.Split(",".ToCharArray());
-                int relativeX = Convert.ToInt32(xy[0]);
-                int relativeY = Convert.ToInt32(xy[1]);
+            //polygon.X = newx - tiledMapSave.tilewidth / 2.0f;
+            //polygon.Y = newy - tiledMapSave.tileheight / 2.0f;
+            //var pointsArr = new Point[pointString.Length + (connectBackToStart ? 1 : 0)];
 
-                float normalizedX = relativeX / (float)tiledMapSave.tileheight;
-                float normalizedY = relativeY / (float)tiledMapSave.tileheight;
-
-                tiledMapSave.CalculateWorldCoordinates(0, normalizedX, normalizedY, tiledMapSave.tilewidth, tiledMapSave.tileheight, w * tiledMapSave.tilewidth, out newx, out newy, out z);
-
-                pointsArr[count].X = newx;
-                pointsArr[count].Y = newy;
-
-
-
-                ++count;
-            }
+            var pointsList =
+                pointString.Select(p =>
+                {
+                    var xy = p.Split(",".ToCharArray());
+                    return new Point
+                    {
+                        X = Convert.ToInt32(xy[0]),
+                        Y = Convert.ToInt32(xy[1])
+                    };
+                }).ToList();
 
             if (connectBackToStart)
             {
-                string[] xy = pointString[0].Split(",".ToCharArray());
-                int relativeX = Convert.ToInt32(xy[0]);
-                int relativeY = Convert.ToInt32(xy[1]);
-
-                float normalizedX = relativeX / (float)tiledMapSave.tileheight;
-                float normalizedY = relativeY / (float)tiledMapSave.tileheight;
-
-                tiledMapSave.CalculateWorldCoordinates(0, normalizedX, normalizedY, tiledMapSave.tilewidth, tiledMapSave.tileheight, w * tiledMapSave.tilewidth, out newx, out newy, out z);
-
-                pointsArr[count].X = newx;
-                pointsArr[count].Y = newy;
+                pointsList.Add(new Point(pointsList[0].X, pointsList[0].Y));
             }
-            polygon.Points = pointsArr;
+
+            polygon.Points = pointsList.ToArray();
+            polygon.X = x;
+            polygon.Y = -y;
 
             return polygon;
         }

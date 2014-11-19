@@ -564,10 +564,6 @@ namespace TMXGlueLib
 
         private string nameField;
 
-        private int widthField;
-
-        private int heightField;
-
         List<property> mProperties = new List<property>();
 
         public List<property> properties
@@ -622,34 +618,6 @@ namespace TMXGlueLib
             set
             {
                 this.nameField = value;
-            }
-        }
-
-        /// <remarks/>
-        [XmlAttribute()]
-        public int width
-        {
-            get
-            {
-                return this.widthField;
-            }
-            set
-            {
-                this.widthField = value;
-            }
-        }
-
-        /// <remarks/>
-        [XmlAttribute()]
-        public int height
-        {
-            get
-            {
-                return this.heightField;
-            }
-            set
-            {
-                this.heightField = value;
             }
         }
     }
