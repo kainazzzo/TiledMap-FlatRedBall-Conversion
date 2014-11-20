@@ -101,9 +101,6 @@ namespace TMXGlueLib
             }
             else
             {
-                x += w/2.0;
-                y += h/2.0;
-
                 const double a = .5;
                 const double b = .5;
 
@@ -115,8 +112,8 @@ namespace TMXGlueLib
                 {
                     var radians = MathHelper.ToRadians(angle);
 
-                    var newx = a*Math.Cos(radians)*w;
-                    var newy = b*Math.Sin(radians)*h;
+                    var newx = a*Math.Cos(radians)*w+w/2;
+                    var newy = b*Math.Sin(radians)*h+h/2;
                     if (first)
                     {
                         firstPoint = string.Format("{0},{1}", newx, newy);

@@ -510,10 +510,10 @@ namespace TMXGlueTest
 
             var shapeCollection = map.ToShapeCollectionSave(null);
 
-            Assert.AreEqual(16, shapeCollection.PolygonSaves[0].X);
-            Assert.AreEqual(-16, shapeCollection.PolygonSaves[0].Y);
-            Assert.AreEqual(16, shapeCollection.PolygonSaves[0].Points[0].X);
-            Assert.AreEqual(0, shapeCollection.PolygonSaves[0].Points[0].Y);
+            Assert.AreEqual(0, shapeCollection.PolygonSaves[0].X);
+            Assert.AreEqual(0, shapeCollection.PolygonSaves[0].Y);
+            Assert.AreEqual(32, shapeCollection.PolygonSaves[0].Points[0].X);
+            Assert.AreEqual(-16, shapeCollection.PolygonSaves[0].Points[0].Y);
         }
 
         [TestMethod]
