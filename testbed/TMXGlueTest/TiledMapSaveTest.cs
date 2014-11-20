@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 using FlatRedBall.Content.Scene;
+using Microsoft.Xna.Framework;
 using TMXGlueLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -352,6 +353,7 @@ namespace TMXGlueTest
                 actual.Values.OrderBy(v => v).ToList());
         }
 
+
         /// <summary>
         ///A test for ToShapeCollectionSave
         ///</summary>
@@ -374,7 +376,7 @@ namespace TMXGlueTest
 
             var shapeCollectionSave = map.ToShapeCollectionSave(null);
 
-            Assert.AreEqual(5, shapeCollectionSave.PolygonSaves.Count);
+            Assert.AreEqual(3, shapeCollectionSave.PolygonSaves.Count);
 
             Assert.AreEqual(10, shapeCollectionSave.PolygonSaves.ElementAt(0).X);
             Assert.AreEqual(-10, shapeCollectionSave.PolygonSaves.ElementAt(0).Y);
@@ -472,6 +474,26 @@ namespace TMXGlueTest
         }
 
         [TestMethod]
+        public void ObjectRotationTest()
+        {
+            var map = CreateTileMapSaveObjects(new
+            {
+                Height = 3,
+                Width = 2,
+                tileheight = 32,
+                tilewidth = 32,
+                objects = new dynamic[]
+                {
+                    new {X = 10, Y = 10, Width = 64, Height = 32, Rotation=-32f}
+                }
+            });
+
+            var shapeCollection = map.ToShapeCollectionSave(null);
+
+            Assert.AreEqual(MathHelper.ToRadians(32), shapeCollection.PolygonSaves[0].RotationZ);
+        }
+
+        [TestMethod]
         public void CreateTileMapSaveObjectsTest()
         {
             var tms = CreateTileMapSaveObjects(new
@@ -536,6 +558,28 @@ namespace TMXGlueTest
             Assert.AreEqual(2, tms.objectgroup[0].@object[0].polygon.Count());
             Assert.AreEqual("0,0 3,3", tms.objectgroup[0].@object[0].polygon[0].points);
             Assert.AreEqual("0,0 4,4", tms.objectgroup[0].@object[0].polygon[1].points);
+
+
+            tms = CreateTileMapSaveObjects(new
+            {
+                tileheight = 64,
+                tilewidth = 32,
+                Height = 3,
+                Width = 2,
+                objects = new[]
+                {
+                    new
+                    {
+                        X = 0,
+                        Y = 0,
+                        Width = 32,
+                        Height = 64,
+                        Rotation = -32.0
+                    }
+                }
+            });
+
+            Assert.AreEqual(-32.0, tms.objectgroup[0].@object[0].Rotation);
         }
 
         private TiledMapSave CreateTileMapSaveObjects(dynamic mapDef)
@@ -665,6 +709,17 @@ namespace TMXGlueTest
                 }
 // ReSharper disable once EmptyGeneralCatchClause
                 catch { }
+
+                try
+                {
+                    item.Rotation =
+                        o.Rotation;
+                }
+                    // ReSharper disable once EmptyGeneralCatchClause
+                catch
+                {
+                    item.Rotation = 0f;
+                }
 
                 list.Add(item);
             }

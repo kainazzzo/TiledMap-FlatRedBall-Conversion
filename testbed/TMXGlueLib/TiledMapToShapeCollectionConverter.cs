@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Point = FlatRedBall.Math.Geometry.Point;
 
 namespace TMXGlueLib
 {
@@ -44,7 +46,7 @@ namespace TMXGlueLib
                             {
                                 // TODO: Make this a rectangle object
                                 PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name,
-                                    @object.x, @object.y, polygon.points, true);
+                                    @object.x, @object.y, @object.Rotation, polygon.points, true);
                                 if (p != null)
                                 {
                                     shapes.PolygonSaves.Add(p);
@@ -57,7 +59,7 @@ namespace TMXGlueLib
                             foreach (mapObjectgroupObjectPolyline polyline in @object.polyline)
                             {
                                 PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name, 
-                                    @object.x, @object.y, polyline.points, false);
+                                    @object.x, @object.y, @object.Rotation, polyline.points, false);
                                 if (p != null)
                                 {
                                     shapes.PolygonSaves.Add(p);
@@ -67,7 +69,7 @@ namespace TMXGlueLib
 
                         if (@object.polygon == null && @object.polyline == null)
                         {
-                            PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name, @object.x, @object.y, @object.width, @object.height);
+                            PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name, @object.x, @object.y, @object.width, @object.height, @object.Rotation);
                             if (p != null)
                             {
                                 shapes.PolygonSaves.Add(p);
@@ -81,7 +83,7 @@ namespace TMXGlueLib
 
 
 
-        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, double x, double y, double w, double h)
+        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, double x, double y, double w, double h, double rotation)
         {
             var pointsSb = new StringBuilder();
 
@@ -92,10 +94,10 @@ namespace TMXGlueLib
             pointsSb.AppendFormat(" {0},{1}", 0, h);
 
 
-            return tiledMapSave.ConvertTmxObjectToFrbPolygonSave(name, x, y, pointsSb.ToString(), true);
+            return tiledMapSave.ConvertTmxObjectToFrbPolygonSave(name, x, y, rotation, pointsSb.ToString(), true);
         }
 
-        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, double x, double y, string points, bool connectBackToStart)
+        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, double x, double y, double rotation, string points, bool connectBackToStart)
         {
             if (string.IsNullOrEmpty(points))
             {
@@ -157,6 +159,7 @@ namespace TMXGlueLib
             polygon.Points = pointsList.ToArray();
             polygon.X = (float)x;
             polygon.Y = (float)-y;
+            polygon.RotationZ = -MathHelper.ToRadians((float)rotation);
 
             return polygon;
         }

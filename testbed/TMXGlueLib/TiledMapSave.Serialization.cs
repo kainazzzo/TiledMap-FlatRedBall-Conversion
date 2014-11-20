@@ -765,7 +765,7 @@ namespace TMXGlueLib
         }
 
         [XmlAttribute("rotation")]
-        public float Rotation
+        public double Rotation
         {
             get;
             set;
