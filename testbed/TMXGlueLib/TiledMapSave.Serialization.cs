@@ -626,6 +626,7 @@ namespace TMXGlueLib
     [XmlType(AnonymousType = true)]
     public partial class mapObjectgroupObject
     {
+        private mapObjectgroupObjectEllipse ellipseField = null;
 
         private mapObjectgroupObjectPolygon[] polygonField;
 
@@ -680,7 +681,21 @@ namespace TMXGlueLib
                 mProperties = value;
             }
         }
-            /// <remarks/>
+
+        [XmlElement("ellipse", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public mapObjectgroupObjectEllipse ellipse
+        {
+            get
+            {
+                return ellipseField;
+            }
+            set
+            {
+                ellipseField = value; 
+            }
+        }
+
+        /// <remarks/>
         [XmlElement("polygon", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public mapObjectgroupObjectPolygon[] polygon
         {
@@ -770,6 +785,12 @@ namespace TMXGlueLib
             get;
             set;
         }
+    }
+
+    [XmlType(AnonymousType = true)]
+    public partial class mapObjectgroupObjectEllipse
+    {
+        
     }
 
     /// <remarks/>

@@ -494,6 +494,29 @@ namespace TMXGlueTest
         }
 
         [TestMethod]
+        public void EllipsisTest()
+        {
+            var map = CreateTileMapSaveObjects(new
+            {
+                Height = 3,
+                Width = 2,
+                tileheight = 32,
+                tilewidth = 32,
+                objects = new dynamic[]
+                {
+                    new {X = 0, Y = 0, Width = 32, Height = 32, Ellipse = true}
+                }
+            });
+
+            var shapeCollection = map.ToShapeCollectionSave(null);
+
+            Assert.AreEqual(16, shapeCollection.PolygonSaves[0].X);
+            Assert.AreEqual(-16, shapeCollection.PolygonSaves[0].Y);
+            Assert.AreEqual(16, shapeCollection.PolygonSaves[0].Points[0].X);
+            Assert.AreEqual(0, shapeCollection.PolygonSaves[0].Points[0].Y);
+        }
+
+        [TestMethod]
         public void CreateTileMapSaveObjectsTest()
         {
             var tms = CreateTileMapSaveObjects(new
@@ -580,6 +603,28 @@ namespace TMXGlueTest
             });
 
             Assert.AreEqual(-32.0, tms.objectgroup[0].@object[0].Rotation);
+
+
+            tms = CreateTileMapSaveObjects(new
+            {
+                tileheight = 64,
+                tilewidth = 32,
+                Height = 3,
+                Width = 2,
+                objects = new[]
+                {
+                    new
+                    {
+                        X = 0,
+                        Y = 0,
+                        Width = 32,
+                        Height = 64,
+                        Ellipse = true
+                    }
+                }
+            });
+
+            Assert.IsNotNull(tms.objectgroup[0].@object[0].ellipse);
         }
 
         private TiledMapSave CreateTileMapSaveObjects(dynamic mapDef)
@@ -719,6 +764,14 @@ namespace TMXGlueTest
                 catch
                 {
                     item.Rotation = 0f;
+                }
+
+                try
+                {
+                    item.ellipse = o.Ellipse == true ? new mapObjectgroupObjectEllipse() : null;
+                }
+                catch
+                {
                 }
 
                 list.Add(item);

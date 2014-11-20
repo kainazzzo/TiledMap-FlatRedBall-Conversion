@@ -67,14 +67,18 @@ namespace TMXGlueLib
                             }
                         }
 
+                       
+
                         if (@object.polygon == null && @object.polyline == null)
                         {
-                            PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name, @object.x, @object.y, @object.width, @object.height, @object.Rotation);
+                            PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name, @object.x, @object.y, @object.width, @object.height, @object.Rotation, @object.ellipse);
                             if (p != null)
                             {
                                 shapes.PolygonSaves.Add(p);
                             }
                         }
+
+                        
                     }
                 }
             }
@@ -83,16 +87,46 @@ namespace TMXGlueLib
 
 
 
-        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, double x, double y, double w, double h, double rotation)
+        private static PolygonSave ConvertTmxObjectToFrbPolygonSave(this TiledMapSave tiledMapSave, string name, double x, double y, double w, double h, double rotation, mapObjectgroupObjectEllipse ellipse)
         {
             var pointsSb = new StringBuilder();
 
-            pointsSb.Append("0,0");
+            if (ellipse == null)
+            {
+                pointsSb.Append("0,0");
 
-            pointsSb.AppendFormat(" {0},{1}", w, 0);
-            pointsSb.AppendFormat(" {0},{1}", w, h);
-            pointsSb.AppendFormat(" {0},{1}", 0, h);
+                pointsSb.AppendFormat(" {0},{1}", w, 0);
+                pointsSb.AppendFormat(" {0},{1}", w, h);
+                pointsSb.AppendFormat(" {0},{1}", 0, h);
+            }
+            else
+            {
+                x += w/2.0;
+                y += h/2.0;
 
+                const double a = .5;
+                const double b = .5;
+
+                // x = a cos t
+                // y = b cos t
+                var first = true;
+                string firstPoint = "";
+                for (var angle = 0; angle <= 360; angle += 18)
+                {
+                    var radians = MathHelper.ToRadians(angle);
+
+                    var newx = a*Math.Cos(radians)*w;
+                    var newy = b*Math.Sin(radians)*h;
+                    if (first)
+                    {
+                        firstPoint = string.Format("{0},{1}", newx, newy);
+                    }
+                    pointsSb.AppendFormat("{2}{0},{1}", newx, newy, first ? "" : " ");
+                    first = false;
+                }
+
+                pointsSb.AppendFormat(" {0}", firstPoint);
+            }
 
             return tiledMapSave.ConvertTmxObjectToFrbPolygonSave(name, x, y, rotation, pointsSb.ToString(), true);
         }

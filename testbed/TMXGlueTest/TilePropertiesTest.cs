@@ -11,6 +11,40 @@ namespace TMXGlueTest
     public class TilePropertiesTest
     {
         [TestMethod]
+        public void ellipse_element_test()
+        {
+            var xml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<map version=""1.0"" orientation=""orthogonal"" renderorder=""right-down"" width=""5"" height=""5"" tilewidth=""16"" tileheight=""16"">
+ <layer name=""Tile Layer 1"" width=""5"" height=""5"">
+  <data encoding=""base64"" compression=""gzip"">
+   H4sIAAAAAAAAC2NgoD0AAMrGiJlkAAAA
+  </data>
+ </layer>
+ <objectgroup name=""Object Layer 1"">
+  <object x=""0"" y=""0"" width=""16"" height=""16"" rotation=""45""/>
+  <object x=""32"" y=""0"" rotation=""-45"">
+   <polygon points=""0,0 16,0 16,16""/>
+  </object>
+  <object x=""32"" y=""32"" rotation=""-13.6293"">
+   <polyline points=""0,0 16,0 32,16""/>
+  </object>
+  <object x=""0"" y=""0"" width=""16"" height=""16"">
+   <ellipse/>
+  </object>
+ </objectgroup>
+</map>";
+            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(xml)))
+            {
+                var xs = new XmlSerializer(typeof(TiledMapSave));
+                var tilemap = (TiledMapSave)xs.Deserialize(ms);
+                Assert.AreEqual(4, tilemap.objectgroup[0].@object.Length);
+                Assert.IsNull(tilemap.objectgroup[0].@object[0].ellipse);
+                Assert.IsNull(tilemap.objectgroup[0].@object[1].ellipse);
+                Assert.IsNull(tilemap.objectgroup[0].@object[2].ellipse);
+                Assert.IsNotNull(tilemap.objectgroup[0].@object[3].ellipse);
+            }
+        }
+        [TestMethod]
         public void terrain_attribute_does_not_break_properties_in_deserialization()
         {
             var xml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
