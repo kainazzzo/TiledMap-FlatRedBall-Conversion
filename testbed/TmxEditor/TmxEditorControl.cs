@@ -48,7 +48,6 @@ namespace TmxEditor
             XnaControl.XnaUpdate += new Action(HandleXnaUpdate);
             XnaControl.XnaDraw += new Action(HandleXnaDraw);
 
-
             LayersController.Self.Initialize(this.LayersListBox, LayerPropertyGrid);
             LayersController.Self.AnyTileMapChange += HandleChangeInternal;
 
@@ -118,6 +117,7 @@ namespace TmxEditor
                     }
                     catch(Exception exception)
                     {
+                        System.Threading.Thread.Sleep(50);
                         exception = lastException;
                         numberOfTries++;
                     }
