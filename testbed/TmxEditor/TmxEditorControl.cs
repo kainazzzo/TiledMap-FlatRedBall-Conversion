@@ -90,10 +90,28 @@ namespace TmxEditor
             {
                 mCurrentFileName = fileName;
 
-                ProjectManager.Self.LoadTiledMapSave(fileName);
-                ToolComponentManager.Self.ReactToLoadedFile(fileName);
-                LayersController.Self.TiledMapSave = ProjectManager.Self.TiledMapSave;
-                this.LoadedTmxLabel.Text = fileName;
+                bool succeeded = false;
+
+                try
+                {
+                    ProjectManager.Self.LoadTiledMapSave(fileName);
+                    succeeded = false;
+                }
+                catch
+                {
+                    // do nothing, we already warned the user (I think)
+                }
+                if (succeeded)
+                {
+                    ToolComponentManager.Self.ReactToLoadedFile(fileName);
+                    LayersController.Self.TiledMapSave = ProjectManager.Self.TiledMapSave;
+                    this.LoadedTmxLabel.Text = fileName;
+                }
+                else
+                {
+                    LayersController.Self.TiledMapSave = null;
+                    this.LoadedTmxLabel.Text = "No loaded tmx";
+                }
             }
         }
 

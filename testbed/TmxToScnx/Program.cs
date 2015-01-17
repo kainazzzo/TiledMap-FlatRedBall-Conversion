@@ -72,7 +72,16 @@ namespace TmxToScnx
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
+
+                if (ex.InnerException != null && ex.InnerException is System.IO.FileNotFoundException)
+                {
+                    var exception = ex.InnerException;
+                    Console.Error.WriteLine("Error: [" + exception.Message + "] Stack trace: [" + exception.StackTrace + "]");
+                }
+                else
+                {
+                    System.Console.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
+                }
             }
         }
 
