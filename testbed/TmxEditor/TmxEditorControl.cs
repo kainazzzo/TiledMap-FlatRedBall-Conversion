@@ -95,7 +95,7 @@ namespace TmxEditor
                 try
                 {
                     ProjectManager.Self.LoadTiledMapSave(fileName);
-                    succeeded = false;
+                    succeeded = true;
                 }
                 catch
                 {
