@@ -166,11 +166,48 @@ namespace TMXGlueLib
             List<string> row = new List<string>();
             row.Add(nameValue);
 
+            int layerIndex = -1;
+
+            uint startGid = Tilesets[tilesetIndex].Firstgid;
+            uint endIdExclusive = uint.MaxValue;
+            if(tilesetIndex < Tilesets.Count -1)
+            {
+                endIdExclusive = Tilesets[tilesetIndex + 1].Firstgid;
+            }
+
+
+            for(int i = 0; i < Layers.Count; i++)
+            {
+                var layer = Layers[i];
+                // see if any layers reference this tile:
+                foreach(var data in layer.data)
+                {
+                    foreach(var tile in data.tiles)
+                    {
+                        if(tile >= startGid && tile < endIdExclusive)
+                        {
+                            layerIndex = i;
+                            break;
+                        }
+                    }
+
+                    if(layerIndex != -1)
+                    {
+                        break;
+                    }
+                }
+
+                if (layerIndex != -1)
+                {
+                    break;
+                }
+            }
+
             bool hasAnimation = columnNames.Contains("EmbeddedAnimation");
 
             if (hasAnimation)
             {
-                AddAnimationFrameAtIndex(animation, row, 0, tilesetIndex);
+                AddAnimationFrameAtIndex(animation, row, 0, layerIndex, tilesetIndex);
             }
             AppendCustomProperties(pDictionary, iDictionary, columnNames, row, false);
 
@@ -187,7 +224,7 @@ namespace TMXGlueLib
 
                     if (hasAnimation)
                     {
-                        AddAnimationFrameAtIndex(animation, row, i, tilesetIndex);
+                        AddAnimationFrameAtIndex(animation, row, i, layerIndex, tilesetIndex);
                     }
                     AppendCustomProperties(pDictionary, iDictionary, columnNames, row, true);
                     AppendRowToStringBuilder(sb, row);
@@ -195,7 +232,7 @@ namespace TMXGlueLib
             }
         }
 
-        private void AddAnimationFrameAtIndex(TileAnimation animation, List<string> row, int animationIndex, int tilesetIndex)
+        private void AddAnimationFrameAtIndex(TileAnimation animation, List<string> row, int animationIndex, int indexOfLayerReferencingTileset, int tilesetIndex)
         {
             if (animation != null && animation.Frames != null && animation.Frames.Count > animationIndex)
             {
@@ -211,14 +248,19 @@ namespace TMXGlueLib
 
                 var frameId = (uint)frame.TileId;
                 // not sure why, but need to add 1:
-                frameId++;
+                //frameId++;
+                // Update - I know why, because the TileId
+                // is relative to the Tileset.  I didn't try
+                // this with multiple tilesets, and the first
+                // tileset has a starting ID of 1. 
+                frameId += this.Tilesets[tilesetIndex].Firstgid;
 
                 GetPixelCoordinatesFromGid(frameId, this.Tilesets[tilesetIndex],
                     out leftCoordinate, out topCoordinate, out rightCoordinate, out bottomCoordinate);
 
                 row.Add(string.Format(
                     "new FlatRedBall.Content.AnimationChain.AnimationFrameSaveBase(TextureName={0}, " + 
-                    "FrameLength={1}, LeftCoordinate={2}, RightCoordinate={3}, TopCoordinate={4}, BottomCoordinate={5})", tilesetIndex, 
+                    "FrameLength={1}, LeftCoordinate={2}, RightCoordinate={3}, TopCoordinate={4}, BottomCoordinate={5})", indexOfLayerReferencingTileset, 
                     frame.Duration/1000.0f, leftCoordinate, rightCoordinate, topCoordinate, bottomCoordinate));
             }
             else
