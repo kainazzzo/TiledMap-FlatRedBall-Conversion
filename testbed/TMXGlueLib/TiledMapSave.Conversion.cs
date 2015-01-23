@@ -463,20 +463,38 @@ namespace TMXGlueLib
                 case CSVPropertyType.Map:
                     return this.PropertyDictionary.Select(d => d.Key).Distinct(comparer);
                 case CSVPropertyType.Object:
-                    return ((new[] {"X (int)", "Y (int)"}.Select(d => d)
-                        .Union(objectgroup.Where(l =>
-                                                 layerName == null ||
-                                                 (l.name != null &&
-                                                  l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
-                                   .SelectMany(o => o.@object)
-                                   .SelectMany(o => o.PropertyDictionary)
-                                   .Select(d => d.Key), comparer)
-                        .Union(objectgroup.Where(l =>
-                                                 layerName == null ||
-                                                 (l.name != null &&
-                                                  l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
-                                   .SelectMany(o => o.PropertyDictionary)
-                                   .Select(d => d.Key), comparer)));
+
+                    List<string> toReturn = new List<string>();
+
+                    toReturn.Add("X (int)");
+                    toReturn.Add("Y (int)");
+
+                    if(objectgroup != null)
+                    {
+
+                        var query1 = objectgroup.Where(l =>
+                                                     layerName == null ||
+                                                     (l.name != null &&
+                                                      l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)));
+                        var query2 =
+                            objectgroup.Where(l =>
+                                                     layerName == null ||
+                                                     (l.name != null &&
+                                                      l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)));
+                        return toReturn
+                            .Union(query1
+                                       .SelectMany(o => o.@object)
+                                       .SelectMany(o => o.PropertyDictionary)
+                                       .Select(d => d.Key), comparer)
+                            .Union(query2
+                                       .SelectMany(o => o.PropertyDictionary)
+                                       .Select(d => d.Key), comparer);
+                    }
+                    else
+                    {
+                        return toReturn;
+                    }
+
             }
             return columnNames;
         }
