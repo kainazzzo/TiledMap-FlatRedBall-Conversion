@@ -44,13 +44,12 @@ namespace TmxEditor
                 this.TilesetTilePropertyGrid, this.HasCollisionsCheckBox, NameTextBox, EntitiesComboBox);
             TilesetController.Self.AnyTileMapChange += HandleChangeInternal;
 
-            XnaControl.XnaInitialize += new Action(HandleXnaInitialize);
             XnaControl.XnaUpdate += new Action(HandleXnaUpdate);
             XnaControl.XnaDraw += new Action(HandleXnaDraw);
 
             LayersController.Self.Initialize(this.LayersListBox, LayerPropertyGrid);
             LayersController.Self.AnyTileMapChange += HandleChangeInternal;
-
+            HandleXnaInitialize();
         }
 
 

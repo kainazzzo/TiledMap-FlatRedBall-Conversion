@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FlatRedBall.SpecializedXnaControls;
-using FlatRedBall.SpecializedXnaControls.Input;
 using RenderingLibrary;
 using RenderingLibrary.Graphics;
 using InputLibrary;

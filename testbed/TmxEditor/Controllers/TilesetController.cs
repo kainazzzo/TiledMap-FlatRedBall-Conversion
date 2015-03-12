@@ -2,7 +2,6 @@
 using System.Linq;
 using RenderingLibrary;
 using System.Windows.Forms;
-using FlatRedBall.SpecializedXnaControls.Input;
 using TMXGlueLib;
 using XnaAndWinforms;
 using TmxEditor.PropertyGridDisplayers;

@@ -161,6 +161,17 @@ namespace TMXGlueLib
         private void WriteValuesFromDictionary(StringBuilder sb, IDictionary<string, string> pDictionary, 
             IDictionary<string, string> iDictionary, IEnumerable<string> columnNames, TileAnimation animation, int tilesetIndex = 0)
         {
+
+
+            ///////////////////// Early out //////////////////////
+
+            if(tilesetIndex >= Tilesets.Count)
+            {
+                return;
+            }
+            ////////////////// End early out ////////////////////
+            uint startGid = Tilesets[tilesetIndex].Firstgid;
+
             string nameValue = GetNameValue(iDictionary);
 
             List<string> row = new List<string>();
@@ -168,7 +179,8 @@ namespace TMXGlueLib
 
             int layerIndex = -1;
 
-            uint startGid = Tilesets[tilesetIndex].Firstgid;
+
+
             uint endIdExclusive = uint.MaxValue;
             if(tilesetIndex < Tilesets.Count -1)
             {
