@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
-using FlatRedBall.Content;
+using System.Linq;
+using System.Reflection;
 using FlatRedBall.Content.Scene;
 using FlatRedBall.IO;
 using TMXGlueLib;
 using TMXGlueLib.DataTypes;
-using System.Reflection;
 
 namespace TmxToScnx
 {
@@ -15,7 +15,7 @@ namespace TmxToScnx
         {
             if (args.Length < 2)
             {
-                System.Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx or output.tilb> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf] copyimages=true|false");
+                Console.WriteLine("Usage: tmxtoscnx.exe <input.tmx> <output.scnx or output.tilb> [scale=##.#] [layervisibilitybehavior=Ignore|Skip|Match] [offset=xf,yf,zf] copyimages=true|false");
                 return;
             }
 
@@ -29,26 +29,33 @@ namespace TmxToScnx
                 TiledMapSave.LayerVisibleBehaviorValue = parsedArgs.LayerVisibleBehavior;
                 TiledMapSave.Offset = parsedArgs.Offset;
                 TiledMapSave tms = TiledMapSave.FromFile(parsedArgs.SourceFile);
-                tms.CorrectImageSizes(FileManager.GetDirectory(parsedArgs.SourceFile));
-
                 bool succeeded = true;
+
+                if (tms.Tilesets.Any(ts => ts.Images == null))
+                {
+                    Console.Error.WriteLine("This map uses a tileset format that is unsupported. Tilesets should only have one image associated with them. If you created a tileset and added many small images, please pack your tileset together.");
+                    succeeded = false;
+                }
+                else
+                {
+                    tms.CorrectImageSizes(FileManager.GetDirectory(parsedArgs.SourceFile));
+                }
+
 
                 bool hasMultiTextureLayers = GetIfHasMultiTextureLayers(tms);
 
                 if(hasMultiTextureLayers)
                 {
-                    string error = "This map uses multiple textures on one layer which is not supported.";
-                    System.Console.Error.WriteLine(error);
+                    const string error = "This map uses multiple textures on one layer which is not supported.";
+                    Console.Error.WriteLine(error);
                 }
 
-                succeeded = !hasMultiTextureLayers;
+                succeeded = succeeded && !hasMultiTextureLayers;
 
                 if (succeeded)
                 {
-                    System.Console.WriteLine("{0} converted successfully.", parsedArgs.SourceFile);
-                }
-                if (succeeded)
-                {
+                    Console.WriteLine("{0} converted successfully.", parsedArgs.SourceFile);
+                
                     if (parsedArgs.CopyImages)
                     {
                         bool didCopySucceed = 
@@ -56,6 +63,8 @@ namespace TmxToScnx
 
                         if(!didCopySucceed)
                         {
+                            // ReSharper disable once RedundantAssignment
+                            // Leaving this in case someone puts a test for "succeeded" later
                             succeeded = false;
                         }
                     }
@@ -67,12 +76,12 @@ namespace TmxToScnx
 
                     PerformSave(parsedArgs, tms);
 
-                    System.Console.WriteLine("Done.");
+                    Console.WriteLine("Done.");
                 }
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
+                Console.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
             }
         }
 
@@ -132,13 +141,13 @@ namespace TmxToScnx
             }
             else
             {
-                System.Console.WriteLine("The following extension is not understood: " + extension);
+                Console.WriteLine("The following extension is not understood: " + extension);
             }
         }
 
         private static void SaveTilb(TmxToScnxCommandLineArgs parsedArgs, TiledMapSave tms)
         {
-            System.Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
+            Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
             // all files should have been copied over, and since we're using the .scnx files,
             // we are going to use the destination instead of the source.
 
@@ -160,23 +169,23 @@ namespace TmxToScnx
                 }
             }
 
-            if (System.IO.File.Exists(parsedArgs.DestinationFile))
+            if (File.Exists(parsedArgs.DestinationFile))
             {
-                System.IO.File.Delete(parsedArgs.DestinationFile);
+                File.Delete(parsedArgs.DestinationFile);
             }
 
-            using (Stream outputStream = System.IO.File.OpenWrite(parsedArgs.DestinationFile))
+            using (Stream outputStream = File.OpenWrite(parsedArgs.DestinationFile))
             using (BinaryWriter binaryWriter = new BinaryWriter(outputStream))
             {
                 rtmi.WriteTo(binaryWriter);
-                System.Console.WriteLine("Saved \"{0}\".", parsedArgs.DestinationFile);
+                Console.WriteLine("Saved \"{0}\".", parsedArgs.DestinationFile);
 
             }
         }
 
         private static void SaveScnx(TmxToScnxCommandLineArgs parsedArgs, TiledMapSave tms)
         {
-            System.Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
+            Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
 
             SceneSave spriteEditorScene = tms.ToSceneSave(parsedArgs.Scale);
 
@@ -186,7 +195,7 @@ namespace TmxToScnx
             var result = spriteEditorScene.GetMissingFiles();
             foreach (var missing in result)
             {
-                System.Console.Error.WriteLine("Missing file: " + spriteEditorScene.ScenePath + missing);
+                Console.Error.WriteLine("Missing file: " + spriteEditorScene.ScenePath + missing);
             }
             spriteEditorScene.Save(parsedArgs.DestinationFile.Trim());
         }
