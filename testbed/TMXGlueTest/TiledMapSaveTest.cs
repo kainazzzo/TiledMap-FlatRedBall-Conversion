@@ -266,10 +266,9 @@ namespace TMXGlueTest
         [TestMethod]
         public void ToCSVStringObjectPropertyTest()
         {
-            var target = new TiledMapSave
-            {
-                objectgroup = new[]
-                {
+            var target = new TiledMapSave();
+            target.objectgroup = new List<mapObjectgroup>();
+            target.objectgroup.Add(
                     new mapObjectgroup
                     {
                         name = "objectGroup1",
@@ -293,7 +292,8 @@ namespace TMXGlueTest
                                 }
                             }
                         }
-                    },
+                    });
+            target.objectgroup.Add(
                     new mapObjectgroup
                     {
                         @object = new[]
@@ -316,9 +316,8 @@ namespace TMXGlueTest
                                 }
                             }
                         }
-                    }
-                }
-            };
+                    });
+
             string actual = target.ToCSVString(TiledMapSave.CSVPropertyType.Object);
             const string expected =
                 "Name (required),X (int),Y (int),prop1,prop2,prop3\r\n\"object1\",\"\",\"\",\"val1\",\"val2\",\"\"\r\n\"object2\",\"\",\"\",\"\",\"val4\",\"val3\"\r\n";
@@ -698,16 +697,16 @@ namespace TMXGlueTest
                             }
                         }
                     }
-                },
-                objectgroup = new[]
-                {
-                    new mapObjectgroup
+                }
+            };
+
+            map.objectgroup = new List<mapObjectgroup>();
+            map.objectgroup.Add(
+                                    new mapObjectgroup
                     {
                         name = "Objects",
                         @object = CreateTileMapSaveObjectGroups(mapDef.objects)
-                    }
-                }
-            };
+                    });
 
             return map;
         }

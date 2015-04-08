@@ -114,7 +114,7 @@ namespace TMXGlueLib
 
         /// <remarks/>
         [XmlElement("objectgroup", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public mapObjectgroup[] objectgroup
+        public List<mapObjectgroup> objectgroup
         {
             get;
             set;
@@ -176,6 +176,7 @@ namespace TMXGlueLib
         {
             Layers = new List<MapLayer>();
             Tilesets = new List<Tileset>();
+            objectgroup = new List<mapObjectgroup>();
         }
 
         public List<string> GetReferencedFiles()

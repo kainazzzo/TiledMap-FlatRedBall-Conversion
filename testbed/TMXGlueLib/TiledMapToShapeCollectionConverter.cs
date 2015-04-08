@@ -29,7 +29,7 @@ namespace TMXGlueLib
             var shapes = new ShapeCollectionSave();
 
             if ((mapLayer != null && !mapLayer.IsVisible && mapLayer.VisibleBehavior == TMXGlueLib.TiledMapSave.LayerVisibleBehavior.Skip) ||
-                tiledMapSave.objectgroup == null || tiledMapSave.objectgroup.Length == 0)
+                tiledMapSave.objectgroup == null || tiledMapSave.objectgroup.Count == 0)
             {
                 return shapes;
             }

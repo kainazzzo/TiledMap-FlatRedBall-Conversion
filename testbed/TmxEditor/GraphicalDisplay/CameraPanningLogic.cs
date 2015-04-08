@@ -8,7 +8,10 @@ using RenderingLibrary;
 using Cursor = InputLibrary.Cursor;
 using InputLibrary;
 
-namespace FlatRedBall.SpecializedXnaControls.Input
+// this class is pulled from a standard Glue library, but this plugin was created before that was
+// stanardized, so this is a copy of that code.  Eventually we need to clean this up and use the class
+// that is part of the standard libraries.
+namespace TmxEditor.Controllers
 {
     public class CameraPanningLogic
     {

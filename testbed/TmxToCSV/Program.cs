@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using TMXGlueLib;
 
@@ -41,7 +42,15 @@ namespace TmxToCSV
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
+                if (ex.InnerException != null && ex.InnerException is FileNotFoundException)
+                {
+                    var exception = ex.InnerException;
+                    Console.Error.WriteLine("Error: [" + exception.Message + "] Stack trace: [" + exception.StackTrace + "]");
+                }
+                else
+                {
+                    Console.Error.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
+                }
             }
         }
 

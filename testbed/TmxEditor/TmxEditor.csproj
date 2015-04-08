@@ -37,7 +37,7 @@
   <ItemGroup>
     <Reference Include="ContentLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\Gum\ContentLibrary.dll</HintPath>
+      <HintPath>..\..\..\Gum\ContentLibrary\bin\Debug\ContentLibrary.dll</HintPath>
     </Reference>
     <Reference Include="FlatRedBall.PropertyGrid, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -45,7 +45,7 @@
     </Reference>
     <Reference Include="InputLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\Gum\InputLibrary.dll</HintPath>
+      <HintPath>..\..\..\Gum\InputLibrary\bin\Debug\InputLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -66,7 +66,7 @@
     <Reference Include="WindowsFormsIntegration" />
     <Reference Include="XnaAndWinforms, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\Gum\XnaAndWinforms.dll</HintPath>
+      <HintPath>..\..\..\Gum\XnaAndWinforms\bin\Debug\XnaAndWinforms.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -179,9 +179,6 @@
   <ItemGroup>
     <Content Include="Libraries\FlatRedBall\FlatRedBall.PropertyGrid.dll" />
     <Content Include="Libraries\FlatRedBall\FlatRedBall.PropertyGrid.pdb" />
-    <Content Include="Libraries\Gum\ContentLibrary.dll" />
-    <Content Include="Libraries\Gum\InputLibrary.dll" />
-    <Content Include="Libraries\Gum\XnaAndWinforms.dll" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\TilesetWindow.xaml">
