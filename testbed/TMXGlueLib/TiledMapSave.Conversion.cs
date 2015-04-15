@@ -13,6 +13,7 @@ using FlatRedBall.Content.Polygon;
 using FlatRedBall.Content.Scene;
 using FlatRedBall.IO;
 using FlatRedBall.Math.Geometry;
+using System.Globalization;
 
 namespace TMXGlueLib
 {
@@ -272,8 +273,13 @@ namespace TMXGlueLib
 
                 row.Add(string.Format(
                     "new FlatRedBall.Content.AnimationChain.AnimationFrameSaveBase(TextureName={0}, " + 
-                    "FrameLength={1}, LeftCoordinate={2}, RightCoordinate={3}, TopCoordinate={4}, BottomCoordinate={5})", indexOfLayerReferencingTileset, 
-                    frame.Duration/1000.0f, leftCoordinate, rightCoordinate, topCoordinate, bottomCoordinate));
+                    "FrameLength={1}, LeftCoordinate={2}, RightCoordinate={3}, TopCoordinate={4}, BottomCoordinate={5})", 
+                    indexOfLayerReferencingTileset, 
+                    (frame.Duration/1000.0f).ToString(CultureInfo.InvariantCulture),
+                    leftCoordinate.ToString(CultureInfo.InvariantCulture),
+                    rightCoordinate.ToString(CultureInfo.InvariantCulture),
+                    topCoordinate.ToString(CultureInfo.InvariantCulture),
+                    bottomCoordinate.ToString(CultureInfo.InvariantCulture)));
             }
             else
             {
