@@ -88,6 +88,7 @@
     <Compile Include="GraphicalDisplay\Tilesets\TilePropertyHighlight.cs" />
     <Compile Include="Controllers\TilesetController.cs" />
     <Compile Include="Managers\CopyPasteManager.cs" />
+    <Compile Include="Managers\ResizeFixer.cs" />
     <Compile Include="Managers\SharedTilesetManager.cs" />
     <Compile Include="PropertyGridDisplayers\DisplayerExtensionMethods.cs" />
     <Compile Include="PropertyGridDisplayers\MapLayerDisplayer.cs" />
@@ -158,6 +159,10 @@
     <ProjectReference Include="..\..\..\Engines\FlatRedBallXNA\FlatRedBall\FlatRedBallXna4.csproj">
       <Project>{e1cb7d7b-e2ec-4deb-92e2-6ef0b76f40f0}</Project>
       <Name>FlatRedBallXna4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\FRBDK\FRBDK Supporting Projects\EditorObjects\EditorObjectsXna4.csproj">
+      <Project>{e1d670b6-ad42-4b84-aff8-d568097be03d}</Project>
+      <Name>EditorObjectsXna4</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\FRBDK\Glue\GlueSaveClasses\GlueSaveClasses.csproj">
       <Project>{545FF183-4D9D-4121-9A04-1D354B0B0DBA}</Project>

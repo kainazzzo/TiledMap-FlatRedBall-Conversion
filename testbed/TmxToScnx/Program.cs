@@ -170,11 +170,19 @@ namespace TmxToScnx
             ReducedTileMapInfo rtmi =
                 ReducedTileMapInfo.FromTiledMapSave(tms, parsedArgs.Scale, parsedArgs.Offset.Item3, FileManager.GetDirectory(parsedArgs.DestinationFile), referenceType);
 
+            var directoryToMakeRelativeTo = FileManager.GetDirectory(parsedArgs.SourceFile);
+
+            // If CopyImages is false, then we're going to keep the images where they are and reference them from there.
+            if(parsedArgs.CopyImages == false)
+            {
+                directoryToMakeRelativeTo = FileManager.GetDirectory(parsedArgs.DestinationFile);
+            }
+
             if (parsedArgs.CopyImages == false)
             {
                 foreach (var item in rtmi.Layers)
                 {
-                    item.Texture = FileManager.MakeRelative(item.Texture, FileManager.GetDirectory(parsedArgs.SourceFile));
+                    item.Texture = FileManager.MakeRelative(item.Texture, directoryToMakeRelativeTo);
                 }
             }
 

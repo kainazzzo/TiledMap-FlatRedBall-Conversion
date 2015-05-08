@@ -19,7 +19,7 @@ using TMXGlueLib;
 
 /// <remarks/>
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
-[System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
+[XmlRoot("tileset")]
 public partial class tileset 
 {
 

@@ -28,9 +28,9 @@ namespace TmxToScnx
             {
                 foreach (TilesetImage image in tileset.Images)
                 {
-                    bool didCopySucceed = CopyTilesetImage(tmxPath, destinationPath, tileset, image);
+                    bool didCopySucceed = TryCopyTilesetImage(tmxPath, destinationPath, tileset, image);
 
-                    if(!didCopySucceed)
+                    if (!didCopySucceed)
                     {
                         success = false;
                     }
@@ -40,7 +40,7 @@ namespace TmxToScnx
             return success;
         }
 
-        private static bool CopyTilesetImage(string tmxPath, string destinationPath, Tileset tileset, TilesetImage image)
+        private static bool TryCopyTilesetImage(string tmxPath, string destinationPath, Tileset tileset, TilesetImage image)
         {
             string sourcepath = GetImageSourcePath(tmxPath, tileset, image);
 
@@ -57,25 +57,56 @@ namespace TmxToScnx
             }
             else
             {
-
                 string destinationFullPath = destinationPath + image.sourceFileName;
 
-                if (!sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase) &&
-                    !FileManager.GetDirectory(destinationFullPath).Equals(FileManager.GetDirectory(sourcepath)))
+                bool shouldCopy = 
+                    !sourcepath.Equals(destinationFullPath, StringComparison.InvariantCultureIgnoreCase) &&
+                    !FileManager.GetDirectory(destinationFullPath).Equals(FileManager.GetDirectory(sourcepath));
+
+                if(shouldCopy)
+                {
+                    if (File.Exists(destinationFullPath))
+                    {
+                        // Only copy if source is newer than destination
+                        var sourceDate = File.GetLastWriteTimeUtc(sourcepath);
+                        var destinationDate = File.GetLastWriteTimeUtc(destinationFullPath);
+                        shouldCopy = sourceDate > destinationDate;
+                    }
+                }
+
+                if (shouldCopy)
                 {
                     System.Console.WriteLine("Copying \"{0}\" to \"{1}\".", sourcepath, destinationFullPath);
 
                     string fileWithoutDotDotSlash = FileManager.RemoveDotDotSlash(sourcepath);
 
-                    try
-                    {
+                    const int maxFailures = 5;
+                    int currentFailures = 0;
 
-                        File.Copy(fileWithoutDotDotSlash, destinationFullPath, true);
-                    }
-                    catch (Exception e)
+                    while (true)
                     {
-                        System.Console.Error.WriteLine("Could not copy \"{0}\" to \"{1}\" \n{2}.", sourcepath, destinationFullPath, e.ToString());
+                        try
+                        {
+                            // try it 3 times, in case someone else is copying it at the same time
 
+                            File.Copy(fileWithoutDotDotSlash, destinationFullPath, true);
+
+                            break;
+                        }
+                        catch (Exception e)
+                        {
+                            if (currentFailures < maxFailures)
+                            {
+                                System.Threading.Thread.Sleep(300);
+                                // try again:
+                                currentFailures++;
+                            }
+                            else
+                            {
+                                System.Console.Error.WriteLine("Could not copy \"{0}\" to \"{1}\" \n{2}.", sourcepath, destinationFullPath, e.ToString());
+                                break;
+                            }
+                        }
                     }
                 }
             }

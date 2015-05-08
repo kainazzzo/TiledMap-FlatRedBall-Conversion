@@ -8,6 +8,7 @@ using TmxEditor.Managers;
 using TmxEditor.UI;
 using TmxEditor.ViewModels;
 using TMXGlueLib;
+using EditorObjects.IoC;
 
 namespace TmxEditor.Controllers
 {
@@ -20,7 +21,7 @@ namespace TmxEditor.Controllers
         ToolStripMenuItem mSetSharedTileset;
         ToolStripMenuItem mCreateSharedTileset;
         ToolStripMenuItem mAddNewTilesetMenuItem;
-
+        //ToolStripMenuItem mFixIdsFromResize;
 
         #endregion
 
@@ -59,6 +60,10 @@ namespace TmxEditor.Controllers
             mAddNewTilesetMenuItem = new ToolStripMenuItem();
             mAddNewTilesetMenuItem.Text = "Add new tileset";
             mAddNewTilesetMenuItem.Click += HandleAddNewTilesetClick;
+
+            //mFixIdsFromResize = new ToolStripMenuItem();
+            //mFixIdsFromResize.Text = "Fix IDs from resize";
+            //mFixIdsFromResize.Click += HandleFixIdsFromResize;
         }
 
         private void HandleTilesetMouseClick(object sender, MouseEventArgs e)
@@ -189,6 +194,24 @@ namespace TmxEditor.Controllers
                 }
             }
         }
+
+        // I started to work on this but it turns out it's a nasty one. I'm going to talk to Bjorn
+        // to see if he can fix it n Tiled first before I take it on.
+        //private void HandleFixIdsFromResize(object sender, EventArgs e)
+        //{
+        //    if (CurrentTileset != null && mSprite != null && mSprite.Texture != null)
+        //    {
+        //        var tileMapsUsingTileset = GetAllTileMapsUsingTileset(CurrentTileset);
+
+
+        //        Container.Get<ResizeFixer>().FixTileset(CurrentTileset, mSprite.Texture.Width);
+        //    }
+        //}
+
+        //private object GetAllTileMapsUsingTileset(Tileset CurrentTileset)
+        //{
+        //    // this might take a while, so loop through 
+        //}
 
         void HandleSetSharedTilesetClick(object sender, EventArgs e)
         {
@@ -336,6 +359,8 @@ namespace TmxEditor.Controllers
                 if(isShared)
                 {
                     mTilesetsListBox.ContextMenuStrip.Items.Add(mSetSharedTileset);
+                    // todo: Only do this if it needs a resize fix
+                    //mTilesetsListBox.ContextMenuStrip.Items.Add(mFixIdsFromResize);
                 }
                 else
                 {

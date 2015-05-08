@@ -58,6 +58,11 @@ namespace TMXGlueLib
             }
             else
             {
+                // This is the width of the image as reported by the .tsx or .tmx, but
+                // it may not actually be the image's width if the .png has changed since
+                // the tsx/tmx was saved
+                int imageWidth = tileset.Images[0].width;
+
                 return GetNumberOfTilesWide(
                     tileset.Images[0].width, tileset.Margin, tileset.Tilewidth, tileset.Spacing);
             }

@@ -50,6 +50,8 @@ namespace TmxEditor
             LayersController.Self.Initialize(this.LayersListBox, LayerPropertyGrid);
             LayersController.Self.AnyTileMapChange += HandleChangeInternal;
             HandleXnaInitialize();
+
+            EditorObjects.IoC.Container.Set<TmxEditor.Managers.ResizeFixer>(new Managers.ResizeFixer());
         }
 
 
