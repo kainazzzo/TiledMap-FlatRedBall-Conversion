@@ -137,7 +137,6 @@ namespace TMXGlueLib
 
             var polygon = new PolygonSave();
             string[] pointString = points.Split(" ".ToCharArray());
-            float z;
 
             polygon.Name = name;
 

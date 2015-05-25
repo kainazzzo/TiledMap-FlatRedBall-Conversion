@@ -7,6 +7,7 @@ using XnaAndWinforms;
 using TmxEditor.PropertyGridDisplayers;
 using TmxEditor.UI;
 using FlatRedBall.Utilities;
+using TmxEditor.Events;
 
 namespace TmxEditor.Controllers
 {
@@ -235,7 +236,11 @@ namespace TmxEditor.Controllers
 
             if (changesOccurred && AnyTileMapChange != null)
             {
-                AnyTileMapChange(this, null);
+                var args = new TileMapChangeEventArgs();
+
+                args.ChangeType = ChangeType.Tileset;
+
+                AnyTileMapChange(this, args);
             }
         }
 

@@ -594,7 +594,7 @@
             <param name="forceRestart">Whether the song should be restarted. If the toPlay parameter differs from the currently-playing song then it will 
             restart regardless of the forceRestart value. This value only matters when the currently-playing song is passed.</param>
             <param name="isSongGlobalContent">Whether the song uses a Global content manager. This is important if StopAndDisposeCurrentSongIfNameDiffers is called.
-            StopAndDisposeCurrentSongIfNameDiffers is called by Glue, so the isSongGlobalContent param maters even if your code is not directly calling this function.</param>
+            StopAndDisposeCurrentSongIfNameDiffers is called by Glue, so the isSongGlobalContent param matters even if your code is not directly calling this function.</param>
         </member>
         <member name="M:FlatRedBall.Audio.AudioManager.AddSoundBank(System.String)">
             <summary>
@@ -691,6 +691,14 @@
             <param name="settingsFile">The settings file for the audio project (xgs)</param>
             <param name="waveBankFile">The wave bank file for the audio project (xwb)</param>
             <param name="soundBankFile">The sound bank file for the audio project (xsb)</param>
+        </member>
+        <member name="P:FlatRedBall.Audio.AudioManager.AreSoundEffectsEnabled">
+            <summary>
+            Controls whether the Play function will produce any audio when called.
+            This defaults to true, and it can be set to false in response to a setting
+            in the game's options screen. Setting this to false will not stop any currently-playing
+            SoundEffects as this is an XNA limitation - SoundEffect is fire-and-forget.
+            </summary>
         </member>
         <member name="P:FlatRedBall.Audio.AudioManager.CurrentSong">
             <summary>
@@ -2032,6 +2040,12 @@
             specified by using the LoadAsync method.
             </summary>
         </member>
+        <member name="F:FlatRedBall.Content.ContentManager.LoadFromGlobalIfExists">
+            <summary>
+            If true FlatRedBall will look for cached content in the Global content manager even if
+            the ContentManager passed to the Load function is not Global. This defaults to true.
+            </summary>
+        </member>
         <member name="M:FlatRedBall.Content.ContentManager.RemoveDisposable(System.IDisposable)">
             <summary>
             Removes an IDisposable from the ContentManager.  This method does not call Dispose on the argument Disposable.  It 
@@ -2144,13 +2158,43 @@
             in the .emix (Emitter XML) file.
             </summary>
         </member>
-        <member name="T:FlatRedBall.Content.Particle.EmitterSaveBase`1">
+        <member name="P:FlatRedBall.Graphics.Particle.EmissionSettingsSave.Animate">
+            <summary>
+            Whether or not the emitted particle should automatically animate
+            </summary>
+        </member>
+        <member name="P:FlatRedBall.Graphics.Particle.EmissionSettingsSave.AnimationChains">
+            <summary>
+            The animation chains to use for the particle animation
+            </summary>
+        </member>
+        <member name="P:FlatRedBall.Graphics.Particle.EmissionSettingsSave.CurrentChainName">
+            <summary>
+            The chain that is currently animating
+            </summary>
+        </member>
+        <member name="P:FlatRedBall.Graphics.Particle.EmissionSettingsSave.Texture">
+            <summary>
+            The particle texture.
+            If animation chains are set, they should override this.
+            </summary>
+        </member>
+        <member name="T:FlatRedBall.Content.Particle.ParticleBlueprintSave">
+            <summary>
+            Justin Johnson, 04/2015
+            This only exists to keep existing emix files functional
+            because texture path is stored in the sprite
+            blueprint object. This should eventually 
+            be retired.
+            </summary>
+        </member>
+        <member name="T:FlatRedBall.Content.Particle.EmitterSaveBase">
             <summary>
             Base class for EmitterSave and EmitterSaveContent.
             </summary>
             <typeparam name="T">The type for the ParticleBlueprint.  This should be or inherit SpriteSaveBase.</typeparam>
         </member>
-        <member name="F:FlatRedBall.Content.Particle.EmitterSaveBase`1.FileName">
+        <member name="F:FlatRedBall.Content.Particle.EmitterSaveBase.FileName">
             <summary>
             Stores the source .emix file name.  This 
             is set if an EmitterSaveList is loaded from file.
@@ -2176,11 +2220,6 @@
         <member name="T:FlatRedBall.Content.Saves.BitmapFontSave">
             <summary>
             Save class storing information for a BitmapFont.  
-            </summary>
-        </member>
-        <member name="T:FlatRedBall.Content.Saves.HeightMapSave">
-            <summary>
-            The "save" class for HeightMaps used for XML serialization/deserialization.
             </summary>
         </member>
         <member name="T:FlatRedBall.Content.Saves.TextSave">
@@ -3254,6 +3293,32 @@
             <summary>
             Sets the type of velocity to use.  This impacts which Velocity values are
             applied to emitted Sprites.
+            </summary>
+        </member>
+        <member name="P:FlatRedBall.Graphics.Particle.EmissionSettings.Animate">
+            <summary>
+            Whether or not the emitted particle should automatically animate
+            </summary>
+        </member>
+        <member name="P:FlatRedBall.Graphics.Particle.EmissionSettings.AnimationChains">
+            <summary>
+            The animation chains to use for the particle animation
+            </summary>
+        </member>
+        <member name="P:FlatRedBall.Graphics.Particle.EmissionSettings.AnimationChain">
+            <summary>
+            The currently set animation chain
+            </summary>
+        </member>
+        <member name="P:FlatRedBall.Graphics.Particle.EmissionSettings.CurrentChainName">
+            <summary>
+            The chain that is currently animating
+            </summary>
+        </member>
+        <member name="P:FlatRedBall.Graphics.Particle.EmissionSettings.Texture">
+            <summary>
+            The particle texture.
+            If animation chains are set, they should override this.
             </summary>
         </member>
         <member name="F:FlatRedBall.Graphics.Particle.RangeType.Component">
@@ -6494,6 +6559,11 @@
             </summary>
             <param name="fileName">The file to search for.</param>
             <returns>Whether the argument file exists.</returns>
+            <remarks>
+            The PC platform can use the File.Exists check, but other platforms like Android and iOS do not provide direct access to
+            a project's content. Therefore this internally will use the preferred way of checking for files per platform.
+            iOS and Android use the TitleContainer.OpenStream method.
+            </remarks>
         </member>
         <member name="M:FlatRedBall.IO.FileManager.FindFileInDirectory(System.String,System.String)">
             <summary>
@@ -9500,40 +9570,6 @@
         <member name="T:FlatRedBall.Math.Geometry.IScalable3D">
             <summary>
             An interface for objects which can be scaled on the X, Y, and Z axes.
-            </summary>
-        </member>
-        <member name="M:FlatRedBall.Math.Collision.HeightMap.#ctor(System.String,System.String)">
-            <summary>
-            Creates a height map from a texture
-            </summary>
-            <param name="textureName">The path to the texture</param>
-            <param name="contentManager"></param>
-        </member>
-        <member name="M:FlatRedBall.Math.Collision.HeightMap.#ctor(System.String,System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.Model)">
-            <summary>
-            Creates a height map from a model (heightmap will be available next frame)
-            </summary>
-            <param name="contentManagerName"></param>
-            <param name="width">The desired width of the heightmap (resolution)</param>
-            <param name="height">The desired height of the heightmap (resolution)</param>
-            <param name="model">The model to render for the heightmap</param>
-        </member>
-        <member name="P:FlatRedBall.Math.Collision.HeightMap.IsInitialized">
-            <summary>
-            Whether or not this heightmap has finished initialization
-            </summary>
-        </member>
-        <member name="P:FlatRedBall.Math.Collision.HeightMap.Item(System.Single,System.Single)">
-            <summary>
-            Gets a height value at a specified coordinate
-            </summary>
-            <param name="x">The x coordinate</param>
-            <param name="y">The y coordinate</param>
-            <returns>The z value</returns>
-        </member>
-        <member name="P:FlatRedBall.Math.Collision.HeightMap.RawData">
-            <summary>
-            Gets the raw data for this heightmap
             </summary>
         </member>
         <member name="M:FlatRedBall.Math.Geometry.AxisAlignedRectangle.CollideAgainst(FlatRedBall.Math.Geometry.Circle)">

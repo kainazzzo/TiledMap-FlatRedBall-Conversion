@@ -78,7 +78,7 @@ namespace TmxEditor
         {
             if (AnyTileMapChange != null)
             {
-                AnyTileMapChange(this, null);
+                AnyTileMapChange(this, args);
             }
         }
 
@@ -116,7 +116,7 @@ namespace TmxEditor
             }
         }
 
-        public void SaveCurrentTileMap()
+        public void SaveCurrentTileMap(bool saveTsxFiles = true)
         {
             if (!string.IsNullOrEmpty(mCurrentFileName) && ProjectManager.Self.TiledMapSave != null)
             {
@@ -131,7 +131,7 @@ namespace TmxEditor
                 {
                     try
                     {
-                        ProjectManager.Self.SaveTiledMapSave();
+                        ProjectManager.Self.SaveTiledMapSave(saveTsxFiles);
                         hasSaved = true;
                     }
                     catch(Exception exception)

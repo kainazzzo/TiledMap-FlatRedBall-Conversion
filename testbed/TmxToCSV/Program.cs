@@ -17,28 +17,22 @@ namespace TmxToCSV
 
             try
             {
-                Assembly assembly = Assembly.GetEntryAssembly();
-                AssemblyName assemblyName = assembly.GetName();
-                Version version = assemblyName.Version;
-                Console.WriteLine("TMX to CSV converter version " + version.ToString());
+                TmxToCsvCommandLineArgs parsedArgs = new TmxToCsvCommandLineArgs(args);
 
-                string sourceTmx = args[0];
-                string destinationCSV = args[1];
-                string layerName = null;
-
-                var type = TiledMapSave.CSVPropertyType.Tile;
-                if (args.Length >= 3)
+                if (parsedArgs.IsVerbose)
                 {
-                    ParseOptionalCommandLineArgs(args, out type, out layerName);
+                    Assembly assembly = Assembly.GetEntryAssembly();
+                    AssemblyName assemblyName = assembly.GetName();
+                    Version version = assemblyName.Version;
+                    Console.WriteLine("TMX to CSV converter version " + version.ToString());
+                    Console.WriteLine("Create columns from " + parsedArgs.PropertyType);
                 }
-                Console.WriteLine("Create columns from " + type);
-                
-                TiledMapSave tms = TiledMapSave.FromFile(sourceTmx);
+                TiledMapSave tms = TiledMapSave.FromFile(parsedArgs.SourceTmx);
                 
                 // Convert once in case of any exceptions
-                string csvstring = tms.ToCSVString(type: type, layerName: layerName);
+                string csvstring = tms.ToCSVString(type: parsedArgs.PropertyType, layerName: parsedArgs.LayerName);
 
-                System.IO.File.WriteAllText(destinationCSV, csvstring);
+                System.IO.File.WriteAllText(parsedArgs.DestinationCsv, csvstring);
             }
             catch (Exception ex)
             {
@@ -54,40 +48,5 @@ namespace TmxToCSV
             }
         }
 
-        private static void ParseOptionalCommandLineArgs(string[] args, out TiledMapSave.CSVPropertyType type, out string layerName)
-        {
-            type = TiledMapSave.CSVPropertyType.Tile;
-            layerName = null;
-            if (args.Length >= 3)
-            {
-                for (int x = 2; x < args.Length; ++x)
-                {
-                    string arg = args[x];
-                    string[] tokens = arg.Split("=".ToCharArray());
-                    if (tokens.Length == 2)
-                    {
-                        string key = tokens[0];
-                        string value = tokens[1];
-
-                        switch (key.ToLowerInvariant())
-                        {
-                            case "type":
-                                const bool ignoreCase = true;
-                                if (!Enum.TryParse(value, ignoreCase, out type))
-                                {
-                                    type = TiledMapSave.CSVPropertyType.Tile;
-                                }
-                                break;
-                            case "layername":
-                                layerName = value;
-                                break;
-                            default:
-                                Console.Error.WriteLine("Invalid command line argument: {0}", arg);
-                                break;
-                        }
-                    }
-                }
-            }
-        }
     }
 }

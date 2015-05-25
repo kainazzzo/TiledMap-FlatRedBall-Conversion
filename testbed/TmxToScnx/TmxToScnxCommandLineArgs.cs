@@ -20,6 +20,12 @@ namespace TmxToScnx
     {
         #region Properties
 
+        public bool IsVerbose
+        {
+            get;
+            set;
+        }
+
         public string SourceFile
         {
             get;
@@ -148,6 +154,16 @@ namespace TmxToScnx
                     else
                     {
                         CopyImages = true;
+                    }
+                    break;
+                case "verbose":
+                    if (value.ToLowerInvariant() == "false")
+                    {
+                        IsVerbose = false;
+                    }
+                    else
+                    {
+                        IsVerbose = true;
                     }
                     break;
                 default:

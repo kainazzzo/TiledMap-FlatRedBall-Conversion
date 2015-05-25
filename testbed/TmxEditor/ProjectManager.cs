@@ -44,14 +44,14 @@ namespace TmxEditor
 
         }
 
-        public void SaveTiledMapSave()
+        public void SaveTiledMapSave(bool saveTsxFiles = true)
         {
             string fileName = this.LastLoadedFile;
 
-            SaveTiledMapSave(fileName);
+            SaveTiledMapSave(fileName, saveTsxFiles);
         }
 
-        public void SaveTiledMapSave(string fileName)
+        public void SaveTiledMapSave(string fileName, bool saveTsxFiles = true)
         {
             if (TiledMapSave == null)
             {
@@ -61,31 +61,34 @@ namespace TmxEditor
             {
                 string directoryToSave = FileManager.GetDirectory(fileName);
 
-
-                bool oldLoadFromSource = Tileset.ShouldLoadValuesFromSource;
-                Tileset.ShouldLoadValuesFromSource = false;
-
-                // First let's save out the shared map (if necessary)
-                foreach (var tileset in TiledMapSave.Tilesets.Where(item => !string.IsNullOrEmpty(item.Source)))
+                if (saveTsxFiles)
                 {
 
-                    string absoluteTilesetFilename = directoryToSave + tileset.Source;
-                    string oldSource = tileset.Source;
-                    tileset.Source = null;
+                    bool oldLoadFromSource = Tileset.ShouldLoadValuesFromSource;
+                    Tileset.ShouldLoadValuesFromSource = false;
+
+                    // First let's save out the shared map (if necessary)
+                    foreach (var tileset in TiledMapSave.Tilesets.Where(item => !string.IsNullOrEmpty(item.Source)))
+                    {
+
+                        string absoluteTilesetFilename = directoryToSave + tileset.Source;
+                        string oldSource = tileset.Source;
+                        tileset.Source = null;
 
 
-                    // We're going to clone the tileset and remove the "source" property, because tilesets
-                    // in .tsx files shouldn't have sources:
-                    var forSaving = CloneAndCast(tileset);
+                        // We're going to clone the tileset and remove the "source" property, because tilesets
+                        // in .tsx files shouldn't have sources:
+                        var forSaving = CloneAndCast(tileset);
 
 
-                    FileManager.XmlSerialize(forSaving, absoluteTilesetFilename);
+                        FileManager.XmlSerialize(forSaving, absoluteTilesetFilename);
 
-                    tileset.Source = oldSource;
+                        tileset.Source = oldSource;
 
+                    }
+
+                    Tileset.ShouldLoadValuesFromSource = oldLoadFromSource;
                 }
-
-                Tileset.ShouldLoadValuesFromSource = oldLoadFromSource;
 
                 TiledMapSave.Save(fileName);
             }

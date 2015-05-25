@@ -21,10 +21,14 @@ namespace TmxToScnx
 
             try
             {
-                PrintVersionInformation();
 
                 TmxToScnxCommandLineArgs parsedArgs = new TmxToScnxCommandLineArgs();
                 parsedArgs.ParseOptionalCommandLineArgs(args);
+
+                if (parsedArgs.IsVerbose)
+                {
+                    PrintVersionInformation();
+                }
 
                 TiledMapSave.LayerVisibleBehaviorValue = parsedArgs.LayerVisibleBehavior;
                 TiledMapSave.Offset = parsedArgs.Offset;
@@ -54,8 +58,11 @@ namespace TmxToScnx
 
                 if (succeeded)
                 {
-                    Console.WriteLine("{0} converted successfully.", parsedArgs.SourceFile);
-                
+                    if (parsedArgs.IsVerbose)
+                    {
+                        Console.WriteLine("{0} converted successfully.", parsedArgs.SourceFile);
+                    }
+
                     if (parsedArgs.CopyImages)
                     {
                         bool didCopySucceed = 
@@ -76,7 +83,10 @@ namespace TmxToScnx
 
                     PerformSave(parsedArgs, tms);
 
-                    Console.WriteLine("Done.");
+                    if (parsedArgs.IsVerbose)
+                    {
+                        Console.WriteLine("Done.");
+                    }
                 }
             }
             catch (Exception ex)
@@ -156,7 +166,10 @@ namespace TmxToScnx
 
         private static void SaveTilb(TmxToScnxCommandLineArgs parsedArgs, TiledMapSave tms)
         {
-            Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
+            if (parsedArgs.IsVerbose)
+            {
+                Console.WriteLine("Saving \"{0}\".", parsedArgs.DestinationFile);
+            }
             // all files should have been copied over, and since we're using the .scnx files,
             // we are going to use the destination instead of the source.
 
@@ -195,8 +208,10 @@ namespace TmxToScnx
             using (BinaryWriter binaryWriter = new BinaryWriter(outputStream))
             {
                 rtmi.WriteTo(binaryWriter);
-                Console.WriteLine("Saved \"{0}\".", parsedArgs.DestinationFile);
-
+                if (parsedArgs.IsVerbose)
+                {
+                    Console.WriteLine("Saved \"{0}\".", parsedArgs.DestinationFile);
+                }
             }
         }
 

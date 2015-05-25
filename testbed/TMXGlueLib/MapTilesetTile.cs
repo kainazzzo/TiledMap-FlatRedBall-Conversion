@@ -67,7 +67,7 @@ namespace TMXGlueLib
             {
                 string toReturn = id.ToString();
 
-                if(PropertyDictionary.Count != null)
+                if(PropertyDictionary.Count != 0)
                 {
                     toReturn += " (";
 
