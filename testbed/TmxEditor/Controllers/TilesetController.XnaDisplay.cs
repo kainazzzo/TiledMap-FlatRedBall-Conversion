@@ -13,6 +13,8 @@ using TmxEditor.GraphicalDisplay.Tilesets;
 using XnaAndWinforms;
 using System.Windows.Forms;
 using TmxEditor.Managers;
+using TmxEditor.CommandsAndState;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace TmxEditor.Controllers
 {
@@ -23,17 +25,32 @@ namespace TmxEditor.Controllers
 
         GraphicsDeviceControl mControl;
 
+        List<TilePropertyHighlight> mTilesWithPropertiesMarkers = new List<TilePropertyHighlight>();
+
+        LineRectangle mOutlineRectangle;
+        LineRectangle mHighlightRectangle;
+        Sprite mSprite;
 
         #endregion
 
 
         #region Properties
 
-        List<TilePropertyHighlight> mTilesWithPropertiesMarkers = new List<TilePropertyHighlight>();
+        public Texture2D CurrentTexture
+        {
+            get
+            {
+                if(mSprite == null || mSprite.Texture == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return mSprite.Texture;
+                }
+            }
+        }
 
-        LineRectangle mOutlineRectangle;
-        LineRectangle mHighlightRectangle;
-        Sprite mSprite;
 
         #endregion
 
@@ -62,6 +79,11 @@ namespace TmxEditor.Controllers
             mCursor = new InputLibrary.Cursor();
             mCursor.Initialize(mControl);
             mCameraPanningLogic = new CameraPanningLogic(mControl, managers, mCursor, mKeyboard);
+            mCameraPanningLogic.Panning += delegate
+            {
+                ApplicationEvents.Self.CallAfterWireframePanning();
+            };
+
             mManagers.Renderer.Camera.CameraCenterOnScreen = CameraCenterOnScreen.TopLeft;
             mManagers.Renderer.SamplerState = Microsoft.Xna.Framework.Graphics.SamplerState.PointClamp;
 
@@ -303,12 +325,7 @@ namespace TmxEditor.Controllers
 
             var currentTileset = mTilesetsListBox.SelectedItem as Tileset;
 
-
-
-
             ClearAllHighlights();
-
-
 
             SetTilesetSpriteTexture();
 

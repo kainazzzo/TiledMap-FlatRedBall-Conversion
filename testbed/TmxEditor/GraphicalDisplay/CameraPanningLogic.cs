@@ -23,6 +23,8 @@ namespace TmxEditor.Controllers
 
         SystemManagers mManagers;
 
+        public event EventHandler Panning;
+
         public CameraPanningLogic(GraphicsDeviceControl graphicsControl, SystemManagers managers, Cursor cursor, Keyboard keyboard)
         {
             mManagers = managers;
@@ -43,8 +45,16 @@ namespace TmxEditor.Controllers
             if (mCursor.MiddleDown && 
                 mCursor.IsInWindow)
             {
-                mCamera.X -= mCursor.XChange / mManagers.Renderer.Camera.Zoom;
-                mCamera.Y -= mCursor.YChange / mManagers.Renderer.Camera.Zoom;
+                if (mCursor.XChange != 0 || mCursor.YChange != 0)
+                {
+                    mCamera.X -= mCursor.XChange / mManagers.Renderer.Camera.Zoom;
+                    mCamera.Y -= mCursor.YChange / mManagers.Renderer.Camera.Zoom;
+
+                    if(Panning != null)
+                    {
+                        Panning(this, null);
+                    }
+                }
             }
 
         }

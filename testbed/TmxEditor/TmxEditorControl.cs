@@ -15,6 +15,8 @@ using FlatRedBall.SpecializedXnaControls;
 using TmxEditor.Controllers;
 using TmxEditor.UI;
 using ToolsUtilities;
+using FlatRedBall.AnimationEditorForms.Controls;
+using TmxEditor.CommandsAndState;
 
 namespace TmxEditor
 {
@@ -25,6 +27,9 @@ namespace TmxEditor
         SystemManagers mManagers;
         string mCurrentFileName;
         private List<string> _entities;
+
+        ScrollBarControlLogic mScrollBarControlLogic;
+
 
         #endregion
 
@@ -46,6 +51,28 @@ namespace TmxEditor
 
             XnaControl.XnaUpdate += new Action(HandleXnaUpdate);
             XnaControl.XnaDraw += new Action(HandleXnaDraw);
+
+            mScrollBarControlLogic = new ScrollBarControlLogic(this.splitContainer3.Panel1);
+            ApplicationEvents.Self.WireframePanning += delegate
+            {
+                mScrollBarControlLogic.UpdateScrollBars();
+            };
+            ApplicationEvents.Self.SelectedTilesetChanged += delegate
+            {
+                int width = 256;
+                int height = 256;
+
+                var texture = TilesetController.Self.CurrentTexture;
+
+                if(texture != null)
+                {
+                    width = texture.Width;
+                    height = texture.Height;
+                }
+
+                mScrollBarControlLogic.UpdateToImage(width, height);
+            };
+
 
             LayersController.Self.Initialize(this.LayersListBox, LayerPropertyGrid);
             LayersController.Self.AnyTileMapChange += HandleChangeInternal;
@@ -155,6 +182,8 @@ namespace TmxEditor
             try
             {
                 CreateManagers();
+
+                mScrollBarControlLogic.Managers = mManagers;
 
 
                 string targetFntFileName = CreateAndSaveFonts();

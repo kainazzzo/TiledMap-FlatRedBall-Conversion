@@ -9,6 +9,7 @@ using TmxEditor.UI;
 using TmxEditor.ViewModels;
 using TMXGlueLib;
 using EditorObjects.IoC;
+using TmxEditor.CommandsAndState;
 
 namespace TmxEditor.Controllers
 {
@@ -45,6 +46,10 @@ namespace TmxEditor.Controllers
         {
             mTilesetsListBox = tilesetsListBox;
             mTilesetsListBox.SelectedIndexChanged += new EventHandler(HandleTilesetSelect);
+            mTilesetsListBox.SelectedIndexChanged += delegate
+            {
+                ApplicationEvents.Self.CallSelectedTilesetChanged();
+            };
 
             mTilesetsListBox.Click += HandleTilesetClick;
             mTilesetsListBox.MouseClick += HandleTilesetMouseClick;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TmxEditor.Events;
 using TmxEditor.PropertyGridDisplayers;
 using TmxEditor.UI;
 using TMXGlueLib;
@@ -151,7 +152,9 @@ namespace TmxEditor.Controllers
 
             if (raiseChangedEvent && AnyTileMapChange != null)
             {
-                AnyTileMapChange(this, null);
+                TileMapChangeEventArgs args = new TileMapChangeEventArgs();
+                args.ChangeType = ChangeType.Tileset;
+                AnyTileMapChange(this, args);
             }
             return newProperty;
         }

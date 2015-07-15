@@ -70,8 +70,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\FRBDK\FlatRedBall.AnimationEditorForms\Controls\ScrollBarControlLogic.cs">
+      <Link>Controllers\ScrollBarControlLogic.cs</Link>
+    </Compile>
     <Compile Include="AppState.cs" />
     <Compile Include="Behaviors\InputBindingsManager.cs" />
+    <Compile Include="CommandsAndState\ApplicationEvents.cs" />
     <Compile Include="Controllers\LayersController.cs" />
     <Compile Include="Controllers\Singleton.cs" />
     <Compile Include="Controllers\TilesetController.ListBox.cs" />

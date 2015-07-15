@@ -474,7 +474,9 @@ namespace TMXGlueLib
         
         /// <summary>
         /// Represents all of the tiles in this layer.  A tile with index 0 means there is no tile there.  Non-zero values
-        /// mean that the value is painted.  Painted values are global IDs of tiles.
+        /// mean that the value is painted.  Painted values are global IDs of tiles. Index 0 is the top-left tile. Increasing
+        /// the index moves towards the right. When reading the end of the row, the next index represents the first tile in the 
+        /// next row.
         /// </summary>
         [XmlIgnore]
         public List<uint> tiles
@@ -492,7 +494,10 @@ namespace TMXGlueLib
                     {
                         _ids = new List<uint>(length);
                         // get a stream to the decoded Base64 text
-                        Stream data = new MemoryStream(Convert.FromBase64String(Value.Trim()), false);
+
+                        var trimmedValue = Value.Trim();
+
+                        Stream data = new MemoryStream(Convert.FromBase64String(trimmedValue), false);
                         switch (compression)
                         {
                             case "gzip":

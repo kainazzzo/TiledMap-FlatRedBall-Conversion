@@ -365,7 +365,9 @@ namespace TmxEditor.Controllers
 
                 if (changesOccurred && AnyTileMapChange != null)
                 {
-                    AnyTileMapChange(this, null);
+                    TileMapChangeEventArgs args = new TileMapChangeEventArgs();
+                    args.ChangeType = ChangeType.Tileset;
+                    AnyTileMapChange(this, args);
                 }
             }
         }

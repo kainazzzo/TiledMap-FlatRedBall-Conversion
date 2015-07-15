@@ -1022,8 +1022,15 @@ namespace TMXGlueLib
             }
         }
 
-        public Tileset GetTilesetForGid(uint gid)
+        public Tileset GetTilesetForGid(uint gid, bool shouldRemoveFlipFlags = true)
         {
+            var effectiveGid = gid;
+
+            if(shouldRemoveFlipFlags)
+            {
+                effectiveGid = 0x0fffffff & gid;
+            }
+
             // Assuming tilesets are sorted by the firstgid value...
             // Resort with LINQ if not
             if (Tilesets != null)
@@ -1031,7 +1038,7 @@ namespace TMXGlueLib
                 for (int i = Tilesets.Count - 1; i >= 0; --i)
                 {
                     Tileset tileSet = Tilesets[i];
-                    if (gid >= tileSet.Firstgid)
+                    if (effectiveGid >= tileSet.Firstgid)
                     {
                         return tileSet;
                     }
