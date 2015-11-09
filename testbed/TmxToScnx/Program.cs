@@ -102,6 +102,11 @@ namespace TmxToScnx
                     System.Console.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
                 }
             }
+
+
+#if DEBUG
+            Console.ReadLine(); 
+#endif
         }
 
         private static void PrintVersionInformation()

@@ -648,11 +648,20 @@ namespace TMXGlueLib
 
         private string _name;
 
+        private string _gid; 
+
         [XmlAttributeAttribute(AttributeName = "name")]
         public string Name
         {
             get { return _name; }
             set { _name = value; }
+        }
+
+        [XmlAttribute()]
+        public string gid
+        {
+            get { return _gid; }
+            set { _gid = value; }
         }
 
         private IDictionary<string, string> propertyDictionaryField = null;

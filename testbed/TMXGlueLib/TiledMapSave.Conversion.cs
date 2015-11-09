@@ -104,8 +104,9 @@ namespace TMXGlueLib
                         og =>
                         layerName == null ||
                         (og.name != null && og.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
-                        .SelectMany(o => o.@object, (o, c) => new { group = o, obj = c, X = c.x, Y = c.y })
-                        .ToList()
+                        .SelectMany(o => o.@object, (o, c) => new { group = o, obj = c, X = c.x, Y = c.y })     
+                        .Where(o => String.IsNullOrEmpty(o.obj.gid))               
+                        .ToList()                        
                         .ForEach(o => WriteValuesFromDictionary(sb, o.group.PropertyDictionary, o.obj.PropertyDictionary, columnNames, null));
                     break;
             }
@@ -113,17 +114,17 @@ namespace TMXGlueLib
 
         private void WriteColumnValuesForLayer(StringBuilder sb, IList<string> columnNames, string layerName)
         {
-            var availableItems = 
+            var availableItems =
             this.Layers.Where(
                 l =>
                 layerName == null ||
                 (l.Name != null && l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase))).ToList();
 
-            foreach(var l in availableItems)
+            foreach (var l in availableItems)
             {
                 WriteValuesFromDictionary(sb, null, l.PropertyDictionary, columnNames, null);
             }
-                
+
         }
 
         private void WriteColumnValuesForTile(StringBuilder sb, IList<string> columnNames)
@@ -135,7 +136,7 @@ namespace TMXGlueLib
                 if (tileSet.Tiles != null)
                 {
                     Func<mapTilesetTile, bool> predicate =
-                        t => t.PropertyDictionary.Count > 0 || 
+                        t => t.PropertyDictionary.Count > 0 ||
                         (t.Animation != null && t.Animation.Frames != null && t.Animation.Frames.Count > 0);
 
                     foreach (mapTilesetTile tile in tileSet.Tiles.Where(predicate))
@@ -145,7 +146,7 @@ namespace TMXGlueLib
                         bool needsName = propertyDictionary.Count != 0 ||
                             (tile.Animation != null && tile.Animation.Frames != null && tile.Animation.Frames.Count != 0);
 
-                        if(needsName && propertyDictionary.Keys.Any(item=> property.GetStrippedName(item).ToLowerInvariant() == "name") == false)
+                        if (needsName && propertyDictionary.Keys.Any(item => property.GetStrippedName(item).ToLowerInvariant() == "name") == false)
                         {
                             var globalId = tile.id + tileSet.Firstgid;
                             // This has properties, but no name, so let's give it a name!
@@ -155,18 +156,28 @@ namespace TMXGlueLib
                     }
                 }
             }
+            foreach (var objectGroup in this.objectgroup)
+            {
+                foreach (var @object in objectGroup.@object)
+                {
+                    if (!String.IsNullOrEmpty(@object.gid))
+                    {
+                        WriteValuesFromDictionary(sb, null, @object.PropertyDictionary, columnNames, null); 
+                    }
+                }
+            }
         }
 
         static int numberOfUnnamedTiles = 0;
 
-        private void WriteValuesFromDictionary(StringBuilder sb, IDictionary<string, string> pDictionary, 
+        private void WriteValuesFromDictionary(StringBuilder sb, IDictionary<string, string> pDictionary,
             IDictionary<string, string> iDictionary, IEnumerable<string> columnNames, TileAnimation animation, int tilesetIndex = 0)
         {
 
 
             ///////////////////// Early out //////////////////////
 
-            if(tilesetIndex >= Tilesets.Count)
+            if (tilesetIndex >= Tilesets.Count)
             {
                 return;
             }
@@ -183,28 +194,28 @@ namespace TMXGlueLib
 
 
             uint endIdExclusive = uint.MaxValue;
-            if(tilesetIndex < Tilesets.Count -1)
+            if (tilesetIndex < Tilesets.Count - 1)
             {
                 endIdExclusive = Tilesets[tilesetIndex + 1].Firstgid;
             }
 
 
-            for(int i = 0; i < Layers.Count; i++)
+            for (int i = 0; i < Layers.Count; i++)
             {
                 var layer = Layers[i];
                 // see if any layers reference this tile:
-                foreach(var data in layer.data)
+                foreach (var data in layer.data)
                 {
-                    foreach(var tile in data.tiles)
+                    foreach (var tile in data.tiles)
                     {
-                        if(tile >= startGid && tile < endIdExclusive)
+                        if (tile >= startGid && tile < endIdExclusive)
                         {
                             layerIndex = i;
                             break;
                         }
                     }
 
-                    if(layerIndex != -1)
+                    if (layerIndex != -1)
                     {
                         break;
                     }
@@ -226,10 +237,10 @@ namespace TMXGlueLib
 
             AppendRowToStringBuilder(sb, row);
 
-            if(animation != null && animation.Frames != null)
+            if (animation != null && animation.Frames != null)
             {
 
-                for(int i = 1; i< animation.Frames.Count; i++)
+                for (int i = 1; i < animation.Frames.Count; i++)
                 {
                     row = new List<string>();
                     row.Add(""); // Name column
@@ -272,10 +283,10 @@ namespace TMXGlueLib
                     out leftCoordinate, out topCoordinate, out rightCoordinate, out bottomCoordinate);
 
                 row.Add(string.Format(
-                    "new FlatRedBall.Content.AnimationChain.AnimationFrameSaveBase(TextureName={0}, " + 
-                    "FrameLength={1}, LeftCoordinate={2}, RightCoordinate={3}, TopCoordinate={4}, BottomCoordinate={5})", 
-                    indexOfLayerReferencingTileset, 
-                    (frame.Duration/1000.0f).ToString(CultureInfo.InvariantCulture),
+                    "new FlatRedBall.Content.AnimationChain.AnimationFrameSaveBase(TextureName={0}, " +
+                    "FrameLength={1}, LeftCoordinate={2}, RightCoordinate={3}, TopCoordinate={4}, BottomCoordinate={5})",
+                    indexOfLayerReferencingTileset,
+                    (frame.Duration / 1000.0f).ToString(CultureInfo.InvariantCulture),
                     leftCoordinate.ToString(CultureInfo.InvariantCulture),
                     rightCoordinate.ToString(CultureInfo.InvariantCulture),
                     topCoordinate.ToString(CultureInfo.InvariantCulture),
@@ -487,10 +498,11 @@ namespace TMXGlueLib
                     toReturn.Add("X (int)");
                     toReturn.Add("Y (int)");
 
-                    if(objectgroup != null)
+                    if (objectgroup != null)
                     {
 
-                        var query1 = objectgroup.Where(l =>
+                        var query1 =
+                            objectgroup.Where(l =>
                                                      layerName == null ||
                                                      (l.name != null &&
                                                       l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)));
@@ -502,6 +514,7 @@ namespace TMXGlueLib
                         return toReturn
                             .Union(query1
                                        .SelectMany(o => o.@object)
+                                       .Where(o => String.IsNullOrEmpty(o.gid)) //November 2015 by Jesse Crafts-Finch: will ignore objects which are to be treated as sprites (they have a gid). 
                                        .SelectMany(o => o.PropertyDictionary)
                                        .Select(d => d.Key), comparer)
                             .Union(query2
@@ -526,18 +539,34 @@ namespace TMXGlueLib
 
             // And animation is required too
             toReturn.Add(animationColumnName);
-            
-            toReturn.AddRange( this.Tilesets.SelectMany(t => t.Tiles)
+
+            toReturn.AddRange(this.Tilesets.SelectMany(t => t.Tiles)
                     .SelectMany(tile => tile.PropertyDictionary)
                     .Select(d => d.Key)
-                    .Distinct(comparer)
+                    //.Distinct(comparer)
                     .ToList());
 
-            return toReturn;
-                
+            foreach (var group in this.objectgroup)
+            {
+                bool addedGroup = false;
+                foreach (var @object in group.@object)
+                {
+                    if (!String.IsNullOrEmpty(@object.gid))
+                    {
+                        addedGroup = true;
+                        toReturn.AddRange(@object.PropertyDictionary.Keys); 
+                    }
+                }
+                if (addedGroup)
+                {
+                    toReturn.AddRange(group.PropertyDictionary.Keys); 
+                }
+            }
+
+            return toReturn.Distinct(comparer);
         }
 
-        
+
         public NodeNetwork ToNodeNetwork(bool requireTile = true)
         {
             return ToNodeNetwork(true, true, true, requireTile);
@@ -748,7 +777,7 @@ namespace TMXGlueLib
                 MapLayer mLayer = mapLayer;
                 int mLayerCount = layercount;
 
-                for(int i = 0; i < mapLayer.data[0].tiles.Count; i++)
+                for (int i = 0; i < mapLayer.data[0].tiles.Count; i++)
                 //Parallel.For(0, mapLayer.data[0].tiles.Count, i =>
                 {
                     uint gid = mLayer.data[0].tiles[i];
@@ -761,14 +790,144 @@ namespace TMXGlueLib
                             toReturn.SpriteList.Add(sprite);
                         }
                     }
-                    }
+                }
                 //);
                 ++layercount;
             }
+            if (this.objectgroup != null && this.objectgroup.Count != 0)
+            {
 
+                foreach (mapObjectgroup group in this.objectgroup)
+                {
+
+                    if (group.@object != null && !string.IsNullOrEmpty(group.name)) //&& (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
+                    {
+                        foreach (mapObjectgroupObject @object in group.@object)
+                        {
+                            if (!String.IsNullOrEmpty(@object.gid))
+                            {
+                                SpriteSave sprite = CreateSpriteSaveFromObject(scale, @object, layercount, referenceType);
+                                lock (toReturn)
+                                {
+                                    toReturn.SpriteList.Add(sprite);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             return toReturn;
         }
 
+        private SpriteSave CreateSpriteSaveFromObject(float scale, mapObjectgroupObject @object, int layerCount, FileReferenceType referenceType = FileReferenceType.NoDirectory)
+        {
+            uint gid;
+            uint.TryParse(@object.gid, out gid);
+            Tileset tileSet = GetTilesetForGid(gid);
+
+            var sprite = new SpriteSave();
+            //if (!mapLayer.IsVisible && mapLayer.VisibleBehavior == LayerVisibleBehavior.Match)
+            //{
+            //    sprite.Visible = false;
+            //}
+
+            int imageWidth = tileSet.Images[0].width;
+            int imageHeight = tileSet.Images[0].height;
+            int tileWidth = tileSet.Tilewidth;
+            int spacing = tileSet.Spacing;
+            int tileHeight = tileSet.Tileheight;
+            int margin = tileSet.Margin;
+
+            // TODO: only calculate these once per tileset. Perhaps it can be done in the deserialize method
+            //int tilesWide = (imageWidth - margin) / (tileWidth + spacing);
+            //int tilesHigh = (imageHeight - margin) / (tileHeight + spacing);
+
+            if (referenceType == FileReferenceType.NoDirectory)
+            {
+                sprite.Texture = tileSet.Images[0].sourceFileName;
+            }
+            else if (referenceType == FileReferenceType.Absolute)
+            {
+                string directory = FileManager.GetDirectory(this.FileName);
+
+                if (!string.IsNullOrEmpty(tileSet.SourceDirectory) && tileSet.SourceDirectory != ".")
+                {
+                    directory += tileSet.SourceDirectory;
+
+                    directory = FileManager.RemoveDotDotSlash(directory);
+
+                }
+
+                sprite.Texture = FileManager.RemoveDotDotSlash(directory + tileSet.Images[0].Source);
+
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            uint tileTextureRelativeToStartOfTileset =
+                (0x0fffffff & gid) - tileSet.Firstgid + 1;
+
+            //if (tileSet.TileDictionary.ContainsKey(tileTextureRelativeToStartOfTileset))
+            //{
+            //    var dictionary = tileSet.TileDictionary[tileTextureRelativeToStartOfTileset].PropertyDictionary;
+
+            //    foreach (var kvp in dictionary)
+            //    {
+            //        var key = kvp.Key;
+
+            //        if (IsName(key))
+            //        {
+            //            sprite.Name = kvp.Value;
+            //        }
+            //    }
+            //}
+
+            if (string.IsNullOrEmpty(@object.Name))
+            {
+                sprite.Name = "Unnamed" + gid;
+            }
+            else
+            {
+                sprite.Name = @object.Name;
+            }
+            SetSpriteTextureCoordinates(gid, sprite, tileSet);
+
+            //CalculateWorldCoordinates(layercount, tileIndex, tileWidth, tileHeight, this.Width, out sprite.X, out sprite.Y, out sprite.Z);
+            sprite.X = (float)@object.x;
+            sprite.Y = -(float)@object.y;
+            sprite.Z = layerCount;
+
+            //sprite.ScaleX = tileWidth / 2.0f;
+            //sprite.ScaleY = tileHeight / 2.0f;
+            sprite.ScaleX = (float)@object.width / 2.0f;
+            sprite.ScaleY = (float)@object.height / 2.0f;
+
+            ///Is the tileset offset necessary for this?
+            //if (tileSet.Tileoffset != null && tileSet.Tileoffset.Length == 1)
+            //{
+            //    sprite.X += tileSet.Tileoffset[0].x;
+            //    sprite.Y -= tileSet.Tileoffset[0].y;
+            //}
+
+            sprite.X *= scale;
+            sprite.Y *= scale;
+            // Update August 28, 2012
+            // The TMX converter splits
+            // the Layers by their Z values.
+            // We want each Layer to have its
+            // own explicit Z value, so we don't
+            // want to adjust the Z's when we scale:
+            //sprite.Z *= scale;
+
+            sprite.ScaleX *= scale;
+            sprite.ScaleY *= scale;
+
+            sprite.X += sprite.ScaleX;
+            sprite.Y += sprite.ScaleY;
+            return sprite;
+        }
         private SpriteSave CreateSpriteSaveFromMapTileset(float scale, int layercount, MapLayer mapLayer, int tileIndex, uint gid, Tileset tileSet, FileReferenceType referenceType = FileReferenceType.NoDirectory)
         {
             var sprite = new SpriteSave();
@@ -796,7 +955,7 @@ namespace TMXGlueLib
             {
                 string directory = FileManager.GetDirectory(this.FileName);
 
-                if(!string.IsNullOrEmpty(tileSet.SourceDirectory) && tileSet.SourceDirectory != ".")
+                if (!string.IsNullOrEmpty(tileSet.SourceDirectory) && tileSet.SourceDirectory != ".")
                 {
                     directory += tileSet.SourceDirectory;
 
@@ -804,7 +963,7 @@ namespace TMXGlueLib
 
                 }
 
-                sprite.Texture = FileManager.RemoveDotDotSlash( directory + tileSet.Images[0].Source );
+                sprite.Texture = FileManager.RemoveDotDotSlash(directory + tileSet.Images[0].Source);
 
             }
             else
@@ -812,7 +971,7 @@ namespace TMXGlueLib
                 throw new NotImplementedException();
             }
 
-            uint tileTextureRelativeToStartOfTileset = 
+            uint tileTextureRelativeToStartOfTileset =
                 (0x0fffffff & gid) - tileSet.Firstgid + 1;
 
             if (tileSet.TileDictionary.ContainsKey(tileTextureRelativeToStartOfTileset))
@@ -830,7 +989,7 @@ namespace TMXGlueLib
                 }
             }
 
-            if(string.IsNullOrEmpty(sprite.Name))
+            if (string.IsNullOrEmpty(sprite.Name))
             {
                 sprite.Name = "Unnamed" + gid;
             }
@@ -917,7 +1076,7 @@ namespace TMXGlueLib
             int topPixelCoord;
             int rightPixelCoord;
             int bottomPixelCoord;
-            GetPixelCoordinatesFromGid(gid, tileSet, 
+            GetPixelCoordinatesFromGid(gid, tileSet,
                 out leftPixelCoord, out topPixelCoord, out rightPixelCoord, out bottomPixelCoord);
 
 
@@ -977,7 +1136,7 @@ namespace TMXGlueLib
             }
         }
 
-        private static void GetPixelCoordinatesFromGid(uint gid, Tileset tileSet, 
+        private static void GetPixelCoordinatesFromGid(uint gid, Tileset tileSet,
             out int leftPixelCoord, out int topPixelCoord, out int rightPixelCoord, out int bottomPixelCoord)
         {
             int imageWidth = tileSet.Images[0].width;
@@ -1026,7 +1185,7 @@ namespace TMXGlueLib
         {
             var effectiveGid = gid;
 
-            if(shouldRemoveFlipFlags)
+            if (shouldRemoveFlipFlags)
             {
                 effectiveGid = 0x0fffffff & gid;
             }
@@ -1064,7 +1223,7 @@ namespace TMXGlueLib
                     return asFloat;
             }
         }
-            
+
         private static int CalculateYCoordinate(uint gid, int imageWidth, int tileWidth, int tileHeight, int spacing, int margin)
         {
 

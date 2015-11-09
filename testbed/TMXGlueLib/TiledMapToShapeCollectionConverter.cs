@@ -40,6 +40,14 @@ namespace TMXGlueLib
                 {
                     foreach (mapObjectgroupObject @object in group.@object)
                     {
+                        ///November 8th, 2015
+                        ///Jesse Crafts-Finch
+                        ///If a polygon has a gid, and therefore an image associate with it, it will be turned into a spritesave, not a polygon. 
+                        if (!String.IsNullOrEmpty(@object.gid))
+                        {
+                            continue; 
+                        }
+
                         if (@object.polygon != null)
                         {
                             foreach (mapObjectgroupObjectPolygon polygon in @object.polygon)
@@ -49,7 +57,7 @@ namespace TMXGlueLib
                                     @object.x, @object.y, @object.Rotation, polygon.points, true);
                                 if (p != null)
                                 {
-                                    shapes.PolygonSaves.Add(p);
+                                    shapes.PolygonSaves.Add(p);                                   
                                 }
                             }
                         }

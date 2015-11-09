@@ -47,6 +47,10 @@ namespace TmxToShcx
                     Console.Error.WriteLine("Error: [" + ex.Message + "] Stack trace: [" + ex.StackTrace + "]");
                 }
             }
+
+#if DEBUG
+            Console.ReadLine(); 
+#endif
         }
 
         private static void ParseOptionalCommandLineArgs(string[] args, out string layername, out TiledMapSave.LayerVisibleBehavior layerVisibilityBehavior, out Tuple<float, float, float> offset)
