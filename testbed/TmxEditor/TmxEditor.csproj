@@ -159,19 +159,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Games\WarHaven\Engines\FlatRedBallXNA\FlatRedBall\FlatRedBallXna4.csproj">
+    <ProjectReference Include="..\..\..\FlatRedBall\Engines\FlatRedBallXNA\FlatRedBall\FlatRedBallXna4.csproj">
       <Project>{e1cb7d7b-e2ec-4deb-92e2-6ef0b76f40f0}</Project>
       <Name>FlatRedBallXna4</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Games\WarHaven\FRBDK\FRBDK Supporting Projects\EditorObjects\EditorObjectsXna4.csproj">
+    <ProjectReference Include="..\..\..\FlatRedBall\FRBDK\FRBDK Supporting Projects\EditorObjects\EditorObjectsXna4.csproj">
       <Project>{e1d670b6-ad42-4b84-aff8-d568097be03d}</Project>
       <Name>EditorObjectsXna4</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Games\WarHaven\FRBDK\Glue\GlueSaveClasses\GlueSaveClasses.csproj">
+    <ProjectReference Include="..\..\..\FlatRedBall\FRBDK\Glue\GlueSaveClasses\GlueSaveClasses.csproj">
       <Project>{545FF183-4D9D-4121-9A04-1D354B0B0DBA}</Project>
       <Name>GlueSaveClasses</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Games\WarHaven\Gum\RenderingLibrary\RenderingLibrary.csproj">
+    <ProjectReference Include="..\..\..\Gum\RenderingLibrary\RenderingLibrary.csproj">
       <Project>{a86ee399-7c93-42e1-80ed-ca4cbf4ca573}</Project>
       <Name>RenderingLibrary</Name>
     </ProjectReference>
