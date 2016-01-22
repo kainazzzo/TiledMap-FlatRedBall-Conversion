@@ -5,10 +5,11 @@ using System.Text;
 using RenderingLibrary.Math.Geometry;
 using RenderingLibrary;
 using RenderingLibrary.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace TmxEditor.GraphicalDisplay.Tilesets
 {
-    public class TilePropertyHighlight : IPositionedSizedObject
+    public class TilePropertyHighlight : IRenderableIpso
     {
         #region Fields
 
@@ -20,7 +21,7 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
 
         #endregion
 
-        public List<IPositionedSizedObject> Children
+        public List<IRenderableIpso> Children
         {
             get;
             private set;
@@ -45,7 +46,7 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
             set;
         }
 
-        public IPositionedSizedObject Parent
+        public IRenderableIpso Parent
         {
             get;
             set;
@@ -102,9 +103,33 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
             set;
         }
 
+        public bool ClipsChildren
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public BlendState BlendState
+        {
+            get
+            {
+                return BlendState.AlphaBlend;
+            }
+        }
+
+        public bool Wrap
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public TilePropertyHighlight(SystemManagers managers)
         {
-            Children = new List<IPositionedSizedObject>();
+            Children = new List<IRenderableIpso>();
             mManagers = managers;
             mLineRectangle = new LineRectangle(mManagers);
             mLineRectangle.Width = 16;
@@ -137,12 +162,19 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
 
         }
 
-
-
-
-        void IPositionedSizedObject.SetParentDirect(IPositionedSizedObject newParent)
+        public void SetParentDirect(IRenderableIpso newParent)
         {
-            // do nothing
+            throw new NotImplementedException();
+        }
+
+        public void Render(SpriteRenderer spriteRenderer, SystemManagers managers)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PreRender()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -404,7 +404,7 @@ namespace TmxEditor.Controllers
                 {
                     try
                     {
-                        mSprite.Texture = LoaderManager.Self.Load(absoluteFile, mManagers);
+                        mSprite.Texture = LoaderManager.Self.LoadContent<Texture2D>(absoluteFile);
                     }
                     catch(Exception e)
                     {
