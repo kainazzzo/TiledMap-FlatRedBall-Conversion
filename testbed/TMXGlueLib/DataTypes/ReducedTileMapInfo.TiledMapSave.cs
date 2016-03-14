@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 using FlatRedBall.Content;
 using FlatRedBall.Content.Scene;
 
@@ -51,34 +50,15 @@ namespace TMXGlueLib.DataTypes
 
     public partial class ReducedTileMapInfo
     {
-        private static Point GetTextureDimensions(string directory, Dictionary<string, Point> loadedTextures, SpriteSave spriteSave)
-        {
-            string absoluteFile = spriteSave.Texture;
-            if (FlatRedBall.IO.FileManager.IsRelative(absoluteFile))
-            {
-                absoluteFile = directory + absoluteFile;
-            }
-
-            Point point;
-            if (loadedTextures.ContainsKey(absoluteFile))
-            {
-                point = loadedTextures[absoluteFile];
-            }
-            else
-            {
-                point = GetDimensions(absoluteFile);
-                loadedTextures.Add(absoluteFile, point);
-            }
-            return point;
-        }
-        static Point GetDimensions(string texture)
-        {
-            var dimensions = ImageHeader.GetDimensions(texture);
-            return new Point(dimensions.Width, dimensions.Height);
-        }
-
-
-
+        /// <summary>
+        /// Converts a TiledMapSave to a ReducedTileMapInfo object
+        /// </summary>
+        /// <param name="tiledMapSave">The TiledMapSave to convert</param>
+        /// <param name="scale">The amount to scale by - default of 1</param>
+        /// <param name="zOffset">The zOffset</param>
+        /// <param name="directory">The directory of the file associated with the tiledMapSave, used to find file references.</param>
+        /// <param name="referenceType">How the files in the .tmx are referenced.</param>
+        /// <returns></returns>
         public static ReducedTileMapInfo FromTiledMapSave(TiledMapSave tiledMapSave, float scale, float zOffset, string directory, FileReferenceType referenceType)
         {
             var toReturn = new ReducedTileMapInfo();
@@ -92,19 +72,26 @@ namespace TMXGlueLib.DataTypes
 
             ReducedLayerInfo reducedLayerInfo = null;
 
+            // If we rely on the image, it's both slow (have to open the images), and
+            // doesn't work at runtime in games:
+            //Dictionary<string, Point> loadedTextures = new Dictionary<string, Point>();
+            //SetCellWidthAndHeight(tiledMapSave, directory, toReturn, ses, loadedTextures);
 
-            Dictionary<string, Point> loadedTextures = new Dictionary<string, Point>();
+            toReturn.CellHeightInPixels = (ushort)tiledMapSave.tileheight;
+            toReturn.CellWidthInPixels = (ushort)tiledMapSave.tilewidth;
 
-            SetCellWidthAndHeight(tiledMapSave, directory, toReturn, ses, loadedTextures);
 
             SetQuadWidthAndHeight(toReturn, ses);
 
             float z = float.NaN;
 
-            for(int i = 0; i < ses.SpriteList.Count; i++)
+
+            int textureWidth = 0;
+            int textureHeight = 0;
+
+
+            for (int i = 0; i < ses.SpriteList.Count; i++)
             {
-            //foreach (SpriteSave spriteSave in ses.SpriteList)
-            //{
                 SpriteSave spriteSave = ses.SpriteList[i];
 
                 if (spriteSave.Z != z)
@@ -114,30 +101,27 @@ namespace TMXGlueLib.DataTypes
                     reducedLayerInfo.Z = spriteSave.Z;
                     reducedLayerInfo.Texture = spriteSave.Texture;
 
-                    int layerIndex =  FlatRedBall.Math.MathFunctions.RoundToInt(z - zOffset);
+                    int layerIndex = FlatRedBall.Math.MathFunctions.RoundToInt(z - zOffset);
                     var mapLayer = tiledMapSave.Layers[layerIndex];
 
 
                     // This should have data:
 
-                    var idOfTexture = mapLayer.data[0].tiles.FirstOrDefault(item=>item != 0);
+                    var idOfTexture = mapLayer.data[0].tiles.FirstOrDefault(item => item != 0);
                     Tileset tileSet = tiledMapSave.GetTilesetForGid(idOfTexture);
                     var tilesetIndex = tiledMapSave.Tilesets.IndexOf(tileSet);
+
+                    textureWidth = tileSet.Images[0].width;
+                    textureHeight = tileSet.Images[0].height;
 
                     reducedLayerInfo.Name = mapLayer.Name;
                     reducedLayerInfo.TextureId = tilesetIndex;
                     toReturn.Layers.Add(reducedLayerInfo);
                 }
 
-                Point point = GetTextureDimensions(directory, loadedTextures, spriteSave);
-
-                ReducedQuadInfo quad = ReducedQuadInfo.FromSpriteSave(spriteSave, point.X, point.Y);
-
-
+                ReducedQuadInfo quad = ReducedQuadInfo.FromSpriteSave(spriteSave, textureWidth, textureHeight);
                 reducedLayerInfo.Quads.Add(quad);
-
             }
-
             return toReturn;
 
 
@@ -154,29 +138,7 @@ namespace TMXGlueLib.DataTypes
                 toReturn.QuadHeight = spriteSave.ScaleY * 2;
             }
         }
-
-        private static void SetCellWidthAndHeight(TiledMapSave tiledMapSave, string directory, ReducedTileMapInfo toReturn, SceneSave ses, Dictionary<string, Point> loadedTextures)
-        {
-            if (ses.SpriteList.Count != 0)
-            {
-                SpriteSave spriteSave = ses.SpriteList[0];
-                Point point = GetTextureDimensions(directory, loadedTextures, spriteSave);
-
-                if (tiledMapSave.Tilesets.Count != 0)
-                {
-                    toReturn.CellHeightInPixels =
-                        (ushort)tiledMapSave.Tilesets[0].Tileheight;
-
-                    toReturn.CellWidthInPixels =
-                        (ushort)tiledMapSave.Tilesets[0].Tilewidth;
-                }
-                else
-                {
-                    toReturn.CellHeightInPixels = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt((spriteSave.BottomTextureCoordinate - spriteSave.TopTextureCoordinate) * point.Y);
-                    toReturn.CellWidthInPixels = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt((spriteSave.RightTextureCoordinate - spriteSave.LeftTextureCoordinate) * point.X);
-                }
-            }
-        }
+        
 
 
     }
