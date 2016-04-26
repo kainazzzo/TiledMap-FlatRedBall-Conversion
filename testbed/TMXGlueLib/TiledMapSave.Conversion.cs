@@ -769,7 +769,8 @@ namespace TMXGlueLib
                 foreach (mapObjectgroup group in this.objectgroup)
                 {
 
-                    if (group.@object != null && !string.IsNullOrEmpty(group.name)) //&& (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
+                    bool shouldProcess = group.Visible && group.@object != null && !string.IsNullOrEmpty(group.name);
+                    if (shouldProcess) //&& (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
                     {
                         foreach (mapObjectgroupObject @object in group.@object)
                         {
