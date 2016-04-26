@@ -625,7 +625,6 @@ namespace TMXGlueLib
     }
 
     /// <remarks/>
-    [XmlType(AnonymousType = true)]
     public partial class mapObjectgroupObject
     {
         private mapObjectgroupObjectEllipse ellipseField = null;
@@ -638,13 +637,8 @@ namespace TMXGlueLib
 
         private double yField;
 
-        private double widthField;
-
-        private double heightField;
-
         private string _name;
 
-        private string _gid; 
 
         [XmlAttributeAttribute(AttributeName = "name")]
         public string Name
@@ -653,12 +647,15 @@ namespace TMXGlueLib
             set { _name = value; }
         }
 
-        [XmlAttribute()]
-        public string gid
+        [XmlAttribute(AttributeName = "gid")]
+        public string __proxygid
         {
-            get { return _gid; }
-            set { _gid = value; }
+            get { return gid?.ToString(); }
+            set { gid = uint.Parse(value); }
         }
+
+        [XmlIgnore]
+        public uint? gid { get; set; }
 
         private IDictionary<string, string> propertyDictionaryField = null;
 
@@ -764,31 +761,11 @@ namespace TMXGlueLib
 
         /// <remarks/>
         [XmlAttribute()]
-        public double width
-        {
-            get
-            {
-                return this.widthField;
-            }
-            set
-            {
-                this.widthField = value;
-            }
-        }
+        public int width { get; set; }
 
         /// <remarks/>
         [XmlAttribute()]
-        public double height
-        {
-            get
-            {
-                return this.heightField;
-            }
-            set
-            {
-                this.heightField = value;
-            }
-        }
+        public int height { get; set; }
 
         [XmlAttribute("rotation")]
         public double Rotation

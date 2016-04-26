@@ -102,21 +102,45 @@ namespace TMXGlueLib.DataTypes
                     reducedLayerInfo.Texture = spriteSave.Texture;
 
                     int layerIndex = FlatRedBall.Math.MathFunctions.RoundToInt(z - zOffset);
-                    var mapLayer = tiledMapSave.Layers[layerIndex];
+                    var mapLayer = tiledMapSave.MapLayers[layerIndex] as MapLayer;
 
 
                     // This should have data:
+                    if (mapLayer != null)
+                    {
+                        var idOfTexture = mapLayer.data[0].tiles.FirstOrDefault(item => item != 0);
+                        Tileset tileSet = tiledMapSave.GetTilesetForGid(idOfTexture);
+                        var tilesetIndex = tiledMapSave.Tilesets.IndexOf(tileSet);
 
-                    var idOfTexture = mapLayer.data[0].tiles.FirstOrDefault(item => item != 0);
-                    Tileset tileSet = tiledMapSave.GetTilesetForGid(idOfTexture);
-                    var tilesetIndex = tiledMapSave.Tilesets.IndexOf(tileSet);
+                        textureWidth = tileSet.Images[0].width;
+                        textureHeight = tileSet.Images[0].height;
 
-                    textureWidth = tileSet.Images[0].width;
-                    textureHeight = tileSet.Images[0].height;
+                        reducedLayerInfo.Name = mapLayer.Name;
+                        reducedLayerInfo.TextureId = tilesetIndex;
+                        toReturn.Layers.Add(reducedLayerInfo);
+                    }
 
-                    reducedLayerInfo.Name = mapLayer.Name;
-                    reducedLayerInfo.TextureId = tilesetIndex;
-                    toReturn.Layers.Add(reducedLayerInfo);
+                    var objectGroup = tiledMapSave.MapLayers[layerIndex] as mapObjectgroup;
+                    if (objectGroup != null)
+                    {
+                        foreach (var mapObjectgroupObject in objectGroup.@object)
+                        {
+                            if (mapObjectgroupObject.gid != null)
+                            {
+                                var idOfTexture = mapObjectgroupObject.gid.Value;
+                                Tileset tileSet = tiledMapSave.GetTilesetForGid(idOfTexture);
+                                var tilesetIndex = tiledMapSave.Tilesets.IndexOf(tileSet);
+
+                                textureWidth = mapObjectgroupObject.width;
+                                textureHeight = mapObjectgroupObject.height;
+                                reducedLayerInfo.Name = mapObjectgroupObject.Name;
+                                reducedLayerInfo.TextureId = tilesetIndex;
+                                toReturn.Layers.Add(reducedLayerInfo);
+                            }
+                        }                        
+                    }
+
+                    
                 }
 
                 ReducedQuadInfo quad = ReducedQuadInfo.FromSpriteSave(spriteSave, textureWidth, textureHeight);

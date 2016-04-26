@@ -43,7 +43,7 @@ namespace TMXGlueLib
                         ///November 8th, 2015
                         ///Jesse Crafts-Finch
                         ///If a polygon has a gid, and therefore an image associate with it, it will be turned into a spritesave, not a polygon. 
-                        if (!String.IsNullOrEmpty(@object.gid))
+                        if (@object.gid != null)
                         {
                             continue; 
                         }

@@ -105,7 +105,7 @@ namespace TMXGlueLib
                         layerName == null ||
                         (og.name != null && og.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
                         .SelectMany(o => o.@object, (o, c) => new { group = o, obj = c, X = c.x, Y = c.y })     
-                        .Where(o => String.IsNullOrEmpty(o.obj.gid))               
+                        .Where(o => o.obj.gid != null)               
                         .ToList()                        
                         .ForEach(o => WriteValuesFromDictionary(sb, o.group.PropertyDictionary, o.obj.PropertyDictionary, columnNames, null));
                     break;
@@ -160,7 +160,7 @@ namespace TMXGlueLib
             {
                 foreach (var @object in objectGroup.@object)
                 {
-                    if (!String.IsNullOrEmpty(@object.gid))
+                    if (@object.gid != null)
                     {
                         WriteValuesFromDictionary(sb, null, @object.PropertyDictionary, columnNames, null); 
                     }
@@ -483,7 +483,7 @@ namespace TMXGlueLib
                         return toReturn
                             .Union(query1
                                        .SelectMany(o => o.@object)
-                                       .Where(o => String.IsNullOrEmpty(o.gid)) //November 2015 by Jesse Crafts-Finch: will ignore objects which are to be treated as sprites (they have a gid). 
+                                       .Where(o => o.gid != null) //November 2015 by Jesse Crafts-Finch: will ignore objects which are to be treated as sprites (they have a gid). 
                                        .SelectMany(o => o.PropertyDictionary)
                                        .Select(d => d.Key), comparer)
                             .Union(query2
@@ -520,7 +520,7 @@ namespace TMXGlueLib
                 bool addedGroup = false;
                 foreach (var @object in group.@object)
                 {
-                    if (!String.IsNullOrEmpty(@object.gid))
+                    if (@object.gid != null)
                     {
                         addedGroup = true;
                         toReturn.AddRange(@object.PropertyDictionary.Keys); 
@@ -729,69 +729,76 @@ namespace TMXGlueLib
 
             // TODO: Somehow add all layers separately
 
-            int layercount = 0;
-            foreach (MapLayer mapLayer in this.Layers)
+
+            for (int layercount = 0; layercount < this.MapLayers.Count; layercount++)
             {
-                if (!mapLayer.IsVisible)
-                {
-                    switch (mapLayer.VisibleBehavior)
-                    {
-                        case LayerVisibleBehavior.Ignore:
-                            break;
-                        case LayerVisibleBehavior.Skip:
-                            continue;
-                    }
-                }
+                var abstractMapLayer = this.MapLayers[layercount];
+                var mapLayer = abstractMapLayer as MapLayer;
 
-                MapLayer mLayer = mapLayer;
-                int mLayerCount = layercount;
-
-                for (int i = 0; i < mapLayer.data[0].tiles.Count; i++)
-                //Parallel.For(0, mapLayer.data[0].tiles.Count, i =>
+                if (mapLayer != null)
                 {
-                    uint gid = mLayer.data[0].tiles[i];
-                    Tileset tileSet = GetTilesetForGid(gid);
-                    if (tileSet != null)
+                    if (!mapLayer.IsVisible)
                     {
-                        SpriteSave sprite = CreateSpriteSaveFromMapTileset(scale, mLayerCount, mLayer, i, gid, tileSet, referenceType);
-                        lock (toReturn)
+                        switch (mapLayer.VisibleBehavior)
                         {
-                            toReturn.SpriteList.Add(sprite);
+                            case LayerVisibleBehavior.Ignore:
+                                break;
+                            case LayerVisibleBehavior.Skip:
+                                continue;
                         }
                     }
-                }
-                //);
-                ++layercount;
-            }
-            if (this.objectgroup != null && this.objectgroup.Count != 0)
-            {
 
-                foreach (mapObjectgroup group in this.objectgroup)
-                {
+                    MapLayer mLayer = mapLayer;
+                    int mLayerCount = layercount;
 
-                    if (group.@object != null && !string.IsNullOrEmpty(group.name)) //&& (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
+                    for (int i = 0; i < mapLayer.data[0].tiles.Count; i++)
                     {
-                        foreach (mapObjectgroupObject @object in group.@object)
+                        uint gid = mLayer.data[0].tiles[i];
+                        Tileset tileSet = GetTilesetForGid(gid);
+                        if (tileSet != null)
                         {
-                            if (!String.IsNullOrEmpty(@object.gid))
+                            SpriteSave sprite = CreateSpriteSaveFromMapTileset(scale, mLayerCount, mLayer, i, gid,
+                                tileSet, referenceType);
+                            lock (toReturn)
                             {
-                                SpriteSave sprite = CreateSpriteSaveFromObject(scale, @object, layercount, referenceType);
-                                lock (toReturn)
-                                {
-                                    toReturn.SpriteList.Add(sprite);
-                                }
+                                toReturn.SpriteList.Add(sprite);
+                            }
+                        }
+                    }
+                    continue;
+                }
+
+                var group = abstractMapLayer as mapObjectgroup;
+
+                if (@group?.@object != null && !string.IsNullOrEmpty(@group.name)) //&& (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
+                {
+                    foreach (mapObjectgroupObject @object in @group.@object)
+                    {
+                        if (@object.gid != null)
+                        {
+                            SpriteSave sprite = CreateSpriteSaveFromObject(scale, @object, layercount, referenceType);
+                            lock (toReturn)
+                            {
+                                toReturn.SpriteList.Add(sprite);
                             }
                         }
                     }
                 }
             }
+            
             return toReturn;
         }
 
         private SpriteSave CreateSpriteSaveFromObject(float scale, mapObjectgroupObject @object, int layerCount, FileReferenceType referenceType = FileReferenceType.NoDirectory)
         {
-            uint gid;
-            uint.TryParse(@object.gid, out gid);
+            
+            if (@object.gid == null)
+            {
+                throw new NotSupportedException("CreateSpriteSaveFromObject called on a non image object. gid not set.");
+            }
+
+            var gid = @object.gid.Value;
+
             Tileset tileSet = GetTilesetForGid(gid);
 
             var sprite = new SpriteSave();
