@@ -7,9 +7,8 @@ using System.Xml.Serialization;
 namespace TMXGlueLib
 {
 
-    /// <remarks/>
-    [XmlType(AnonymousType = true)]
-    public partial class MapLayer
+    [Serializable]
+    public partial class MapLayer : AbstractMapLayer
     {
         #region Fields
 
