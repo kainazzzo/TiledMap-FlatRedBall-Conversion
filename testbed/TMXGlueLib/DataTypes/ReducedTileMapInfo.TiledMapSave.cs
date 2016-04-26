@@ -131,8 +131,8 @@ namespace TMXGlueLib.DataTypes
                                 Tileset tileSet = tiledMapSave.GetTilesetForGid(idOfTexture);
                                 var tilesetIndex = tiledMapSave.Tilesets.IndexOf(tileSet);
 
-                                textureWidth = mapObjectgroupObject.width;
-                                textureHeight = mapObjectgroupObject.height;
+                                textureWidth = tileSet.Images[0].width;
+                                textureHeight = tileSet.Images[0].height;
                                 reducedLayerInfo.Name = mapObjectgroupObject.Name;
                                 reducedLayerInfo.TextureId = tilesetIndex;
                                 toReturn.Layers.Add(reducedLayerInfo);
