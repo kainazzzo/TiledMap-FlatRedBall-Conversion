@@ -473,13 +473,13 @@ namespace TMXGlueLib
                         var query1 =
                             objectgroup.Where(l =>
                                                      layerName == null ||
-                                                     (((AbstractMapLayer) l).Name != null &&
-                                                      ((AbstractMapLayer) l).Name.Equals(layerName, StringComparison.OrdinalIgnoreCase)));
+                                                     (l.Name != null &&
+                                                      l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase)));
                         var query2 =
                             objectgroup.Where(l =>
                                                      layerName == null ||
-                                                     (((AbstractMapLayer) l).Name != null &&
-                                                      ((AbstractMapLayer) l).Name.Equals(layerName, StringComparison.OrdinalIgnoreCase)));
+                                                     (l.Name != null &&
+                                                      l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase)));
                         return toReturn
                             .Union(query1
                                        .SelectMany(o => o.@object)
@@ -728,8 +728,6 @@ namespace TMXGlueLib
             var toReturn = new SceneSave { CoordinateSystem = FlatRedBall.Math.CoordinateSystem.RightHanded };
 
             // TODO: Somehow add all layers separately
-
-
             for (int layercount = 0; layercount < this.MapLayers.Count; layercount++)
             {
                 var abstractMapLayer = this.MapLayers[layercount];
@@ -769,8 +767,8 @@ namespace TMXGlueLib
                 }
 
                 var group = abstractMapLayer as mapObjectgroup;
-
-                if (@group?.@object != null && !string.IsNullOrEmpty(@group.Name)) //&& (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
+                bool shouldProcess = group?.@object != null && group.Visible && !string.IsNullOrEmpty(group.Name);
+                if (shouldProcess) //&& (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
                 {
                     foreach (mapObjectgroupObject @object in @group.@object)
                     {
