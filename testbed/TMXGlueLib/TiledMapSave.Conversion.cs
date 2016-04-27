@@ -103,7 +103,7 @@ namespace TMXGlueLib
                     this.objectgroup.Where(
                         og =>
                         layerName == null ||
-                        (og.name != null && og.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
+                        (((AbstractMapLayer) og).Name != null && ((AbstractMapLayer) og).Name.Equals(layerName, StringComparison.OrdinalIgnoreCase)))
                         .SelectMany(o => o.@object, (o, c) => new { group = o, obj = c, X = c.x, Y = c.y })     
                         .Where(o => o.obj.gid != null)               
                         .ToList()                        
@@ -473,13 +473,13 @@ namespace TMXGlueLib
                         var query1 =
                             objectgroup.Where(l =>
                                                      layerName == null ||
-                                                     (l.name != null &&
-                                                      l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)));
+                                                     (((AbstractMapLayer) l).Name != null &&
+                                                      ((AbstractMapLayer) l).Name.Equals(layerName, StringComparison.OrdinalIgnoreCase)));
                         var query2 =
                             objectgroup.Where(l =>
                                                      layerName == null ||
-                                                     (l.name != null &&
-                                                      l.name.Equals(layerName, StringComparison.OrdinalIgnoreCase)));
+                                                     (((AbstractMapLayer) l).Name != null &&
+                                                      ((AbstractMapLayer) l).Name.Equals(layerName, StringComparison.OrdinalIgnoreCase)));
                         return toReturn
                             .Union(query1
                                        .SelectMany(o => o.@object)
@@ -770,7 +770,7 @@ namespace TMXGlueLib
 
                 var group = abstractMapLayer as mapObjectgroup;
 
-                if (@group?.@object != null && !string.IsNullOrEmpty(@group.name)) //&& (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
+                if (@group?.@object != null && !string.IsNullOrEmpty(@group.Name)) //&& (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
                 {
                     foreach (mapObjectgroupObject @object in @group.@object)
                     {

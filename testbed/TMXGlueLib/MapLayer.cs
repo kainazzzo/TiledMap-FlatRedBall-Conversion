@@ -78,20 +78,6 @@ namespace TMXGlueLib
         }
 
         /// <remarks/>
-        [XmlAttribute("name")]
-        public string Name
-        {
-            get
-            {
-                return this.nameField;
-            }
-            set
-            {
-                this.nameField = value;
-            }
-        }
-
-        /// <remarks/>
         [XmlAttribute("width")]
         public int width
         {

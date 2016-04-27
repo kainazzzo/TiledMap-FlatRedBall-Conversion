@@ -561,10 +561,8 @@ namespace TMXGlueLib
     [Serializable]
     public partial class mapObjectgroup : AbstractMapLayer
     {
-
         private mapObjectgroupObject[] objectField;
 
-        private string nameField;
 
         List<property> mProperties = new List<property>();
 
@@ -606,20 +604,6 @@ namespace TMXGlueLib
             set
             {
                 this.objectField = value;
-            }
-        }
-
-        /// <remarks/>
-        [XmlAttribute()]
-        public string name
-        {
-            get
-            {
-                return this.nameField;
-            }
-            set
-            {
-                this.nameField = value;
             }
         }
     }

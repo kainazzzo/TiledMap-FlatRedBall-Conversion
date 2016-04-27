@@ -36,7 +36,7 @@ namespace TMXGlueLib
 
             foreach (mapObjectgroup group in tiledMapSave.objectgroup)
             {
-                if (group.@object != null && !string.IsNullOrEmpty(group.name) && (string.IsNullOrEmpty(layerName) || group.name.Equals(layerName)))
+                if (group.@object != null && !string.IsNullOrEmpty(group.Name) && (string.IsNullOrEmpty(layerName) || group.Name.Equals(layerName)))
                 {
                     foreach (mapObjectgroupObject @object in group.@object)
                     {
