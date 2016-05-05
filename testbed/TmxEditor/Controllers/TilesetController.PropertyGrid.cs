@@ -159,6 +159,11 @@ namespace TmxEditor.Controllers
             return newProperty;
         }
 
+        internal void ReactToZoom()
+        {
+            UpdateXnaDisplayToTileset();
+        }
+
         private void UpdatePropertiesUI()
         {
             mDisplayer.UpdateDisplayedProperties();

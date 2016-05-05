@@ -30,6 +30,7 @@ namespace TmxEditor
 
         ScrollBarControlLogic mScrollBarControlLogic;
 
+        ImageRegionSelectionControl XnaControl;
 
         #endregion
 
@@ -44,6 +45,8 @@ namespace TmxEditor
         public TmxEditorControl()
         {
             InitializeComponent();
+
+            CreateXnaControl();
 
             TilesetController.Self.Initialize(this.XnaControl, TilesetsListBox, this.StatusLabel, 
                 this.TilesetTilePropertyGrid, this.HasCollisionsCheckBox, NameTextBox, EntitiesComboBox);
@@ -81,6 +84,53 @@ namespace TmxEditor
             EditorObjects.IoC.Container.Set<TmxEditor.Managers.ResizeFixer>(new Managers.ResizeFixer());
         }
 
+        private void CreateXnaControl()
+        {
+            XnaControl = new ImageRegionSelectionControl();
+
+            this.splitContainer3.Panel1.Controls.Add(this.XnaControl);
+
+            this.XnaControl.ContextMenuStrip = this.TilesetXnaContextMenu;
+            this.XnaControl.DesiredFramesPerSecond = 30F;
+            //this.XnaControl.Location = new System.Drawing.Point(145, 82);
+            this.XnaControl.Dock = DockStyle.Fill;
+            this.XnaControl.Name = "XnaControl";
+            //this.XnaControl.Size = new System.Drawing.Size(296, 172);
+            this.XnaControl.TabIndex = 5;
+            this.XnaControl.Text = "graphicsDeviceControl1";
+            this.XnaControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.XnaControl_MouseClick);
+
+
+            List<int> availableZoomLevels = new List<int>();
+
+            availableZoomLevels.Add(1600);
+            availableZoomLevels.Add(1200);
+            availableZoomLevels.Add(800);
+            availableZoomLevels.Add(600);
+            availableZoomLevels.Add(400);
+            availableZoomLevels.Add(300);
+            availableZoomLevels.Add(200);
+            availableZoomLevels.Add(175);
+            availableZoomLevels.Add(150);
+            availableZoomLevels.Add(125);
+            availableZoomLevels.Add(100);
+            availableZoomLevels.Add(80);
+            availableZoomLevels.Add(60);
+            availableZoomLevels.Add(40);
+            availableZoomLevels.Add(20);
+
+            XnaControl.AvailableZoomLevels = availableZoomLevels;
+            XnaControl.ZoomValue = 100;
+
+            XnaControl.MouseWheelZoom += HandleZoom;
+        }
+
+        private void HandleZoom(object sender, EventArgs e)
+        {
+            TilesetController.Self.ReactToZoom();
+            
+
+        }
 
         public List<string> Entities
         {
@@ -205,8 +255,9 @@ namespace TmxEditor
         private void CreateManagers()
         {
             // For now we'll just use one SystemManagers but we may need to expand this if we have two windows
-            mManagers = new SystemManagers();
-            mManagers.Initialize(XnaControl.GraphicsDevice);
+            mManagers = this.XnaControl.SystemManagers;
+            //new SystemManagers();
+            //mManagers.Initialize(XnaControl.GraphicsDevice);
         }
 
         private static string CreateAndSaveFonts()

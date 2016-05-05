@@ -352,6 +352,8 @@ namespace TmxEditor.Controllers
                     tph.Count = count;
                     tph.AddToManagers();
 
+                    tph.TextScale = 1/mManagers.Renderer.Camera.Zoom;
+
                     tph.Tag = tile;
 
                     mTilesWithPropertiesMarkers.Add(tph);

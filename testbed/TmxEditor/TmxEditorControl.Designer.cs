@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.TilesetsListBox = new System.Windows.Forms.ListBox();
             this.TilesetListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.XnaControl = new XnaAndWinforms.GraphicsDeviceControl();
             this.TilesetXnaContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.LoadedTmxLabel = new System.Windows.Forms.Label();
             this.StatusLabel = new System.Windows.Forms.Label();
@@ -39,6 +38,7 @@
             this.TilesetsTab = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
             this.EntitiesComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.NameTextBox = new System.Windows.Forms.TextBox();
@@ -102,18 +102,6 @@
             // 
             this.TilesetListContextMenu.Name = "TilesetListContextMenu";
             this.TilesetListContextMenu.Size = new System.Drawing.Size(61, 4);
-            // 
-            // XnaControl
-            // 
-            this.XnaControl.ContextMenuStrip = this.TilesetXnaContextMenu;
-            this.XnaControl.DesiredFramesPerSecond = 30F;
-            this.XnaControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.XnaControl.Location = new System.Drawing.Point(0, 0);
-            this.XnaControl.Name = "XnaControl";
-            this.XnaControl.Size = new System.Drawing.Size(622, 278);
-            this.XnaControl.TabIndex = 5;
-            this.XnaControl.Text = "graphicsDeviceControl1";
-            this.XnaControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.XnaControl_MouseClick);
             // 
             // TilesetXnaContextMenu
             // 
@@ -192,7 +180,7 @@
             // 
             // splitContainer3.Panel1
             // 
-            this.splitContainer3.Panel1.Controls.Add(this.XnaControl);
+            this.splitContainer3.Panel1.Controls.Add(this.elementHost1);
             // 
             // splitContainer3.Panel2
             // 
@@ -207,6 +195,16 @@
             this.splitContainer3.Size = new System.Drawing.Size(626, 476);
             this.splitContainer3.SplitterDistance = 282;
             this.splitContainer3.TabIndex = 6;
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(622, 35);
+            this.elementHost1.TabIndex = 6;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = null;
             // 
             // EntitiesComboBox
             // 
@@ -534,7 +532,6 @@
         #endregion
 
         private System.Windows.Forms.ListBox TilesetsListBox;
-        private XnaAndWinforms.GraphicsDeviceControl XnaControl;
         private System.Windows.Forms.Label LoadedTmxLabel;
         private System.Windows.Forms.Label StatusLabel;
         private System.Windows.Forms.TabControl tabControl1;
@@ -569,5 +566,6 @@
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label LevelLabel;
+        private System.Windows.Forms.Integration.ElementHost elementHost1;
     }
 }

@@ -97,6 +97,18 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
             }
         }
 
+        public float TextScale
+        {
+            get
+            {
+                return mCountDisplay.FontScale;
+            }
+            set
+            {
+                mCountDisplay.FontScale = value;
+            }
+        }
+
         public float Rotation
         {
             get;

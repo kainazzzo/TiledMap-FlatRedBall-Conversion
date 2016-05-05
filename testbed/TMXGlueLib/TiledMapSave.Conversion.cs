@@ -858,11 +858,13 @@ namespace TMXGlueLib
             //    }
             //}
 
-            if (string.IsNullOrEmpty(@object.Name))
-            {
-                sprite.Name = "Unnamed" + gid;
-            }
-            else
+            // This is bad - we want to ue the same names as in Tiled so we don't accidentally
+            // apply properties from the wrong tiles
+            //if (string.IsNullOrEmpty(@object.Name))
+            //{
+            //    sprite.Name = "Unnamed" + gid;
+            //}
+            //else
             {
                 sprite.Name = @object.Name;
             }
@@ -963,10 +965,12 @@ namespace TMXGlueLib
                 }
             }
 
-            if (string.IsNullOrEmpty(sprite.Name))
-            {
-                sprite.Name = "Unnamed" + gid;
-            }
+            // This can cause tiles to use properties from other tiles, so this is bad. If no name exists in Tiled, 
+            // no name should be given here:
+            //if (string.IsNullOrEmpty(sprite.Name))
+            //{
+            //    sprite.Name = "Unnamed" + gid;
+            //}
 
             SetSpriteTextureCoordinates(gid, sprite, tileSet);
             CalculateWorldCoordinates(layercount, tileIndex, tileWidth, tileHeight, this.Width, out sprite.X, out sprite.Y, out sprite.Z);
@@ -1110,7 +1114,7 @@ namespace TMXGlueLib
             }
         }
 
-        private static void GetPixelCoordinatesFromGid(uint gid, Tileset tileSet,
+        public static void GetPixelCoordinatesFromGid(uint gid, Tileset tileSet,
             out int leftPixelCoord, out int topPixelCoord, out int rightPixelCoord, out int bottomPixelCoord)
         {
             int imageWidth = tileSet.Images[0].width;

@@ -43,6 +43,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\FlatRedBall\FlatRedBall.PropertyGrid.dll</HintPath>
     </Reference>
+    <Reference Include="FlatRedBall.SpecializedXnaControls">
+      <HintPath>..\..\..\FlatRedBall\FRBDK\FlatRedBall.SpecializedXnaControls\obj\x86\Debug\FlatRedBall.SpecializedXnaControls.dll</HintPath>
+    </Reference>
     <Reference Include="InputLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Gum\InputLibrary\bin\Debug\InputLibrary.dll</HintPath>
@@ -87,7 +90,6 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="GraphicalDisplay\CameraPanningLogic.cs" />
-    <Compile Include="GraphicalDisplay\CursorExtensionMethods.cs" />
     <Compile Include="GraphicalDisplay\Tilesets\TilePropertyHighlight.cs" />
     <Compile Include="Controllers\TilesetController.cs" />
     <Compile Include="Managers\CopyPasteManager.cs" />
