@@ -70,7 +70,9 @@ namespace TMXGlueLib.DataTypes
 
             var ses = tiledMapSave.ToSceneSave(scale, referenceType);
 
-            ses.SpriteList.Sort((first, second) => first.Z.CompareTo(second.Z));
+            // This is not a stable sort!
+            //ses.SpriteList.Sort((first, second) => first.Z.CompareTo(second.Z));
+            ses.SpriteList = ses.SpriteList.OrderBy(item => item.Z).ToList();
 
             ReducedLayerInfo reducedLayerInfo = null;
 
@@ -91,23 +93,29 @@ namespace TMXGlueLib.DataTypes
             int textureWidth = 0;
             int textureHeight = 0;
 
+            AbstractMapLayer currentLayer = null;
+            int indexInLayer = 0;
+
 
             foreach (var spriteSave in ses.SpriteList)
             {
                 if (spriteSave.Z != z)
                 {
+                    indexInLayer = 0;
                     z = spriteSave.Z;
-                    
+
 
                     int layerIndex = FlatRedBall.Math.MathFunctions.RoundToInt(z - zOffset);
                     var abstractMapLayer = tiledMapSave.MapLayers[layerIndex];
-                    
+                    currentLayer = abstractMapLayer;
 
                     reducedLayerInfo = new ReducedLayerInfo
                     {
                         Z = spriteSave.Z,
                         Texture = spriteSave.Texture,
-                        Name = abstractMapLayer.Name
+                        Name = abstractMapLayer.Name,
+                        TileWidth = FlatRedBall.Math.MathFunctions.RoundToInt(spriteSave.ScaleX * 2),
+                        TileHeight = FlatRedBall.Math.MathFunctions.RoundToInt(spriteSave.ScaleY * 2)
                     };
 
                     var mapLayer = abstractMapLayer as MapLayer;
@@ -125,7 +133,7 @@ namespace TMXGlueLib.DataTypes
                         toReturn.Layers.Add(reducedLayerInfo);
                     }
 
-                    
+
                     var objectGroup = tiledMapSave.MapLayers[layerIndex] as mapObjectgroup;
 
                     // This code only works based on the assumption that only one tileset will be used in any given object layer's image objects
@@ -145,7 +153,49 @@ namespace TMXGlueLib.DataTypes
                 }
 
                 ReducedQuadInfo quad = ReducedQuadInfo.FromSpriteSave(spriteSave, textureWidth, textureHeight);
+
+                if (currentLayer is mapObjectgroup)
+                {
+                    var objectInstance = (currentLayer as mapObjectgroup).@object[indexInLayer];
+
+                    if (objectInstance.properties.Count != 0)
+                    {
+                        var nameProperty = objectInstance.properties.FirstOrDefault(item => item.StrippedNameLower == "name");
+                        if (nameProperty != null)
+                        {
+                            quad.Name = nameProperty.value;
+                        }
+                        else
+                        {
+                            quad.Name = spriteSave.Name;
+
+                            bool needsName = string.IsNullOrEmpty(spriteSave.Name);
+                            if (needsName)
+                            {
+                                quad.Name = $"_{currentLayer.Name}runtime{indexInLayer}";
+                            }
+                        }
+
+                        List<NamedValue> list = new List<NamedValue>();
+
+                        foreach (var property in objectInstance.properties)
+                        {
+                            list.Add(
+                                new NamedValue
+                                {
+                                    Name = property.StrippedName,
+                                    Value = property.value
+                                }
+                            );
+                        }
+
+                        quad.QuadSpecificProperties = list;
+                    }
+                }
+
                 reducedLayerInfo?.Quads.Add(quad);
+
+                indexInLayer++;
             }
             return toReturn;
 
@@ -163,7 +213,6 @@ namespace TMXGlueLib.DataTypes
                 toReturn.QuadHeight = spriteSave.ScaleY * 2;
             }
         }
-        
 
 
     }
