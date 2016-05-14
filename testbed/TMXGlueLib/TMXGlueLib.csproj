@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractMapLayer.cs" />
+    <Compile Include="DataTypes\NamedValue.cs" />
     <Compile Include="DataTypes\ReducedTileMapInfo.cs" />
     <Compile Include="DataTypes\ReducedTileMapInfo.TiledMapSave.cs" />
     <Compile Include="DotNetZip\Zlib\Crc32.cs" />

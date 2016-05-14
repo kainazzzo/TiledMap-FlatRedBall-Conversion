@@ -10,12 +10,12 @@ using FlatRedBall.Content.Scene;
 using FlatRedBall.IO;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using FlatRedBall.TileGraphics;
 
 
 
 namespace TMXGlueLib.DataTypes
 {
+
     #region ReducedQuadInfo
 
     public partial class ReducedQuadInfo
