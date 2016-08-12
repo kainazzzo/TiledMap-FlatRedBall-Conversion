@@ -558,7 +558,9 @@ namespace TMXGlueLib
         public int length { get; set; }
     }
 
+#if !UWP
     [Serializable]
+#endif
     public partial class mapObjectgroup : AbstractMapLayer
     {
         private mapObjectgroupObject[] objectField;
@@ -734,7 +736,7 @@ namespace TMXGlueLib
         }
 
         /// <remarks/>
-        [XmlAttribute()]
+        [XmlAttribute("x")]
         public double x
         {
             get
@@ -748,7 +750,7 @@ namespace TMXGlueLib
         }
 
         /// <remarks/>
-        [XmlAttribute()]
+        [XmlAttribute("y")]
         public double y
         {
             get
@@ -763,11 +765,11 @@ namespace TMXGlueLib
 
         /// <remarks/>
         [XmlAttribute()]
-        public int width { get; set; }
+        public float width { get; set; }
 
         /// <remarks/>
         [XmlAttribute()]
-        public int height { get; set; }
+        public float height { get; set; }
 
         [XmlAttribute("rotation")]
         public double Rotation
