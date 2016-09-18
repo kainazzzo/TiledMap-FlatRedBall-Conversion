@@ -215,6 +215,9 @@ namespace TMXGlueLib
             set;
         }
 
+        [XmlAttribute("type")]
+        public string Type { get; set; }
+
         [XmlIgnore]
         public string StrippedName
         {
