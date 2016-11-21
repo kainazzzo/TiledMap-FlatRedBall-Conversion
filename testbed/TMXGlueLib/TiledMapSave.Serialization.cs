@@ -180,7 +180,7 @@ namespace TMXGlueLib
                     {
                         referencedFiles.Add(tileset.Source);
                     }
-                    else if (tileset != null && tileset.Images.Length != 0)
+                    else if (tileset?.Images != null && tileset.Images.Length != 0)
                     {
                         var image = tileset.Images[0];
 
