@@ -17,26 +17,26 @@ namespace TMXGlueLib.DataTypes
             toReturn.LeftQuadCoordinate = spriteSave.X - spriteSave.ScaleX;
             toReturn.BottomQuadCoordinate = spriteSave.Y - spriteSave.ScaleY;
 
-            
+
             bool isRotated = spriteSave.RotationZ != 0;
             if (isRotated)
             {
                 toReturn.FlipFlags = (byte)(toReturn.FlipFlags | ReducedQuadInfo.FlippedDiagonallyFlag);
             }
 
-            var leftTextureCoordinate = System.Math.Min( spriteSave.LeftTextureCoordinate, spriteSave.RightTextureCoordinate);
+            var leftTextureCoordinate = System.Math.Min(spriteSave.LeftTextureCoordinate, spriteSave.RightTextureCoordinate);
             var topTextureCoordinate = System.Math.Min(spriteSave.TopTextureCoordinate, spriteSave.BottomTextureCoordinate);
 
             if (spriteSave.LeftTextureCoordinate > spriteSave.RightTextureCoordinate)
             {
                 toReturn.FlipFlags = (byte)(toReturn.FlipFlags | ReducedQuadInfo.FlippedHorizontallyFlag);
             }
-            
-            if(spriteSave.TopTextureCoordinate > spriteSave.BottomTextureCoordinate)
+
+            if (spriteSave.TopTextureCoordinate > spriteSave.BottomTextureCoordinate)
             {
                 toReturn.FlipFlags = (byte)(toReturn.FlipFlags | ReducedQuadInfo.FlippedVerticallyFlag);
             }
-            
+
             toReturn.LeftTexturePixel = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt(leftTextureCoordinate * textureWidth);
             toReturn.TopTexturePixel = (ushort)FlatRedBall.Math.MathFunctions.RoundToInt(topTextureCoordinate * textureHeight);
 
@@ -50,6 +50,9 @@ namespace TMXGlueLib.DataTypes
 
     public partial class ReducedTileMapInfo
     {
+        public static bool FastCreateFromTmx = false;
+
+
         /// <summary>
         /// Converts a TiledMapSave to a ReducedTileMapInfo object
         /// </summary>
@@ -66,8 +69,222 @@ namespace TMXGlueLib.DataTypes
                 NumberCellsTall = tiledMapSave.Height,
                 NumberCellsWide = tiledMapSave.Width
             };
+            toReturn.CellHeightInPixels = (ushort)tiledMapSave.tileheight;
+            toReturn.CellWidthInPixels = (ushort)tiledMapSave.tilewidth;
+            toReturn.QuadHeight = tiledMapSave.tileheight;
+            toReturn.QuadWidth = tiledMapSave.tilewidth;
 
 
+            if (FastCreateFromTmx)
+            {
+                // todo: need to worry about toReturn?
+                CreateFromTiledMapSave(tiledMapSave, directory, referenceType, toReturn);
+            }
+            else
+            {
+                // slow:
+                CreateFromSpriteEditorScene(tiledMapSave, scale, zOffset, referenceType, toReturn);
+            }
+
+            return toReturn;
+
+
+
+        }
+
+        private static void CreateFromTiledMapSave(TiledMapSave tiledMapSave, string directory, FileReferenceType referenceType,
+            ReducedTileMapInfo reducedTileMapInfo)
+        {
+            ReducedLayerInfo reducedLayerInfo = null;
+
+            for (int i = 0; i < tiledMapSave.MapLayers.Count; i++)
+            {
+                var tiledLayer = tiledMapSave.MapLayers[i];
+
+                string texture = null;
+
+                uint tileIdOfTexture = 0;
+                Tileset tileSet = null;
+                uint? gid = null;
+
+                if (tiledLayer is MapLayer)
+                {
+                    var mapLayer = tiledLayer as MapLayer;
+
+                    if (mapLayer.data.Length != 0)
+                    {
+                        gid = mapLayer.data[0].tiles.FirstOrDefault(item => item != 0);
+                    }
+                }
+                else
+                {
+                    var objectLayer = tiledLayer as mapObjectgroup;
+
+                    var firstObjectWithTexture = objectLayer.@object.First(item => item.gid != 0);
+
+                    gid = firstObjectWithTexture?.gid;
+                }
+
+                if (gid > 0)
+                {
+                    tileSet = tiledMapSave.GetTilesetForGid(gid.Value);
+                    if (tileSet != null)
+                    {
+
+                        if (referenceType == FileReferenceType.NoDirectory)
+                        {
+                            texture = tileSet.Images[0].sourceFileName;
+                        }
+                        else if (referenceType == FileReferenceType.Absolute)
+                        {
+                            if (!string.IsNullOrEmpty(tileSet.SourceDirectory) && tileSet.SourceDirectory != ".")
+                            {
+                                directory += tileSet.SourceDirectory;
+
+                                directory = FlatRedBall.IO.FileManager.RemoveDotDotSlash(directory);
+
+                            }
+
+                            texture = FlatRedBall.IO.FileManager.RemoveDotDotSlash(directory + tileSet.Images[0].Source);
+
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
+                        }
+                    }
+
+
+
+                    int tileWidth = FlatRedBall.Math.MathFunctions.RoundToInt(tiledMapSave.tilewidth);
+                    int tileHeight = FlatRedBall.Math.MathFunctions.RoundToInt(tiledMapSave.tileheight);
+
+                    reducedLayerInfo = new ReducedLayerInfo
+                    {
+                        Z = i,
+                        Texture = texture,
+                        Name = tiledLayer.Name,
+                        TileWidth = tileWidth,
+                        TileHeight = tileHeight,
+                    };
+
+                    reducedTileMapInfo.Layers.Add(reducedLayerInfo);
+
+                    var tilesetIndex = tiledMapSave.Tilesets.IndexOf(tileSet);
+                    reducedLayerInfo.TextureId = tilesetIndex;
+
+
+                    // create the quad here:
+                    if (tiledLayer is MapLayer)
+                    {
+                        AddTileLayerTiles(tiledMapSave, reducedLayerInfo, i, tiledLayer, tileSet, gid, tileWidth, tileHeight);
+                    }
+
+                    else if (tiledLayer is mapObjectgroup)
+                    {
+                        AddObjectLayerTiles(reducedLayerInfo, tiledLayer, tileSet, gid, tileWidth, tileHeight);
+                    }
+                }
+            }
+        }
+
+        private static void AddTileLayerTiles(TiledMapSave tiledMapSave, ReducedLayerInfo reducedLayerInfo, int i, AbstractMapLayer tiledLayer, Tileset tileSet, uint? gid, int tileWidth, int tileHeight)
+        {
+            var asMapLayer = tiledLayer as MapLayer;
+            var count = asMapLayer.data[0].tiles.Count;
+            for (int dataId = 0; dataId < count; dataId++)
+            {
+                var dataAtIndex = asMapLayer.data[0].tiles[dataId];
+
+                if (dataAtIndex != 0)
+                {
+
+                    ReducedQuadInfo quad = new DataTypes.ReducedQuadInfo();
+
+                    float tileCenterX;
+                    float tileCenterY;
+                    float tileZ;
+
+                    tiledMapSave.CalculateWorldCoordinates(i, dataId, tileWidth, tileHeight, asMapLayer.width,
+                        out tileCenterX, out tileCenterY, out tileZ);
+
+                    quad.LeftQuadCoordinate = tileCenterX - tileWidth / 2.0f;
+                    quad.BottomQuadCoordinate = tileCenterY - tileHeight / 2.0f;
+
+                    quad.FlipFlags = (byte)(gid.Value & 0xf0000000 >> 7);
+
+                    var valueWithoutFlip = gid.Value & 0x0fffffff;
+
+                    int leftPixelCoord;
+                    int topPixelCoord;
+                    int rightPixelCoord;
+                    int bottomPixelCoord;
+                    TiledMapSave.GetPixelCoordinatesFromGid(gid.Value, tileSet,
+                        out leftPixelCoord, out topPixelCoord, out rightPixelCoord, out bottomPixelCoord);
+
+                    quad.LeftTexturePixel = (ushort)Math.Min(leftPixelCoord, rightPixelCoord);
+                    quad.TopTexturePixel = (ushort)Math.Min(topPixelCoord, bottomPixelCoord);
+
+                    if (tileSet.TileDictionary.ContainsKey(valueWithoutFlip))
+                    {
+
+                        var dictionary = tileSet.TileDictionary[valueWithoutFlip].PropertyDictionary;
+                        if (dictionary.ContainsKey("name"))
+                        {
+                            quad.Name = tileSet.TileDictionary[valueWithoutFlip].PropertyDictionary["name"];
+                        }
+                        else if (dictionary.ContainsKey("Name"))
+                        {
+                            quad.Name = tileSet.TileDictionary[valueWithoutFlip].PropertyDictionary["Name"];
+                        }
+                    }
+
+                    reducedLayerInfo?.Quads.Add(quad);
+                }
+            }
+        }
+
+        private static void AddObjectLayerTiles(ReducedLayerInfo reducedLayerInfo, AbstractMapLayer tiledLayer, Tileset tileSet, uint? gid, int tileWidth, int tileHeight)
+        {
+            var asMapLayer = tiledLayer as mapObjectgroup;
+            foreach (var objectInstance in asMapLayer.@object)
+            {
+                if (objectInstance.gid > 0)
+                {
+                    ReducedQuadInfo quad = new DataTypes.ReducedQuadInfo();
+
+                    quad.LeftQuadCoordinate = (float)objectInstance.x - tileWidth / 2.0f;
+                    quad.BottomQuadCoordinate = (float)-objectInstance.y - tileHeight / 2.0f;
+
+                    quad.FlipFlags = (byte)(gid.Value & 0xf0000000 >> 7);
+
+                    var valueWithoutFlip = gid.Value & 0x0fffffff;
+
+                    int leftPixelCoord;
+                    int topPixelCoord;
+                    int rightPixelCoord;
+                    int bottomPixelCoord;
+                    TiledMapSave.GetPixelCoordinatesFromGid(gid.Value, tileSet,
+                        out leftPixelCoord, out topPixelCoord, out rightPixelCoord, out bottomPixelCoord);
+
+                    quad.LeftTexturePixel = (ushort)Math.Min(leftPixelCoord, rightPixelCoord);
+                    quad.TopTexturePixel = (ushort)Math.Min(topPixelCoord, bottomPixelCoord);
+
+                    quad.Name = objectInstance.Name;
+                    if (string.IsNullOrEmpty(quad.Name))
+                    {
+                        var prop = quad.QuadSpecificProperties.FirstOrDefault(quadProp => quadProp.Name.ToLowerInvariant() == "name");
+                        quad.Name = (string)prop.Value;
+                    }
+
+                    reducedLayerInfo?.Quads.Add(quad);
+
+                }
+            }
+        }
+
+        private static void CreateFromSpriteEditorScene(TiledMapSave tiledMapSave, float scale, float zOffset, FileReferenceType referenceType, ReducedTileMapInfo toReturn)
+        {
             var ses = tiledMapSave.ToSceneSave(scale, referenceType);
 
             // This is not a stable sort!
@@ -75,28 +292,6 @@ namespace TMXGlueLib.DataTypes
             ses.SpriteList = ses.SpriteList.OrderBy(item => item.Z).ToList();
 
             ReducedLayerInfo reducedLayerInfo = null;
-
-            // If we rely on the image, it's both slow (have to open the images), and
-            // doesn't work at runtime in games:
-            //Dictionary<string, Point> loadedTextures = new Dictionary<string, Point>();
-            //SetCellWidthAndHeight(tiledMapSave, directory, toReturn, ses, loadedTextures);
-
-            toReturn.CellHeightInPixels = (ushort)tiledMapSave.tileheight;
-            toReturn.CellWidthInPixels = (ushort)tiledMapSave.tilewidth;
-
-            // We used to set the quad width/height based on the sprite size, 
-            // but if there is an object layer that doesn't match the tile size,
-            // then the quad width/height is reported incorrectly. Changing this to
-            // use the tileheight and tilewidth values.
-            //if (ses.SpriteList.Count != 0)
-            //{
-            //    SpriteSave spriteSave = ses.SpriteList[0];
-
-            //    toReturn.QuadWidth = spriteSave.ScaleX * 2;
-            //    toReturn.QuadHeight = spriteSave.ScaleY * 2;
-            //}
-            toReturn.QuadHeight = tiledMapSave.tileheight;
-            toReturn.QuadWidth = tiledMapSave.tilewidth;
 
             float z = float.NaN;
 
@@ -225,12 +420,6 @@ namespace TMXGlueLib.DataTypes
 
                 indexInLayer++;
             }
-            return toReturn;
-
-
-
         }
-
-
     }
 }
