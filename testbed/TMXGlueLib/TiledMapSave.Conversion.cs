@@ -923,7 +923,7 @@ namespace TMXGlueLib
             {
                 sprite.Name = @object.Name;
             }
-            SetSpriteTextureCoordinates(gid, sprite, tileSet);
+            SetSpriteTextureCoordinates(gid, sprite, tileSet, this.orientation);
 
             //CalculateWorldCoordinates(layercount, tileIndex, tileWidth, tileHeight, this.Width, out sprite.X, out sprite.Y, out sprite.Z);
             sprite.X = (float)@object.x;
@@ -1027,7 +1027,7 @@ namespace TMXGlueLib
             //    sprite.Name = "Unnamed" + gid;
             //}
 
-            SetSpriteTextureCoordinates(gid, sprite, tileSet);
+            SetSpriteTextureCoordinates(gid, sprite, tileSet, this.orientation);
             CalculateWorldCoordinates(layercount, tileIndex, tileWidth, tileHeight, this.Width, out sprite.X, out sprite.Y, out sprite.Z);
 
             sprite.ScaleX = tileWidth / 2.0f;
@@ -1095,7 +1095,7 @@ namespace TMXGlueLib
             z += Offset.Item3;
         }
 
-        public void SetSpriteTextureCoordinates(uint gid, SpriteSave sprite, Tileset tileSet)
+        public static void SetSpriteTextureCoordinates(uint gid, SpriteSave sprite, Tileset tileSet, string orientation)
         {
             int imageWidth = tileSet.Images[0].width;
             int imageHeight = tileSet.Images[0].height;
@@ -1145,7 +1145,7 @@ namespace TMXGlueLib
             // Calculate relative texture coordinates based on pixel coordinates
             var changeVal = LessOrGreaterDesired.Greater;
 
-            if (this.orientation != null && this.orientation.Equals("isometric"))
+            if (orientation == "isometric")
             {
                 changeVal = LessOrGreaterDesired.NoChange;
             }
@@ -1154,7 +1154,7 @@ namespace TMXGlueLib
             sprite.LeftTextureCoordinate = GetTextureCoordinate(leftPixelCoord, imageWidth, changeVal);
 
             changeVal = LessOrGreaterDesired.Less;
-            if (this.orientation != null && this.orientation.Equals("isometric"))
+            if (orientation == "isometric")
             {
                 changeVal = LessOrGreaterDesired.NoChange;
             }
@@ -1239,7 +1239,7 @@ namespace TMXGlueLib
             return null;
         }
 
-        private float GetTextureCoordinate(int pixelCoord, int dimension, LessOrGreaterDesired lessOrGreaterDesired)
+        private static float GetTextureCoordinate(int pixelCoord, int dimension, LessOrGreaterDesired lessOrGreaterDesired)
         {
             float asFloat = pixelCoord / (float)dimension;
 
@@ -1257,7 +1257,7 @@ namespace TMXGlueLib
             }
         }
 
-        private static int CalculateYCoordinate(uint gid, int imageWidth, int tileWidth, int tileHeight, int spacing, int margin)
+        public static int CalculateYCoordinate(uint gid, int imageWidth, int tileWidth, int tileHeight, int spacing, int margin)
         {
 
             int tilesWide = TilesetExtensionMethods.GetNumberOfTilesWide(
@@ -1269,7 +1269,7 @@ namespace TMXGlueLib
             return pixely;
         }
 
-        private static int CalculateXCoordinate(uint gid, int imageWidth, int tileWidth, int spacing, int margin)
+        public static int CalculateXCoordinate(uint gid, int imageWidth, int tileWidth, int spacing, int margin)
         {
             var tilesWide = TilesetExtensionMethods.GetNumberOfTilesWide(
                 imageWidth, margin, tileWidth, spacing);
