@@ -273,8 +273,10 @@ namespace TMXGlueLib.DataTypes
                 {
                     ReducedQuadInfo quad = new DataTypes.ReducedQuadInfo();
 
-                    quad.LeftQuadCoordinate = (float)objectInstance.x - tileWidth / 2.0f;
-                    quad.BottomQuadCoordinate = (float)-objectInstance.y - tileHeight / 2.0f;
+                    quad.LeftQuadCoordinate = (float)objectInstance.x;
+                    quad.BottomQuadCoordinate = (float)-objectInstance.y;
+
+                    quad.RotationDegrees = (float)objectInstance.Rotation;
 
                     quad.FlipFlags = (byte)(gid.Value & 0xf0000000 >> 7);
 
