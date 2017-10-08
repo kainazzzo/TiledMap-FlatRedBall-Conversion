@@ -82,7 +82,7 @@ namespace TMXGlueLib
                                 var aar = new AxisAlignedRectangleSave()
                                 {
                                     Name = @object.Name,
-                                    X = (float)@object.x,
+                                    X = (float)@object.x + (@object.width /2),
                                     Y = (float)-@object.y - (@object.height / 2),
                                     ScaleX = @object.width / 2,
                                     ScaleY = @object.height / 2,
