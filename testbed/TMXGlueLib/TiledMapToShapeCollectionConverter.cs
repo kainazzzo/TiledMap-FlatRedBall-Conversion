@@ -83,7 +83,7 @@ namespace TMXGlueLib
                                 {
                                     Name = @object.Name,
                                     X = (float)@object.x,
-                                    Y = (float)@object.y,
+                                    Y = (float)-@object.y - (@object.height / 2),
                                     ScaleX = @object.width / 2,
                                     ScaleY = @object.height / 2,
                                 };
