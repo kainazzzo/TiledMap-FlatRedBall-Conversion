@@ -68,6 +68,27 @@ namespace TMXGlueLib
             return scene.ToScene(contentManagerName);
         }
 
+        /// <summary>
+        /// The FRB plugin uses the properties dictionary to create objects and assign their values.
+        /// This moves the Type value to the properties so that it can be used later on to create entities.
+        /// Technically this may cause problems if there is a custom property called Type, but we'll cross that
+        /// in the future if it ever becomes a problem.
+        /// </summary>
+        public void MoveTypeToProperties()
+        {
+            foreach (var tileset in this.Tilesets)
+            {
+                var tilesWithTypes = tileset.Tiles.Where(item => !string.IsNullOrEmpty(item.Type));
+
+                foreach (var tile in tilesWithTypes)
+                {
+                    var dictionaryEntry = tileset.TileDictionary[(uint)tile.id];
+
+                    dictionaryEntry.properties.Add(new property { name = "Type", value = tile.Type });
+                }
+            }
+        }
+
         public void NameUnnamedTilesetTiles()
         {
             foreach (var tileset in this.Tilesets)
@@ -1003,7 +1024,7 @@ namespace TMXGlueLib
             }
 
             uint tileTextureRelativeToStartOfTileset =
-                (0x0fffffff & gid) - tileSet.Firstgid + 1;
+                (0x0fffffff & gid) - tileSet.Firstgid;
 
             if (tileSet.TileDictionary.ContainsKey(tileTextureRelativeToStartOfTileset))
             {
