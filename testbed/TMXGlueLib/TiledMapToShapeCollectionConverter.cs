@@ -90,6 +90,18 @@ namespace TMXGlueLib
 
                                 shapes.AxisAlignedRectangleSaves.Add(aar);
                             }
+							else if (@object.ellipse != null && @object.width == @object.height)
+                            {
+                                var circle = new CircleSave()
+                                {
+                                    Name = @object.Name,
+                                    X = (float)@object.x + (@object.width / 2),
+                                    Y = (float)-@object.y - (@object.height / 2),
+                                    Radius = @object.width / 2
+                                };
+
+                                shapes.CircleSaves.Add(circle);
+                            }
                             else
                             {
                                 PolygonSave p = tiledMapSave.ConvertTmxObjectToFrbPolygonSave(@object.Name, @object.x, @object.y, @object.width, @object.height, @object.Rotation, @object.ellipse);
