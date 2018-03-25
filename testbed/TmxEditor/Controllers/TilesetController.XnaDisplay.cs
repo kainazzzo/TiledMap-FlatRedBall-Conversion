@@ -60,6 +60,7 @@ namespace TmxEditor.Controllers
 
             mSprite = new Sprite(null);
             mSprite.Visible = false;
+            mSprite.Name = "TilesetController.XnaDisplay MainSprite";
             mManagers.SpriteManager.Add(mSprite);
 
             mOutlineRectangle = new RenderingLibrary.Math.Geometry.LineRectangle(mManagers);

@@ -212,8 +212,8 @@ namespace TMXGlueLib
                     var xy = p.Split(",".ToCharArray());
                     return new Point
                     {
-                        X = Convert.ToDouble(xy[0]),
-                        Y = -Convert.ToDouble(xy[1])
+                        X = Convert.ToDouble(xy[0], System.Globalization.NumberFormatInfo.InvariantInfo),
+                        Y = -Convert.ToDouble(xy[1], System.Globalization.NumberFormatInfo.InvariantInfo)
                     };
                 }).ToList();
 
