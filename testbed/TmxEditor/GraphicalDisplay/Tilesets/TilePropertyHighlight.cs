@@ -6,6 +6,7 @@ using RenderingLibrary.Math.Geometry;
 using RenderingLibrary;
 using RenderingLibrary.Graphics;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.ObjectModel;
 
 namespace TmxEditor.GraphicalDisplay.Tilesets
 {
@@ -21,7 +22,7 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
 
         #endregion
 
-        public List<IRenderableIpso> Children
+        public ObservableCollection<IRenderableIpso> Children
         {
             get;
             private set;
@@ -141,7 +142,7 @@ namespace TmxEditor.GraphicalDisplay.Tilesets
 
         public TilePropertyHighlight(SystemManagers managers)
         {
-            Children = new List<IRenderableIpso>();
+            Children = new ObservableCollection<IRenderableIpso>();
             mManagers = managers;
             mLineRectangle = new LineRectangle(mManagers);
             mLineRectangle.Width = 16;
