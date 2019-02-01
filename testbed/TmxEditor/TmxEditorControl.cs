@@ -6,7 +6,6 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using FlatRedBall.Glue.SaveClasses;
 using TmxEditor.GraphicalDisplay.Tilesets;
 using System.Reflection;
 using RenderingLibrary.Content;
