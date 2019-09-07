@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TmxEditor</RootNamespace>
     <AssemblyName>TmxEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -44,9 +44,6 @@
     <Reference Include="FlatRedBall.PropertyGrid, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\FlatRedBall\FlatRedBall.PropertyGrid.dll</HintPath>
-    </Reference>
-    <Reference Include="FlatRedBall.SpecializedXnaControls">
-      <HintPath>..\..\..\FlatRedBall\FRBDK\FlatRedBall.SpecializedXnaControls\obj\x86\Debug\FlatRedBall.SpecializedXnaControls.dll</HintPath>
     </Reference>
     <Reference Include="InputLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -166,6 +163,10 @@
     <ProjectReference Include="..\..\..\FlatRedBall\Engines\FlatRedBallXNA\FlatRedBall\FlatRedBallXna4.csproj">
       <Project>{e1cb7d7b-e2ec-4deb-92e2-6ef0b76f40f0}</Project>
       <Name>FlatRedBallXna4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\FlatRedBall\FRBDK\FlatRedBall.SpecializedXnaControls\FlatRedBall.SpecializedXnaControls.csproj">
+      <Project>{8c80ba7b-1cba-4579-9382-d9dc6c365070}</Project>
+      <Name>FlatRedBall.SpecializedXnaControls</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\FlatRedBall\FRBDK\FRBDK Supporting Projects\EditorObjects\EditorObjectsXna4.csproj">
       <Project>{e1d670b6-ad42-4b84-aff8-d568097be03d}</Project>
